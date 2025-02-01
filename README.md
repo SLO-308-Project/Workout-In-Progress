@@ -7,8 +7,8 @@
 1. Clone entire repo.
 2. Run npm init.
 3. VScode Extensions:
-- "JavaScript and TypeScript Nightly"
-- "Prettier - Code formatter"
+    - "JavaScript and TypeScript Nightly"
+    - "Prettier - Code formatter"
 
 ## Conventional Commits:
 ```
