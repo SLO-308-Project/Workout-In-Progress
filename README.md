@@ -3,6 +3,13 @@
 ## Workout In Progress
 ### Product Vision: A workout logger for tracking workouts and viewing past workouts.
 
+## Setup for dev:
+1. Clone entire repo.
+2. Run npm init.
+3. VScode Extensions:
+- "JavaScript and TypeScript Nightly"
+- "Prettier - Code formatter"
+
 ## Conventional Commits:
 ```
 [type] [optional (scope)] [optional !]: [description]
