@@ -8,7 +8,12 @@ Product Vision: A workout logger for tracking workouts and viewing past workouts
 2. Run npm init.
 3. VScode Extensions:
     - "JavaScript and TypeScript Nightly"
-    - "Prettier - Code formatter"
+    - "Prettier - Code formatted"
+
+## Workflow: (NEEDS WORK)
+1. Work on your own branch.
+2. pull and resolve conflicts often.
+3. 
 
 ## Conventional Commits:
 ```
