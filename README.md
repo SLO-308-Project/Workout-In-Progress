@@ -4,8 +4,10 @@
 ### Product Vision: A workout logger for tracking workouts and viewing past workouts.
 
 ## Conventional Commits:
-1. Commits MUST be prefixed with a type, which consists of a noun, feat, fix, etc., followed by the OPTIONAL scope, OPTIONAL !, and REQUIRED terminal colon and space.
-```[type][optional (scope)][optional !]: [description]```
+```
+[type] [optional (scope)] [optional !]: [description]
+```
+1. Commits MUST be prefixed with a ```type```, which consists of a noun, feat, fix, etc., followed by the OPTIONAL scope, OPTIONAL !, and REQUIRED terminal colon and space.
 3. The type ```feat``` MUST be used when a commit **adds a new feature** to your application or library.
 4. The type ```fix``` MUST be used when a commit **represents a bug fix** for your application.
 5. A scope MAY be provided after a type. A ```scope``` MUST consist of **a noun describing a section of the codebase surrounded by parenthesis**, e.g., fix(parser):
