@@ -3,7 +3,7 @@
 ## Workout In Progress
 Product Vision: A workout logger for tracking workouts and viewing past workouts.
 
-## Setup for dev:
+## Setup for dev: (NEEDS WORK)
 1. Clone entire repo.
 2. Run npm init.
 3. VScode Extensions:
