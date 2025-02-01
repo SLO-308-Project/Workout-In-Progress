@@ -10,17 +10,13 @@
     "type": "git",
     "url": "git+https://github.com/SLO-308-Project/Workout-In-Progress.git"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/SLO-308-Project/Workout-In-Progress/issues"
   },
-  "homepage": "https://github.com/SLO-308-Project/Workout-In-Progress#readme",
-  "dependencies": {
-    "express": "^4.21.2",
-    "lint": "^0.8.19",
-    "mongoose": "^8.9.6",
-    "prettier": "^3.4.2",
-    "react": "^19.0.0"
-  }
+  "homepage": "https://github.com/SLO-308-Project/Workout-In-Progress#readme"
 }
