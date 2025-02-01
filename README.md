@@ -14,6 +14,10 @@ Product Vision: A workout logger for tracking workouts and viewing past workouts
 ```
 [type] [optional (scope)] [optional !]: [description]
 ```
+e.g.
+```
+feat(users)!: Implemented GET endpoint.
+```
 **Different Types**:
  
 1. ```feat```: Introduces a new feature to your application.
