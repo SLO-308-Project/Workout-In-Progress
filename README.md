@@ -12,7 +12,7 @@ Product Vision: A workout logger for tracking workouts and viewing past workouts
 
 ## Workflow: (NEEDS WORK)
 1. Work on your own branch.
-2. pull and resolve conflicts often.
+2. Pull and resolve conflicts often.
 3. 
 
 ## Conventional Commits:
