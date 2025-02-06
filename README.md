@@ -9,7 +9,7 @@ Product Vision: A workout logger for tracking workouts and viewing past workouts
 [Figma Prototype Demo](https://www.figma.com/proto/40heWTG7s883OhvNfuJlLm/pmotter's-team-library?node-id=3317-2&p=f&t=qPZslnocKgtIEETe-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3317%3A2)
 
 ## UML Diagram
-[UML Diagram]()
+[Draw.io UML Diagram](https://drive.google.com/file/d/1ltDPBsD1gQQ0TONN-j8DJo3RjuxZuwwO/view?usp=sharing)
 
 ## Setup for dev: (NEEDS WORK)
 1. Clone entire repo.
