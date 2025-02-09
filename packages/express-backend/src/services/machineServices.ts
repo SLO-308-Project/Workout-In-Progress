@@ -14,7 +14,17 @@ const addMachines = (name: string): Machine => {
     return newMachine;
 };
 
+const deleteMachineById = (id: number) => {
+    const index = machines.findIndex((machine: Machine) => machine.id === id);
+    if (index !== -1) {
+        return machines.splice(index, 1)[0];
+    } else {
+        return null;
+    }
+};
+
 export default {
     getMachines,
     addMachines,
+    deleteMachineById,
 };
