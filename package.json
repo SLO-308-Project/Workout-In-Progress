@@ -4,7 +4,7 @@
     "description": "## Workout In Progress ### Product Vision: A workout logger for tracking workouts and viewing past workouts.",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "npm run -w react-frontend test & npm run -w express-backend test",
         "format": "npx prettier . --write"
     },
     "repository": {
@@ -21,6 +21,9 @@
     },
     "homepage": "https://github.com/SLO-308-Project/Workout-In-Progress#readme",
     "dependencies": {
+    },
+    "devDependencies": {
+        "jest": "^29.7.0",
         "prettier": "^3.4.2"
     }
 }
