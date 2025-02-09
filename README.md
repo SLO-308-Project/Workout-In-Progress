@@ -13,7 +13,7 @@ Product Vision: A workout logger for tracking workouts and viewing past workouts
 
 ## Setup for dev: (NEEDS WORK)
 1. Clone entire repo.
-2. Run npm init.
+2. Run ```npm install``` in the main directory to install all current dependencies.
 3. VScode Extensions:
     - "JavaScript and TypeScript Nightly"
     - "Prettier - Code formatted"
