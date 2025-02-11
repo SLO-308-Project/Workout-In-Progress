@@ -22,10 +22,11 @@
         "url": "https://github.com/SLO-308-Project/Workout-In-Progress/issues"
     },
     "homepage": "https://github.com/SLO-308-Project/Workout-In-Progress#readme",
-    "dependencies": {
-    },
     "devDependencies": {
+        "@types/jest": "^29.2.5",
+        "prettier": "^3.4.2",
+        "ts-jest": "^29.2.5",
         "jest": "^29.7.0",
-        "prettier": "^3.4.2"
+        "typescript": "^5.7.3"
     }
 }

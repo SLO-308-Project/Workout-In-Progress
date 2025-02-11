@@ -1,4 +1,4 @@
-import { Machine } from '../types/machineTypes';
+import {Machine} from '../types/machineTypes';
 
 const machines: Machine [] =
 [
