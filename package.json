@@ -6,6 +6,7 @@
     "scripts": {
         "test": "npm run -w react-frontend test & npm run -w express-backend test",
         "format": "npx prettier . --write",
+        "lint": "npm run lint --prefix packages/react-frontend && npm run lint --prefix packages/express-backend",
         "frontdev": "npm run -w react-frontend dev",
         "backdev": "npm run -w express-backend dev"
     },
@@ -22,10 +23,22 @@
         "url": "https://github.com/SLO-308-Project/Workout-In-Progress/issues"
     },
     "homepage": "https://github.com/SLO-308-Project/Workout-In-Progress#readme",
-    "dependencies": {
-    },
     "devDependencies": {
+        "@types/jest": "^29.2.5",
+        "cross-env": "^7.0.3",
+        "eslint": "^9.17.0",
+        "eslint-config-prettier": "^10.0.1",
+        "eslint-plugin-jest": "^28.11.0",
+        "eslint-plugin-prettier": "^5.2.3",
+        "eslint-plugin-react-hooks": "^5.0.0",
+        "eslint-plugin-react-refresh": "^0.4.16",
+        "globals": "^15.14.0",
         "jest": "^29.7.0",
-        "prettier": "^3.4.2"
+        "nodemon": "^3.1.9",
+        "prettier": "^3.5.0",
+        "ts-jest": "^29.2.5",
+        "typescript": "^5.7.3",
+        "typescript-eslint": "^8.18.2",
+        "vite": "^6.0.5"
     }
 }
