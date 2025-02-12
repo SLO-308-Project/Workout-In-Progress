@@ -22,7 +22,13 @@ Product Vision: A workout logger for tracking workouts and viewing past workouts
 ## Workflow: (NEEDS WORK)
 1. Work on your own branch.
 2. Pull and resolve conflicts often.
-3. 
+
+## Scripts:
+- ```npm backdev``` Runs the dev environment for the backend.
+- ```npm frontdev``` Runs the dev environment for the frontend.
+- ```npm test``` Runs jest tests for all workspaces or the current workspace.
+- ```npm format``` Runs the prettier formatter for all files.
+- ```npm lint``` Runs the ESlint for all workspaces.
 
 ## Conventional Commits:
 ```
