@@ -16,8 +16,19 @@ Product Vision: A workout logger for tracking workouts and viewing past workouts
 2. Run ```npm install``` in the main directory to install all current dependencies.
 3. VScode Extensions:
     - "JavaScript and TypeScript Nightly"
-    - "Prettier - Code formatted" -> Enable Format On Save
-    - "ESLint" 
+    - "Prettier - Code formatted"
+        1. (CMD/ CTRL) + SHIFT + P
+        2. Search "Open User Settings" And Open
+        3. Search "Format On Save" And Ensure It is Checked
+        4. Search "Default Formatter" And Set It To Prettier Code Formatter
+    - "ESLint"
+    - "Babel JavaScript"
+    - "JavaScript Debugger"
+        1. Open Debugger Menu On VS Code
+        2. Run The Frontend With ```npm run frontdev```
+        3. Click Debug URL
+        4. Paste URL For Local Vite Instance (http://localhost:5173/)
+        5. Note The Frontend Must Already Be Running To Launch The Debug Window
 
 ## Workflow: (NEEDS WORK)
 1. Work on your own branch.
