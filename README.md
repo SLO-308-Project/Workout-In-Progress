@@ -9,14 +9,15 @@ Product Vision: A workout logger for tracking workouts and viewing past workouts
 [Figma Prototype Demo](https://www.figma.com/proto/40heWTG7s883OhvNfuJlLm/pmotter's-team-library?node-id=3317-2&p=f&t=qPZslnocKgtIEETe-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3317%3A2)
 
 ## UML Diagram
-[Draw.io UML Diagram](https://drive.google.com/file/d/1ltDPBsD1gQQ0TONN-j8DJo3RjuxZuwwO/view?usp=sharing)
+[Draw.io UML Diagram](https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&layers=1&nav=1&title=UML%20Diagram#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D1ltDPBsD1gQQ0TONN-j8DJo3RjuxZuwwO%26export%3Ddownload)
 
 ## Setup for dev: (NEEDS WORK)
 1. Clone entire repo.
 2. Run ```npm install``` in the main directory to install all current dependencies.
 3. VScode Extensions:
     - "JavaScript and TypeScript Nightly"
-    - "Prettier - Code formatted"
+    - "Prettier - Code formatted" -> Enable Format On Save
+    - "ESLint" 
 
 ## Workflow: (NEEDS WORK)
 1. Work on your own branch.
