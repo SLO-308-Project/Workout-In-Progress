@@ -1,22 +1,31 @@
 {
-  "name": "workout-in-progress",
-  "version": "1.0.0",
-  "description": "## Workout In Progress ### Product Vision: A workout logger for tracking workouts and viewing past workouts.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SLO-308-Project/Workout-In-Progress.git"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/SLO-308-Project/Workout-In-Progress/issues"
-  },
-  "homepage": "https://github.com/SLO-308-Project/Workout-In-Progress#readme"
+    "name": "workout-in-progress",
+    "version": "1.0.0",
+    "description": "## Workout In Progress ### Product Vision: A workout logger for tracking workouts and viewing past workouts.",
+    "main": "index.js",
+    "scripts": {
+        "test": "npm run -w react-frontend test & npm run -w express-backend test",
+        "format": "npx prettier . --write",
+        "frontdev": "npm run -w react-frontend dev",
+        "backdev": "npm run -w express-backend dev"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SLO-308-Project/Workout-In-Progress.git"
+    },
+    "workspaces": [
+        "packages/*"
+    ],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/SLO-308-Project/Workout-In-Progress/issues"
+    },
+    "homepage": "https://github.com/SLO-308-Project/Workout-In-Progress#readme",
+    "dependencies": {
+    },
+    "devDependencies": {
+        "jest": "^29.7.0",
+        "prettier": "^3.4.2"
+    }
 }
