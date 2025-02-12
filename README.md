@@ -24,11 +24,11 @@ Product Vision: A workout logger for tracking workouts and viewing past workouts
 2. Pull and resolve conflicts often.
 
 ## Scripts:
-- ```npm backdev``` Runs the dev environment for the backend.
-- ```npm frontdev``` Runs the dev environment for the frontend.
-- ```npm test``` Runs jest tests for all workspaces or the current workspace.
-- ```npm format``` Runs the prettier formatter for all files.
-- ```npm lint``` Runs the ESlint for all workspaces.
+- ```npm run backdev``` Runs the dev environment for the backend.
+- ```npm run frontdev``` Runs the dev environment for the frontend.
+- ```npm run test``` Runs jest tests for all workspaces or the current workspace.
+- ```npm run format``` Runs the prettier formatter for all files.
+- ```npm run lint``` Runs the ESlint for all workspaces.
 
 ## Conventional Commits:
 ```
