@@ -19,8 +19,7 @@ const machine = new mongoose.Schema(
         collection: "machines",
         versionKey: false,
         //_id: false, //uncomment once machine is a subdocument of user. As a primary document _id is mandetory.
-        autoIndex: false
-        
+        autoIndex: false,
     },
 );
 

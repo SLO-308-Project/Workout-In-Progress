@@ -8,21 +8,20 @@ const router = Router();
 //create machine.
 //req.body of type machine.
 router.post("/", (req: Request, res: Response) => {
-    /**req.body = machine = 
+    /**req.body = machine =
      * {
      * name: String
      * muscle: String
-     * } 
-     * */ 
-    machineServices.addMachine(req.body)
-    .then((result) =>
-    {   
-        return res.status(201).send(result);
-    })
-    .catch((err) => 
-    {
-        return res.status(400).send("Bad Request: " + err);
-    });
+     * }
+     * */
+    machineServices
+        .addMachine(req.body)
+        .then((result) => {
+            return res.status(201).send(result);
+        })
+        .catch((err) => {
+            return res.status(400).send("Bad Request: " + err);
+        });
 });
 
 //get machine.
@@ -30,36 +29,34 @@ router.post("/", (req: Request, res: Response) => {
 //  name: string
 //  muscle: string
 router.get("/", (req: Request, res: Response) => {
-    machineServices.getMachines(req.query.name as string | undefined, req.query.muscle as string | undefined)
-    .then((result) => 
-    {
-        return res.status(200).send(result);
-    })
-    .catch((err) =>
-    {
-        console.log(err);
-        return res.send("Error: " + err);
-    });
+    machineServices
+        .getMachines(
+            req.query.name as string | undefined,
+            req.query.muscle as string | undefined,
+        )
+        .then((result) => {
+            return res.status(200).send(result);
+        })
+        .catch((err) => {
+            console.log(err);
+            return res.send("Error: " + err);
+        });
 });
 
 //delete machine by it's unique name.
 //path variable.
 //  name: string
 router.delete("/:name", (req: Request, res: Response) => {
-    machineServices.deleteMachine(req.params.name)
-    .then((result) => 
-        {
-            if (result == null)
-            {
+    machineServices
+        .deleteMachine(req.params.name)
+        .then((result) => {
+            if (result == null) {
                 return res.status(404).send("Resource not found");
-            }
-            else 
-            {
+            } else {
                 return res.status(204).send();
             }
         })
-    .catch((err) => 
-        {
+        .catch((err) => {
             res.status(400).send("Bad Request: " + err);
         });
 });

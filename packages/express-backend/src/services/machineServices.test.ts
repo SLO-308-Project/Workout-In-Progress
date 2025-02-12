@@ -14,7 +14,6 @@ test("Test adding a machine", () => {
     //     })
     // .catch(() =>
     //     {
-
     //     }
     // );
 });
