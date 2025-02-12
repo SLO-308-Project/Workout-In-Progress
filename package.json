@@ -6,6 +6,7 @@
     "scripts": {
         "test": "npm run -w react-frontend test & npm run -w express-backend test",
         "format": "npx prettier . --write",
+        "lint": "npm run lint --prefix packages/react-frontend && npm run lint --prefix packages/express-backend",
         "frontdev": "npm run -w react-frontend dev",
         "backdev": "npm run -w express-backend dev"
     },
@@ -30,6 +31,5 @@
         "typescript": "^5.7.3",
         "cross-env": "^7.0.3"
     },
-    "dependencies": {
-    }
+    "dependencies": {}
 }
