@@ -2,27 +2,25 @@ import mongoose from "mongoose";
 
 const machineSchema = new mongoose.Schema(
     {
-        name:
-        {
+        name: {
             type: String,
             required: true,
             trim: true,
-            unique: true
+            unique: true,
         },
-        muscle:
-        {
+        muscle: {
             type: String,
             required: true,
-            trim: true
-        }
+            trim: true,
+        },
     },
     {
+        collection: "machines",
         versionKey: false,
         autoIndex: true
-    }
+    },
 );
 
 const machine = mongoose.model("machine", machineSchema);
 
 export default machine;
-

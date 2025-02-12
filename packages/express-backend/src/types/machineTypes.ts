@@ -3,4 +3,4 @@ export interface Machine {
     name: string;
 }
 
-export type NewMachineEntry = Omit<Machine, 'id'>;
+export type NewMachineEntry = Omit<Machine, "id">;

@@ -1,10 +1,6 @@
 import machineSchema from "./machine";
-
-type machine = 
-{
-    name: string,
-    muscle: string
-};
+import machine from "../data/machine";
+//import {Body} from "express";
 
 function addMachine(machine: machine)
 {
@@ -35,8 +31,12 @@ function getMachines(name: string, muscle: string)
     return result;
 }
 
+function stupid(){
+    return 5;
+}
 export default 
     {
         addMachine,
-        getMachines
+        getMachines,
+        stupid
     };

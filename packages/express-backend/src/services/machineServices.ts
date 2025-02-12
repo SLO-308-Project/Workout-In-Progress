@@ -1,5 +1,5 @@
-import {Machine} from '../types/machineTypes';
-import machines from '../data/machineData';
+import {Machine} from "../types/machineTypes";
+import machines from "../data/machineData";
 
 const getMachines = (): Machine[] => {
     return machines;

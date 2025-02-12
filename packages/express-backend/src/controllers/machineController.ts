@@ -1,14 +1,14 @@
-import {Request, Response} from 'express';
-import machineServices from '../services/machineServices';
-import {NewMachineEntry} from '../types/machineTypes';
+import {Request, Response} from "express";
+import machineServices from "../services/machineServices";
+import {NewMachineEntry} from "../types/machineTypes";
 
 export const getMachines = (_req: Request, res: Response) => {
-        const machines = machineServices.getMachines();
-        res.status(200).json(machines);
+    const machines = machineServices.getMachines();
+    res.status(200).json(machines);
 };
 
 export const addMachines = (req: Request, res: Response) => {
-    const { name } = req.body as NewMachineEntry;
+    const {name} = req.body as NewMachineEntry;
     const addedMachine = machineServices.addMachines(name);
     res.status(201).json(addedMachine);
 };
