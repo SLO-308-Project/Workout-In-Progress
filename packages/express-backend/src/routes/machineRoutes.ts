@@ -61,4 +61,20 @@ router.delete("/:name", (req: Request, res: Response) => {
         });
 });
 
+//update machine by its unique name.
+router.patch("/:name", (req: Request<{name: string}, object, {name: string | undefined, muscle: string | undefined}>, res: Response) => {
+   machineServices
+       .updateMachine(
+           req.params.name,
+           req.body.name,
+           req.body.muscle
+       )
+       .then((result) =>{
+           return res.status(200).send(result);
+       })
+       .catch((err) => {
+           res.status(400).send("Bad Request: " + err);
+       });
+});
+
 export default router;
