@@ -33,7 +33,7 @@ function deleteMachine(name: string) {
 }
 
 //updates a machine based on parameters
-function updateMachine(currentName: string | undefined, newName: string | undefined, newMuscle: string | undefined) {
+function updateMachine(currentName: string, newName: string | undefined, newMuscle: string | undefined) {
     let result;
     if (newName && newMuscle) {
         result = machineSchema.findOneAndUpdate(
