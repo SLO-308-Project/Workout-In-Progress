@@ -1,4 +1,4 @@
-const BACKEND_URL: string = 'localhost:8000';
+const BACKEND_URL: string = 'http://localhost:8000';
 
 /**
  * Executes a GET request to the backend to retrieve machines.
@@ -7,7 +7,7 @@ const BACKEND_URL: string = 'localhost:8000';
  * @param {string} muscle - OPTIONAL parameter will filter by muscle
  * @returns {Promise} Promise returned by async fetch request
  * */
-function fetchGetMachine(name: string | undefined, muscle: string | undefined) {
+function fetchGetMachine(name: string | undefined, muscle: string | undefined): Promise<Response> {
     let params = ""
     if (name && !muscle) {
         params = `?name=${name}`;
@@ -23,8 +23,9 @@ function fetchGetMachine(name: string | undefined, muscle: string | undefined) {
  * Executes a DELETE request to the backend to delete the specified machine from the database.
  * 
  * @param {string} name - deletes machine with this name
+ * @returns {Promise} Promise returned by async fetch request
  * */
-function fetchDeleteMachine(name: string) {
+function fetchDeleteMachine(name: string): Promise<Response> {
     return fetch(`${BACKEND_URL}/machines/${name}`);
 }
 
@@ -34,10 +35,13 @@ function fetchDeleteMachine(name: string) {
  * @param {string} muscle - primary muscle trained by this machine
  * @returns {Promise} Promise returned by async fetch request
  * */
-function fetchPostMachine(name: string, muscle: string) {
+function fetchPostMachine(name: string, muscle: string): Promise<Response> {
     return fetch(`${BACKEND_URL}/machines/`, {
         method: "POST",
-        body: JSON.stringify({ name: ${name}, muscle: ${muscle} })
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name: `${name}`, muscle: `${muscle}` })
     });
 }
 
@@ -48,10 +52,13 @@ function fetchPostMachine(name: string, muscle: string) {
  * @param {string} muscle - new name of the muscle
  * @return {Promise} Promise returned by async fetch request
  * */
-function fetchUpdateMachine(currentName: string, newName: string | undefined, newMuscle: string | undefined) {
+function fetchUpdateMachine(currentName: string, newName: string | undefined, newMuscle: string | undefined): Promise<Response> {
     return fetch(`${BACKEND_URL}/machines/${name}`, {
         method: "PATCH",
-        body: JSON.stringify({ name: ${newName}, muscle: ${muscle} })
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name: `${newName}`, muscle: `${muscle}` })
     });
 }
 
