@@ -1,8 +1,9 @@
 // src/app.tsx
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {machineI} from "./machine";
 import MachineTable from "./machineTable";
 import MachineForm from "./machineForm";
+import { fetchGetMachine, fetchPostMachine, fetchDeleteMachine } from "./services/machineServices"
 
 function WebApp() {
     const [machines, setMachine] = useState([
@@ -11,11 +12,31 @@ function WebApp() {
             muscle: "Forearms",
         },
     ]);
-
-    function addOneMachine(machine: machineI) {
-        setMachine([...machines, machine]);
+    function reloadUsers(): void {
+        fetchGetMachine()
+        .then((res: Response) => res.json())
+        .then((json) => setMachine(json))
+        .catch((error: unknown) => console.log(error))
     }
 
+    useEffect(() => {
+        reloadUsers()
+    }, []);
+
+    function addOneMachine(machine: machineI): void {
+        console.log(`${machine.name} ${machine.muscle}`)
+        fetchPostMachine(machine.name, machine.muscle)
+        .then((res) => {
+            if (res.status == 201) {
+                reloadUsers();
+            } 
+        })
+        .catch((error: unknown) => {
+            console.log(error)
+        });
+    }
+
+    // deletes locally, but not on the database... yet
     function removeOneMachine(index: number) {
         const updated = machines.filter((_, i) => {
             return i !== index;
