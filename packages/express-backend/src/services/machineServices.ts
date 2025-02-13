@@ -32,8 +32,40 @@ function deleteMachine(name: string) {
     return machineSchema.findOneAndDelete({name: name});
 }
 
+//updates a machine based on parameters
+function updateMachine(currentName: string, newName: string | undefined, newMuscle: string | undefined) {
+    let result;
+    if (newName && newMuscle) {
+        result = machineSchema.findOneAndUpdate(
+            {name: currentName},
+            {
+                name: newName,
+                muscle: newMuscle
+            },
+            { new: true }
+        );
+    } else if (newName && !newMuscle) {
+        result = machineSchema.findOneAndUpdate(
+            {name: currentName},
+            {name: newName},
+            {new: true}
+        );
+    } else if (!newName && newMuscle) {
+        result = machineSchema.findOneAndUpdate(
+            {name: currentName},
+            {muscle: newMuscle},
+            {new: true}
+        );
+        // if no parameters given return original machine
+    } else {
+        result = machineSchema.find({name: currentName});
+    }
+    return result;
+}
+
 export default {
     addMachine,
     getMachines,
     deleteMachine,
+    updateMachine,
 };
