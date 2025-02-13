@@ -31,7 +31,7 @@ function fetchDeleteMachine(name: string) {
 /**
  * Executes a POST request to the backend and posts an object with values supplied by the parameters name and string.
  * @param {string} name - name of the machine
- * @param {stirng} muscle - primary muscle trained by this machine
+ * @param {string} muscle - primary muscle trained by this machine
  * @returns {Promise} Promise returned by async fetch request
  * */
 function fetchPostMachine(name: string, muscle: string) {
@@ -41,4 +41,23 @@ function fetchPostMachine(name: string, muscle: string) {
     });
 }
 
+/**
+ * Executes a PATCH request to the backend to update either the name, muscle, or both.
+ * @param {string} name - current name of the machine
+ * @param {string} newName - new name of the machine
+ * @param {string} muscle - new name of the muscle
+ * @return {Promise} Promise returned by async fetch request
+ * */
+function fetchUpdateMachine(currentName: string, newName: string | undefined, newMuscle: string | undefined) {
+    return fetch(`${BACKEND_URL}/machines/${name}`, {
+        method: "PATCH",
+        body: JSON.stringify({ name: ${newName}, muscle: ${muscle} })
+    });
+}
 
+export {
+    fetchGetMachine,
+    fetchDeleteMachine,
+    fetchPostMachine,
+    fetchUpdateMachine
+}
