@@ -1,10 +1,16 @@
-import {StrictMode} from "react";
-import {createRoot} from "react-dom/client";
-import "./index.css";
-import App from "./App.tsx";
+// src/main.tsx
+import ReactDOMClient from "react-dom/client";
+import "./main.css";
+import WebApp from "./webApp";
 
-createRoot(document.getElementById("root")!).render(
-    <StrictMode>
-        <App />
-    </StrictMode>,
-);
+// Create the container
+const container = document.getElementById("root");
+if (!container) {
+    throw new Error("Unable to find root container");
+}
+
+// Create a root
+const root = ReactDOMClient.createRoot(container);
+
+//  Initial render: Render an element to the Root
+root.render(<WebApp />);
