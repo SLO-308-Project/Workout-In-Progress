@@ -10,7 +10,9 @@ Product Vision: A workout logger for tracking workouts and viewing past workouts
 
 ## UML Diagram
 [Draw.io UML Diagram](https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&layers=1&nav=1&title=UML%20Diagram#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D1ltDPBsD1gQQ0TONN-j8DJo3RjuxZuwwO%26export%3Ddownload)
+
 [Draw.io Use Case Diagram](https://drive.google.com/file/d/1JPQv8tZrvDeD9GE1n6V-iyTVIcic6WOF/view?usp=sharing)
+
 ## Setup for dev: (NEEDS WORK)
 1. Clone entire repo.
 2. Run ```npm install``` in the main directory to install all current dependencies.
