@@ -1,13 +1,16 @@
-export interface machineI {
+export interface machineI
+{
     name: string;
     muscle: string;
 }
 
-export interface machineFormProp {
+export interface machineFormProp
+{
     handleSubmit: (machine: machineI) => void;
 }
 
-export interface machineTableProp {
+export interface machineTableProp
+{
     machineData: machineI[];
     removeMachine: (index: number) => void;
 }

@@ -5,7 +5,8 @@ import WebApp from "./webApp";
 
 // Create the container
 const container = document.getElementById("root");
-if (!container) {
+if (!container)
+{
     throw new Error("Unable to find root container");
 }
 

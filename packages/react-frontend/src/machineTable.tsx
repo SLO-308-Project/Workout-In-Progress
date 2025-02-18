@@ -1,5 +1,6 @@
 import {machineI, machineTableProp} from "./machine";
-function MachineTableHeader() {
+function MachineTableHeader()
+{
     return (
         <thead>
             <tr>
@@ -11,8 +12,10 @@ function MachineTableHeader() {
     );
 }
 
-function MachineTableBody(props: machineTableProp) {
-    const rows = props.machineData.map((row: machineI, index: number) => {
+function MachineTableBody(props: machineTableProp)
+{
+    const rows = props.machineData.map((row: machineI, index: number) =>
+    {
         return (
             <tr key={index}>
                 <td>{row.name}</td>
@@ -28,7 +31,8 @@ function MachineTableBody(props: machineTableProp) {
     return <tbody> {rows} </tbody>;
 }
 
-function MachineTable(props: machineTableProp) {
+function MachineTable(props: machineTableProp)
+{
     return (
         <table>
             <MachineTableHeader />

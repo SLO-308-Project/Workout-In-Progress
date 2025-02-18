@@ -1,6 +1,7 @@
 //import machineServices from "./machineServices";
 
-test("Test adding a machine", () => {
+test("Test adding a machine", () =>
+{
     // // console.log(machineServices.stupid());
     // return machineServices.addMachine(
     //     {
@@ -18,7 +19,8 @@ test("Test adding a machine", () => {
     // );
 });
 
-test("Test getting a machine", () => {
+test("Test getting a machine", () =>
+{
     // const name = "bench press";
     // const promise = fetch(`http://localhost:8000/machines/?name=${name}`);
     // promise.then((res) => {

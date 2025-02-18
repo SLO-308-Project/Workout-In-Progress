@@ -7,7 +7,8 @@ const router = Router();
 
 //create machine.
 //req.body of type machine.
-router.post("/", (req: Request, res: Response) => {
+router.post("/", (req: Request, res: Response) =>
+{
     /**req.body = machine =
      * {
      * name: String
@@ -16,10 +17,12 @@ router.post("/", (req: Request, res: Response) => {
      * */
     machineServices
         .addMachine(req.body)
-        .then((result) => {
+        .then((result) =>
+        {
             return res.status(201).send(result);
         })
-        .catch((err) => {
+        .catch((err) =>
+        {
             return res.status(400).send("Bad Request: " + err);
         });
 });
@@ -28,16 +31,19 @@ router.post("/", (req: Request, res: Response) => {
 //query parameters optional
 //  name: string
 //  muscle: string
-router.get("/", (req: Request, res: Response) => {
+router.get("/", (req: Request, res: Response) =>
+{
     machineServices
         .getMachines(
             req.query.name as string | undefined,
             req.query.muscle as string | undefined,
         )
-        .then((result) => {
+        .then((result) =>
+        {
             return res.status(200).send(result);
         })
-        .catch((err) => {
+        .catch((err) =>
+        {
             console.log(err);
             return res.send("Error: " + err);
         });
@@ -46,35 +52,50 @@ router.get("/", (req: Request, res: Response) => {
 //delete machine by it's unique name.
 //path variable.
 //  name: string
-router.delete("/:name", (req: Request, res: Response) => {
+router.delete("/:name", (req: Request, res: Response) =>
+{
     machineServices
         .deleteMachine(req.params.name)
-        .then((result) => {
-            if (result == null) {
+        .then((result) =>
+        {
+            if (result == null)
+            {
                 return res.status(404).send("Resource not found");
-            } else {
+            }
+            else
+            {
                 return res.status(204).send();
             }
         })
-        .catch((err) => {
+        .catch((err) =>
+        {
             res.status(400).send("Bad Request: " + err);
         });
 });
 
 //update machine by its unique name.
-router.patch("/:name", (req: Request<{name: string}, object, {name: string | undefined, muscle: string | undefined}>, res: Response) => {
-   machineServices
-       .updateMachine(
-           req.params.name,
-           req.body.name,
-           req.body.muscle
-       )
-       .then((result) =>{
-           return res.status(200).send(result);
-       })
-       .catch((err) => {
-           res.status(400).send("Bad Request: " + err);
-       });
-});
+router.patch(
+    "/:name",
+    (
+        req: Request<
+            {name: string},
+            object,
+            {name: string | undefined; muscle: string | undefined}
+        >,
+        res: Response,
+    ) =>
+    {
+        machineServices
+            .updateMachine(req.params.name, req.body.name, req.body.muscle)
+            .then((result) =>
+            {
+                return res.status(200).send(result);
+            })
+            .catch((err) =>
+            {
+                res.status(400).send("Bad Request: " + err);
+            });
+    },
+);
 
 export default router;

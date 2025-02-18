@@ -2,20 +2,23 @@
 import {useState, ChangeEvent} from "react";
 import {machineFormProp} from "./machine";
 
-function MachineForm(props: machineFormProp) {
+function MachineForm(props: machineFormProp)
+{
     const [machine, setMachine] = useState({
         name: "",
         muscle: "",
     });
 
-    function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    function handleChange(event: ChangeEvent<HTMLInputElement>)
+    {
         const {name, value} = event.target;
         if (name === "name")
             setMachine({name: value, muscle: machine["muscle"]});
         else setMachine({name: machine["name"], muscle: value});
     }
 
-    function submitForm() {
+    function submitForm()
+    {
         props.handleSubmit(machine);
         setMachine({name: "", muscle: ""});
     }
