@@ -1,8 +1,7 @@
 // src/Form.jsx
 import {useState, ChangeEvent} from "react";
-import {machineFormProp} from "./machine";
 
-function MachineForm(props: machineFormProp)
+function MachineForm(props)
 {
     const [machine, setMachine] = useState({
         name: "",

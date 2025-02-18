@@ -1,7 +1,7 @@
 // src/main.tsx
 import ReactDOMClient from "react-dom/client";
 import "./main.css";
-import WebApp from "./webApp";
+import MachinePage from "./pages/MachinePage";
 
 // Create the container
 const container = document.getElementById("root");
@@ -14,4 +14,4 @@ if (!container)
 const root = ReactDOMClient.createRoot(container);
 
 //  Initial render: Render an element to the Root
-root.render(<WebApp />);
+root.render(<MachinePage />);

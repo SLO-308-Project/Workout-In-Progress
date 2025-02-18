@@ -36,7 +36,9 @@ function fetchGetMachine(
  * */
 function fetchDeleteMachine(name: string): Promise<Response>
 {
-    return fetch(`${BACKEND_URL}/machines/${name}`);
+    return fetch(`${BACKEND_URL}/machines/${name}`, {
+        method: "DELETE"
+    });
 }
 
 /**
@@ -74,7 +76,7 @@ function fetchUpdateMachine(
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({name: `${newName}`, muscle: `${muscle}`}),
+        body: JSON.stringify({name: `${newName}`, muscle: `${newMuscle}`}),
     });
 }
 
