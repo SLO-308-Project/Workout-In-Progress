@@ -1,5 +1,6 @@
 import {Router, Request, Response} from "express";
 import machineServices from "../services/machineServices";
+import {machineType} from "../data/machine";
 
 // Routes for /machines
 
@@ -7,8 +8,9 @@ const router = Router();
 
 //create machine.
 //req.body of type machine.
-router.post("/", (req: Request, res: Response) =>
+router.post("/users/:email/machines/", (req: Request, res: Response) =>
 {
+    console.log(req.params);
     /**req.body = machine =
      * {
      * name: String
@@ -16,7 +18,7 @@ router.post("/", (req: Request, res: Response) =>
      * }
      * */
     machineServices
-        .addMachine(req.body)
+        .addMachine(req.body as machineType, req.params.email)
         .then((result) =>
         {
             return res.status(201).send(result);

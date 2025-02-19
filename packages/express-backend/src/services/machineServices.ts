@@ -1,12 +1,13 @@
-import machineSchema, {machineType} from "../data/machine";
-
-//import {Body} from "express";
+import machineModel, {machineType} from "../data/machine";
+import userModel from "../data/user";
 
 //adds a machine.
-function addMachine(machineJSON: machineType)
+function addMachine(machineJSON: machineType, email: string)
 {
-    const machineToAdd = new machineSchema(machineJSON);
-    const prom = machineToAdd.save();
+    const prom = userModel.updateOne(
+        {email: email}, //what user you want to update in usermodel.
+        {$push: {machines: machineJSON}}, //how you want to update the user.
+    );
     return prom;
 }
 
@@ -17,20 +18,20 @@ function getMachines(name: string | undefined, muscle: string | undefined)
     let result;
     if (!name && !muscle)
     {
-        result = machineSchema.find();
+        result = machineModel.find();
     }
     else if (name && !muscle)
     {
-        result = machineSchema.find({name: name});
+        result = machineModel.find({name: name});
     }
     else if (!name && muscle)
     {
-        result = machineSchema.find({muscle: muscle});
+        result = machineModel.find({muscle: muscle});
     }
     //name and muscle
     else
     {
-        result = machineSchema.find({name: name, muscle: muscle});
+        result = machineModel.find({name: name, muscle: muscle});
     }
     return result;
 }
@@ -38,7 +39,7 @@ function getMachines(name: string | undefined, muscle: string | undefined)
 //deletes a machine by it's unique name.
 function deleteMachine(name: string)
 {
-    return machineSchema.findOneAndDelete({name: name});
+    return machineModel.findOneAndDelete({name: name});
 }
 
 //updates a machine based on parameters
@@ -51,7 +52,7 @@ function updateMachine(
     let result;
     if (newName && newMuscle)
     {
-        result = machineSchema.findOneAndUpdate(
+        result = machineModel.findOneAndUpdate(
             {name: currentName},
             {
                 name: newName,
@@ -62,7 +63,7 @@ function updateMachine(
     }
     else if (newName && !newMuscle)
     {
-        result = machineSchema.findOneAndUpdate(
+        result = machineModel.findOneAndUpdate(
             {name: currentName},
             {name: newName},
             {new: true},
@@ -70,7 +71,7 @@ function updateMachine(
     }
     else if (!newName && newMuscle)
     {
-        result = machineSchema.findOneAndUpdate(
+        result = machineModel.findOneAndUpdate(
             {name: currentName},
             {muscle: newMuscle},
             {new: true},
@@ -79,7 +80,7 @@ function updateMachine(
     }
     else
     {
-        result = machineSchema.find({name: currentName});
+        result = machineModel.find({name: currentName});
     }
     return result;
 }
