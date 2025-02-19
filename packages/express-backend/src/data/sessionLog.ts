@@ -1,18 +1,17 @@
 import mongoose from "mongoose";
 
-const sessionLog = new mongoose.Schema(
+const sessionLogSchema = new mongoose.Schema(
     {
-        sessions: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-            },
-        ],
+        sessionId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "session",
+        },
     },
     {
         collection: "sessionLogs",
     },
 );
 
-const sessionLogSchema = mongoose.model("sessionLog", sessionLog);
-export type sessionLogType = mongoose.InferSchemaType<typeof sessionLog>;
-export default sessionLogSchema;
+const sessionLogModel = mongoose.model("sessionLog", sessionLogSchema);
+export type sessionLogType = mongoose.InferSchemaType<typeof sessionLogModel>;
+export default sessionLogModel;

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 //defines the schema for machine.
-const machine = new mongoose.Schema(
+const machineSchema = new mongoose.Schema(
     {
         name: {
             type: String,
@@ -15,16 +15,14 @@ const machine = new mongoose.Schema(
             trim: true,
         },
     },
-    {
-        collection: "machines",
-        versionKey: false,
-        //_id: false, //uncomment once machine is a subdocument of user. As a primary document _id is mandetory.
-        autoIndex: false,
-    },
+    // {
+    //     collection: "machines",
+    //     //_id: false, //uncomment once machine is a subdocument of user. As a primary document _id is mandetory.
+    // },
 );
 
 //Schema for machine.
-const machineSchema = mongoose.model("machine", machine);
+const machineModel = mongoose.model("machine", machineSchema);
 //type for a machine
-export type machineType = mongoose.InferSchemaType<typeof machineSchema>;
-export default machineSchema;
+export type machineType = mongoose.InferSchemaType<typeof machineModel.schema>; //typescript  type inference.
+export default machineModel;
