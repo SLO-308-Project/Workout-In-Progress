@@ -1,4 +1,3 @@
-import {machineI, machineTableProp} from "./machine";
 function MachineTableHeader()
 {
     return (
@@ -12,16 +11,16 @@ function MachineTableHeader()
     );
 }
 
-function MachineTableBody(props: machineTableProp)
+function MachineTableBody(props)
 {
-    const rows = props.machineData.map((row: machineI, index: number) =>
+    const rows = props.machineData.map((row, index: number) =>
     {
         return (
             <tr key={index}>
                 <td>{row.name}</td>
                 <td>{row.muscle}</td>
                 <td>
-                    <button onClick={() => props.removeMachine(index)}>
+                    <button onClick={() => props.removeMachine(row.name)}>
                         Delete
                     </button>
                 </td>
@@ -31,7 +30,7 @@ function MachineTableBody(props: machineTableProp)
     return <tbody> {rows} </tbody>;
 }
 
-function MachineTable(props: machineTableProp)
+function MachineTable(props)
 {
     return (
         <table>
