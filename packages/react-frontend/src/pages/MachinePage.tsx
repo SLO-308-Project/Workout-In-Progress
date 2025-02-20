@@ -2,6 +2,7 @@
 import {useState, useEffect} from "react";
 import MachineTable from "../components/machineTable";
 import MachineForm from "../components/machineForm";
+import {Link} from "react-router-dom";
 import {
     fetchGetMachine,
     fetchPostMachine,
