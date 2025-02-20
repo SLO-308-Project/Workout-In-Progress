@@ -2,15 +2,14 @@ import {Router, Request, Response} from "express";
 import machineServices from "../services/machineServices";
 import {machineType} from "../data/machine";
 
-// Routes for /machines
 
+// all start with /users
 const router = Router();
 
 //create machine.
 //req.body of type machine.
-router.post("/users/:email/machines/", (req: Request, res: Response) =>
+router.post("/:email/machines/", (req: Request, res: Response) =>
 {
-    console.log(req.params);
     /**req.body = machine =
      * {
      * name: String
@@ -18,7 +17,10 @@ router.post("/users/:email/machines/", (req: Request, res: Response) =>
      * }
      * */
     machineServices
-        .addMachine(req.body as machineType, req.params.email)
+        .addMachine(
+            req.body as machineType, 
+            req.params.email
+        )
         .then((result) =>
         {
             return res.status(201).send(result);
@@ -33,15 +35,17 @@ router.post("/users/:email/machines/", (req: Request, res: Response) =>
 //query parameters optional
 //  name: string
 //  muscle: string
-router.get("/", (req: Request, res: Response) =>
+router.get("/:email/machines/", (req: Request, res: Response) =>
 {
     machineServices
         .getMachines(
-            req.query.name as string | undefined,
-            req.query.muscle as string | undefined,
+            req.query.name as string,
+            req.query.muscle as string,
+            req.params.email
         )
         .then((result) =>
         {
+            console.log(result);
             return res.status(200).send(result);
         })
         .catch((err) =>
@@ -54,10 +58,13 @@ router.get("/", (req: Request, res: Response) =>
 //delete machine by it's unique name.
 //path variable.
 //  name: string
-router.delete("/:name", (req: Request, res: Response) =>
+router.delete("/:email/machines/:name", (req: Request, res: Response) =>
 {
     machineServices
-        .deleteMachine(req.params.name)
+        .deleteMachine(
+            req.params.email,
+            req.params.name
+        )
         .then((result) =>
         {
             if (result == null)

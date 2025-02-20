@@ -50,18 +50,17 @@ function MachinePage()
     function removeOneMachine(name: string)
     {
         fetchDeleteMachine(name)
-        .then((res) => 
-        {
-            if (res.ok) 
+            .then((res) =>
             {
-                reloadUsers();
-            }
-
-        })
-        .catch((error: unknown) => 
-        {
-            console.log(error);
-        });
+                if (res.ok)
+                {
+                    reloadUsers();
+                }
+            })
+            .catch((error: unknown) =>
+            {
+                console.log(error);
+            });
     }
 
     return (

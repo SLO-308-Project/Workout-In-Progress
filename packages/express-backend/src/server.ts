@@ -19,8 +19,8 @@ function setupAPP(PORT: number)
     app.use(express.json());
 
     //add Routes
-    app.use(machineRoutes);
-    app.use(userRoutes);
+    app.use("/users", machineRoutes);
+    app.use("/users", userRoutes);
 
     app.listen(PORT, () =>
     {

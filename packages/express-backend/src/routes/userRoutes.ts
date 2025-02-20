@@ -2,10 +2,10 @@ import {Router, Request, Response} from "express";
 import userServices from "../services/userServices";
 import {userType} from "../data/user";
 
+//all start with /users
 const router = Router();
-//router.all("/users");
 
-router.post("users/", (req: Request, res: Response) =>
+router.post("/", (req: Request, res: Response) =>
 {
     /**
      * req.body = user =

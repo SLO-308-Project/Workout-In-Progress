@@ -12,34 +12,50 @@ function addMachine(machineJSON: machineType, email: string)
 }
 
 //gets machine's based on parameters.
-function getMachines(name: string | undefined, muscle: string | undefined)
+function getMachines(name: string, muscle: string, userEmail: string)
 {
+
+    const result = userModel.aggregate([
+        {$match: {email: userEmail}},
+        {$project: {machines: 1, _id: 0}},
+        {$unwind: "$machines"},
+        {$match: {"machines.name": "bench press"}}
+    ]);
+    // const result2 = userModel.findOne(
+    //     {email: userEmail},
+    //     {_id:0, machines: 1},
+    // );
     console.log(name + "  " + muscle);
-    let result;
-    if (!name && !muscle)
-    {
-        result = machineModel.find();
-    }
-    else if (name && !muscle)
-    {
-        result = machineModel.find({name: name});
-    }
-    else if (!name && muscle)
-    {
-        result = machineModel.find({muscle: muscle});
-    }
-    //name and muscle
-    else
-    {
-        result = machineModel.find({name: name, muscle: muscle});
-    }
+    //let result;
+//     if (!name && !muscle)
+//     {
+//         console.log();
+// //        return result;
+//     }
+//     else if (name && !muscle)
+//     {
+//         result.find({machines: {name: name}});
+//     }
+//     else if (!name && muscle)
+//     {
+//         result.find({machines: {muscle: muscle}});
+//     }
+//     //name and muscle
+//     else
+//     {
+//         result.find({machines: {name: name, muscle: muscle}});
+//     }
     return result;
 }
 
 //deletes a machine by it's unique name.
-function deleteMachine(name: string)
+function deleteMachine(userEmail: string, machineName: string)
 {
-    return machineModel.findOneAndDelete({name: name});
+    return userModel.updateOne(
+        {email: userEmail},
+        {$pull: {machines: {name: machineName}}}
+    );
+    //return machineModel.findOneAndDelete({name: machineName});
 }
 
 //updates a machine based on parameters
