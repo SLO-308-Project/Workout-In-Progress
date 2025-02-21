@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const sessionSchema = new mongoose.Schema(
     {
+        _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            auto: true,
+        },
         date: {
             type: Date, // changes to date do not persist automatically. must use doc.markModified('pathToYourDate') before saving changes.
             default: Date.now(),
@@ -38,5 +42,5 @@ const sessionSchema = new mongoose.Schema(
 );
 
 const sessionModel = mongoose.model("session", sessionSchema);
-export type sessionType = mongoose.InferSchemaType<typeof sessionModel>;
+export type sessionType = mongoose.InferSchemaType<typeof sessionSchema>;
 export default sessionModel;

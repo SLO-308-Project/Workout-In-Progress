@@ -2,10 +2,16 @@ import mongoose from "mongoose";
 
 const sessionLogSchema = new mongoose.Schema(
     {
-        sessionId: {
+        _id: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "session",
+            auto: true,
         },
+        sessionIds: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "session",
+            },
+        ],
     },
     {
         collection: "sessionLogs",
@@ -13,5 +19,5 @@ const sessionLogSchema = new mongoose.Schema(
 );
 
 const sessionLogModel = mongoose.model("sessionLog", sessionLogSchema);
-export type sessionLogType = mongoose.InferSchemaType<typeof sessionLogModel>;
+export type sessionLogType = mongoose.InferSchemaType<typeof sessionLogSchema>;
 export default sessionLogModel;

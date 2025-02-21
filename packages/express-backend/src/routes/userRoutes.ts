@@ -1,6 +1,7 @@
 import {Router, Request, Response} from "express";
 import userServices from "../services/userServices";
 import {userType} from "../data/user";
+// import {userType} from "../data/user";
 
 //all start with /users
 const router = Router();
