@@ -37,7 +37,7 @@ function fetchGetMachine(
 function fetchDeleteMachine(name: string): Promise<Response>
 {
     return fetch(`${BACKEND_URL}/machines/${name}`, {
-        method: "DELETE"
+        method: "DELETE",
     });
 }
 

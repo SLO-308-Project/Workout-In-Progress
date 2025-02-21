@@ -1,9 +1,15 @@
 import mongoose from "mongoose";
 
-const userList = new mongoose.Schema(
+const userListSchema = new mongoose.Schema(
     {
-        userId: {
+        _id: {
             type: mongoose.Schema.Types.ObjectId,
+            auto: true,
+        },
+        userId: {
+            //reference to a user._id
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user",
         },
     },
     {
@@ -11,6 +17,6 @@ const userList = new mongoose.Schema(
     },
 );
 
-const userListSchema = mongoose.model("userList", userList);
-export type userListType = mongoose.InferSchemaType<typeof userList>;
-export default userListSchema;
+const userListModel = mongoose.model("userList", userListSchema);
+export type userListType = mongoose.InferSchemaType<typeof userListSchema>;
+export default userListModel;

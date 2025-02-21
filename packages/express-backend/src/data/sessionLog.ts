@@ -1,10 +1,15 @@
 import mongoose from "mongoose";
 
-const sessionLog = new mongoose.Schema(
+const sessionLogSchema = new mongoose.Schema(
     {
-        sessions: [
+        _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            auto: true,
+        },
+        sessionIds: [
             {
                 type: mongoose.Schema.Types.ObjectId,
+                ref: "session",
             },
         ],
     },
@@ -13,6 +18,6 @@ const sessionLog = new mongoose.Schema(
     },
 );
 
-const sessionLogSchema = mongoose.model("sessionLog", sessionLog);
-export type sessionLogType = mongoose.InferSchemaType<typeof sessionLog>;
-export default sessionLogSchema;
+const sessionLogModel = mongoose.model("sessionLog", sessionLogSchema);
+export type sessionLogType = mongoose.InferSchemaType<typeof sessionLogSchema>;
+export default sessionLogModel;

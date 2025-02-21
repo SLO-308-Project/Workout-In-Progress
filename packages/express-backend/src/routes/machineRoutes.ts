@@ -1,13 +1,14 @@
 import {Router, Request, Response} from "express";
 import machineServices from "../services/machineServices";
+import {machineType} from "../data/machine";
+// import { userType } from "../data/user";
 
-// Routes for /machines
-
+// all start with /users
 const router = Router();
 
 //create machine.
 //req.body of type machine.
-router.post("/", (req: Request, res: Response) =>
+router.post("/:userEmail/", (req: Request, res: Response) =>
 {
     /**req.body = machine =
      * {
@@ -16,7 +17,7 @@ router.post("/", (req: Request, res: Response) =>
      * }
      * */
     machineServices
-        .addMachine(req.body)
+        .addMachine(req.body as machineType, req.params.userEmail)
         .then((result) =>
         {
             return res.status(201).send(result);
@@ -31,12 +32,14 @@ router.post("/", (req: Request, res: Response) =>
 //query parameters optional
 //  name: string
 //  muscle: string
-router.get("/", (req: Request, res: Response) =>
+//returns a list of machines.
+router.get("/:userEmail/", (req: Request, res: Response) =>
 {
     machineServices
         .getMachines(
-            req.query.name as string | undefined,
-            req.query.muscle as string | undefined,
+            req.query.name as string,
+            req.query.muscle as string,
+            req.params.userEmail,
         )
         .then((result) =>
         {
@@ -52,10 +55,10 @@ router.get("/", (req: Request, res: Response) =>
 //delete machine by it's unique name.
 //path variable.
 //  name: string
-router.delete("/:name", (req: Request, res: Response) =>
+router.delete("/:userEmail/:name", (req: Request, res: Response) =>
 {
     machineServices
-        .deleteMachine(req.params.name)
+        .deleteMachine(req.params.userEmail, req.params.name)
         .then((result) =>
         {
             if (result == null)
@@ -74,28 +77,25 @@ router.delete("/:name", (req: Request, res: Response) =>
 });
 
 //update machine by its unique name.
-router.patch(
-    "/:name",
-    (
-        req: Request<
-            {name: string},
-            object,
-            {name: string | undefined; muscle: string | undefined}
-        >,
-        res: Response,
-    ) =>
-    {
-        machineServices
-            .updateMachine(req.params.name, req.body.name, req.body.muscle)
-            .then((result) =>
-            {
-                return res.status(200).send(result);
-            })
-            .catch((err) =>
-            {
-                res.status(400).send("Bad Request: " + err);
-            });
-    },
-);
+//Body can have any attribute of machineType. 
+//Cannot accept null or undefined attributes.
+//result is the machine's previous values before update.
+router.patch("/:userEmail/:name", (req: Request, res: Response) =>
+{
+    machineServices
+        .updateMachine(
+            req.params.userEmail,
+            req.params.name,
+            req.body as machineType,
+        )
+        .then((result) =>
+        {
+            return res.status(200).send(result);
+        })
+        .catch((err) =>
+        {
+            res.status(400).send("Bad Request: " + err);
+        });
+});
 
 export default router;
