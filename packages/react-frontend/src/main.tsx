@@ -1,7 +1,8 @@
 // src/main.tsx
 import ReactDOMClient from "react-dom/client";
 import "./main.css";
-import MachinePage from "./pages/MachinePage";
+import { BrowserRouter } from "react-router-dom";
+import MainPage from "./pages/MainPage";
 
 // Create the container
 const container = document.getElementById("root");
@@ -14,4 +15,8 @@ if (!container)
 const root = ReactDOMClient.createRoot(container);
 
 //  Initial render: Render an element to the Root
-root.render(<MachinePage />);
+root.render(
+    <BrowserRouter> 
+        <MainPage /> 
+    </BrowserRouter>
+);
