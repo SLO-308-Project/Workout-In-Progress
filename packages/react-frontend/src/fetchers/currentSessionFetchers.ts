@@ -10,6 +10,14 @@ function fetchGetSession(id: string): Promise<Response>
     return fetch(`${BACKEND_URL}/sessions/${id}`);
 }
 
+/**
+ * 
+ */
+function fetchCurrentSession() : Promise<Response>
+{
+    return fetch(`${BACKEND_URL}/sessions/recent`);
+}
+
 
 /**
  * Executes a Post request to the backend to start a new session.
@@ -43,8 +51,21 @@ function fetchEndSession(id: string): Promise<Response>
     });
 }
 
+/**
+ * Executes a GET request to the backend to retrieve sessions.
+ *
+ * @returns {Promise} Promise returned by async fetch request
+ */
+function fetchGetSessions(): Promise<Response>
+{
+    return fetch(`${BACKEND_URL}/sessions`);
+}
+
+
 export {
     fetchStartSessions, 
     fetchEndSession, 
-    fetchGetSession
+    fetchGetSession,
+    fetchCurrentSession,
+    fetchGetSessions,
 };
