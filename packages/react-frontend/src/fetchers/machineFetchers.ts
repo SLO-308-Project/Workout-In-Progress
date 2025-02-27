@@ -1,5 +1,18 @@
 const BACKEND_URL: string = "http://localhost:8000";
 
+// TEMPORARY USER FOR MAKING BACKEND CALLS WORK
+// CURRENT ROUTING PATHS RELY ON EMAIL
+// WE HAVE NO WAY OF AUTHENTICATING YET
+
+// IF THIS USER DOES NOT EXIST IN YOUR LOCAL DB THEN MAKE A 
+// POST REQUEST TO http://localhost:8000/users/ WITH BODY:
+// {
+//  "name": "test1",
+//  "email": "test1@gmail.com",
+//  "units": "lbs"
+// }
+const USER_EMAIL: string = "test1@gmail.com";
+
 /**
  * Executes a GET request to the backend to retrieve machines.
  *
@@ -25,7 +38,7 @@ function fetchGetMachine(
     {
         params = `?name=${name}&muscle={muscle}`;
     }
-    return fetch(`${BACKEND_URL}/machines${params}`);
+    return fetch(`${BACKEND_URL}/machines/${USER_EMAIL}${params}`);
 }
 
 /**
@@ -36,7 +49,7 @@ function fetchGetMachine(
  * */
 function fetchDeleteMachine(name: string): Promise<Response>
 {
-    return fetch(`${BACKEND_URL}/machines/${name}`, {
+    return fetch(`${BACKEND_URL}/machines/${USER_EMAIL}/${name}`, {
         method: "DELETE",
     });
 }
@@ -49,7 +62,7 @@ function fetchDeleteMachine(name: string): Promise<Response>
  * */
 function fetchPostMachine(name: string, muscle: string): Promise<Response>
 {
-    return fetch(`${BACKEND_URL}/machines/`, {
+    return fetch(`${BACKEND_URL}/machines/${USER_EMAIL}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -71,7 +84,7 @@ function fetchUpdateMachine(
     newMuscle: string | undefined,
 ): Promise<Response>
 {
-    return fetch(`${BACKEND_URL}/machines/${name}`, {
+    return fetch(`${BACKEND_URL}/machines/${USER_EMAIL}/${name}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
