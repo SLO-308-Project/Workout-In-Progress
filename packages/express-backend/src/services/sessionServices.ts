@@ -14,7 +14,7 @@ function addSession(session: sessionType)
 }
 
 // Get a session by _id
-function findSessionById(id: string) {
+function getSessionById(id: string) {
     return sessionModel.findById(id);
 }
 
@@ -39,5 +39,5 @@ export default {
     addSession,
     deleteSession,
     endSession,
-    findSessionById,
+    getSessionById,
 };
