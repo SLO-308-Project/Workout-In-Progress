@@ -13,6 +13,21 @@ function addSession(session: sessionType)
     return sessionToAdd.save();
 }
 
+// Get a session by _id
+function findSessionById(id: string) {
+    return sessionModel.findById(id);
+}
+
+// End a session
+function endSession(id: string) 
+{
+    return sessionModel.findOneAndUpdate(
+        { _id: id}, 
+        [ { $set: { time: { $subtract: ["$$NOW", "$date" ] } } } ],
+        { new: true }
+    );
+}
+
 // Delete a session by _id
 function deleteSession(id: string)
 {
@@ -23,4 +38,6 @@ export default {
     getAllSessions,
     addSession,
     deleteSession,
+    endSession,
+    findSessionById,
 };
