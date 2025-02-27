@@ -25,7 +25,11 @@ router.get("/recent", (_req: Request, res: Response) => {
     sessionServices
         .getCurrentSession()
         .then((result) => {
-            return res.status(200).send(result);
+            if (result.length === 1) {
+                return res.status(200).send(result);
+            } else {
+                return res.status(204).send();
+            }
         })
         .catch((err) => {
             console.log(err);

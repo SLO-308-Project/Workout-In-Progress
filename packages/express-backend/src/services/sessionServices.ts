@@ -28,7 +28,7 @@ function getCurrentSession() {
             $limit: 1
         },
         {
-            $match: { time: 0 }
+            $match: {time: 0}
         }
     ]);
 }
