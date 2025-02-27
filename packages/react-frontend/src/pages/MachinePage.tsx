@@ -10,12 +10,8 @@ import {
 
 function MachinePage()
 {
-    const [machines, setMachine] = useState([
-        {
-            name: "Bench",
-            muscle: "Forearms",
-        },
-    ]);
+    const [machines, setMachine] = useState([]);
+
     function reloadUsers(): void
     {
         fetchGetMachine()
@@ -37,7 +33,7 @@ function MachinePage()
             {
                 if (res.status == 201)
                 {
-                    reloadUsers();
+                    setMachine([...machines, machine]);
                 }
             })
             .catch((error: unknown) =>
@@ -54,7 +50,7 @@ function MachinePage()
             {
                 if (res.ok)
                 {
-                    reloadUsers();
+                    setMachine(machines.filter((machine) => machine.name !== name));
                 }
             })
             .catch((error: unknown) =>
