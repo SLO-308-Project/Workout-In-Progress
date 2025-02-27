@@ -1,6 +1,6 @@
-function CurrentSessionEndButton(prop) {
+function CurrentSessionEndButton(props) {
     return <div>
-        <button onClick={prop.setDeltaTime}>
+        <button onClick={props.endSession}>
             End
         </button>
     </div>

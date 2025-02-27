@@ -41,7 +41,7 @@ function getListOfMachinesAggregate(userEmail: string)
 }
 
 //Helper for addMachine.
-function createMchineAndGetUser(machine: machineType, email: string)
+function createMachineAndGetUser(machine: machineType, email: string)
 {
     //first promise to add a machine and return _id.
     const machineToAdd = new machineModel(machine);
@@ -58,7 +58,7 @@ function createMchineAndGetUser(machine: machineType, email: string)
 function addMachine(machine: machineType, email: string)
 {
     //console.log(email);
-    return createMchineAndGetUser(machine, email).then((result) =>
+    return createMachineAndGetUser(machine, email).then((result) =>
     {
         return machineLogModel.findOneAndUpdate(
             {_id: result[1]?.machineLogId}, //previously queried user.

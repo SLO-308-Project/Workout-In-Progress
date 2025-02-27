@@ -1,55 +1,109 @@
 import {useState, useEffect} from "react";
-import CurrentSessionTable from "../components/currentSessionTable";
 import CurrentSessionStartButton from "../components/currentSessionEnd";
 import CurrentSessionEndButton from "../components/currentSessionStart";
+import {Session} from "../types/sessionTypes";
+import { 
+    fetchStartSessions, 
+    fetchEndSession, 
+    fetchCurrentSession, 
+    fetchGetSessions 
+} from "../fetchers/currentSessionFetchers";
+
+const clockSpeed = 200;
 
 function CurrentSessionPage() {
-    // const [workout, setWorkout] = useState([
-    //     {
-    //         workout: "1",
-    //         machine: "Benchpress",
-    //         repeat: [
-    //             {
-    //                 weight: 135,
-    //                 reps: 10,
-    //             }
-    //         ]
-    //     },
-    // ]);
+    const [sessions, setSessions] = useState<Session | null>(null);
+    const [sessionNum, setSessionNum] = useState<number | null>(null);
+    const [time, setTime] = useState(0);
 
-    // function removeWorkout() {
-    //     return;
-    // }
+    useEffect(() => {
+        setInterval(()=>{setTime(time => time + clockSpeed/1000)}, clockSpeed);
+        getCurrentSession();
+        getSessionNumber();
+    }, [])
 
-    const [times, setTime] = useState([
-        {
-            time: 0,
-            deltaTime: 0
+    function startSession(): void {
+        if (sessions !== null) {
+            return;
         }
-    ])
-
-    function setTimeField() {
-        const update = [{
-            time: Date.now(),
-            deltaTime: 0
-        }];
-        setTime(update);
+        fetchStartSessions()
+            .then((res) => {
+                if (res.status === 201) {
+                    return res.json()
+                } else {
+                    throw new Error("No content added");
+                }
+            })
+            .then((json: Session) => {
+                setSessions(json);
+                setSessionNum(sessionNum! + 1);
+            })
+            .catch((err: unknown) => {
+                console.log("Error starting session: ", err);
+            })
     }
 
-    function getTime() {
-        return times[0].time;
+    function endSession(): void {
+        //console.log(sessions);
+        if (sessions === null) {
+            return;
+        }
+        fetchEndSession(sessions._id)
+            .then((res) => {
+                if (res.status === 201) {
+                    setSessions(null);
+                } else {
+                    throw new Error("No session found");
+                }
+            })
+            .catch((err: unknown) => {
+                console.log("Error ending session: ", err);
+            })
     }
 
-    function setDeltaTime() {
-        const update = [{
-            time: getTime(),
-            deltaTime: Date.now() - getTime()
-        }];
-        setTime(update);
+    function getCurrentSession(): void {
+        fetchCurrentSession()
+            .then((res) => {
+                if (res.status === 200) {  
+                    console.log("200");
+                    return res.json();
+                } else if (res.status === 204) {
+                    console.log("204");
+                    return null;
+                }
+            })
+            .then((json: Session[]) => {
+                if (json === null) {
+                    console.log("No values");
+                } else {
+                    setSessions(json[0]);
+                }
+            })
+            .catch((err: unknown) => {
+                console.log("Error getting current session: ", err);
+            })
+    }
+
+    function getSessionNumber(): void {
+        fetchGetSessions()
+            .then((res) => {
+                if (res.status === 200) {
+                    return res.json();
+                } else {
+                    throw new Error("No sessions found");
+                }
+            })
+            .then((json: Session[]) => {
+                setSessionNum(json.length);
+            })
+            .catch((err: unknown) => {
+                console.log("Error getting session number ", err);
+            })
     }
 
     return <div className="container">
         <CurrentSessionStartButton 
+<<<<<<< HEAD
             setTime={setTimeField}
             timeData={times}
         />
@@ -59,6 +113,15 @@ function CurrentSessionPage() {
                 removeWorkout={removeWorkout}
         /> */}
         <CurrentSessionEndButton setDeltaTime={setDeltaTime}/>
+=======
+            sessionNum={sessionNum}
+            sessionData={sessions}
+            createSession={startSession}
+        />
+        <CurrentSessionEndButton 
+            endSession={endSession}
+        />
+>>>>>>> 750271e (feat: create session start and end button)
     </div>
 }
 

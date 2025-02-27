@@ -1,27 +1,24 @@
-function TableBody(props) {
-    const rows = props.timeData.map((row, index: number) =>
-    {
-        return (
-            <tr key={index}>
-                <td>{row.time}</td>
-                <td>{Math.round(row.deltaTime/1000)}</td>
-            </tr>
-        );
-    });
-    return <tbody> {rows} </tbody>;
+function SessionData(props) {
+    if (props.sessionData === null) {
+        return <div> CREATE SESSION </div>
+    } else {
+        return <div>
+            Session: {props.sessionNum} <br />
+            Start Date: {props.sessionData.date} < br />
+            Duration: {(Date.now() - new Date(props.sessionData.date).getTime())/1000}
+        </div>
+    }
 }
 
 function CurrentSessionStartButton(props) {
     return <div>
-        Current Session: 1
-        Duration: 1 sec
-        <button onClick={props.setTime}>
+        <SessionData 
+            sessionData={props.sessionData}
+            sessionNum={props.sessionNum}
+        />
+        <button onClick={props.createSession}>
             +
         </button>
-        <table>
-            <TableBody timeData={props.timeData} />
-        </table>
-
     </div>
 }
 
