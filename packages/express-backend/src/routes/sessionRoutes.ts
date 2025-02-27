@@ -53,7 +53,6 @@ router.get("/:id", (req: Request, res: Response) =>
             });
     });
     
-
 // Create a session
 router.post("/", (req: Request, res: Response) =>
 {
@@ -72,7 +71,6 @@ router.post("/", (req: Request, res: Response) =>
 // Updates a session with end time
 router.put("/:id", (req: Request, res: Response) => 
 {
-    console.log(req.params.id);
     sessionServices
         .endSession(req.params.id)
         .then((result) => {
