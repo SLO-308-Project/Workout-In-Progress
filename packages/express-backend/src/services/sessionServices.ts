@@ -20,7 +20,17 @@ function getSessionById(id: string) {
 
 // Get most recent session with no time
 function getCurrentSession() {
-    return sessionModel.findOne({ time: 0}).sort("-date").exec();
+    return sessionModel.aggregate([
+        {
+            $sort: {date: -1}
+        },
+        {
+            $limit: 1
+        },
+        {
+            $match: { time: 0 }
+        }
+    ]);
 }
 
 // End a session
