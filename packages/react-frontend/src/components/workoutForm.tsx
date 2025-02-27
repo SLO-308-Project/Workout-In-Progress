@@ -4,7 +4,7 @@ import { fetchGetMachine } from "../fetchers/machineFetchers"
 function WorkoutForm(props) {
 
     const [machineOptions, setMachineOptions] = useState([]);
-    const [selectedMachine, setSelectedMachine] = useState("");
+    const [selectedMachineId, setSelectedMachine] = useState("");
 
     // Gets the machines in the db and loads them into the options for the workout form
     useEffect(() => {
@@ -14,16 +14,23 @@ function WorkoutForm(props) {
         .catch((error: unknown) => console.log(error))
     }, []);
 
+
+    function submitWorkout() {
+        console.log("TRYING TO SUBMIT A WORKOUT");
+        props.handleSubmit(selectedMachineId);
+    }
+
     return (
     <div>
             <label>Select one of your Machines:</label>
-            <select onChange={(val)=> setSelectedMachine(val.target.value)}>
+            <select onChange={(event)=> setSelectedMachine(event.target.value)}>
                 {machineOptions.map((option) => (
-                    <option key={option.name}>
+                    <option key={option.name} value={option._id}>
                         {option.name}
                     </option>
                 ))}
             </select>
+            <input type="button" value="Add Workout" onClick={submitWorkout} />
     </div>
     );
 

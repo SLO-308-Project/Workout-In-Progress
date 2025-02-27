@@ -2,8 +2,7 @@ import {useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import CurrentSessionStartButton from "../components/currentSessionEnd";
 import CurrentSessionEndButton from "../components/currentSessionStart";
-import {Session} from "../types/sessionTypes";
-import { Workout, Session } from "../types/sessionTypes"
+import { Machine, Session } from "../types/sessionTypes"
 import { fetchGetWorkouts, fetchPostWorkout } from "../fetchers/workoutFetchers";
 import { 
     fetchStartSessions, 
@@ -11,17 +10,15 @@ import {
     fetchCurrentSession, 
     fetchGetSessions 
 } from "../fetchers/currentSessionFetchers";
-import WorkoutForm from "../components/workoutForm"
+import WorkoutForm from "../components/workoutForm";
+import CurrentSessionTable from "../components/currentSessionTable";
 const clockSpeed = 200;
-// HARDCODED USER
-const USER_EMAIL = "test1@gmail.com";
 
 function CurrentSessionPage() {
     const [sessions, setSessions] = useState<Session | null>(null);
     const [sessionNum, setSessionNum] = useState<number | null>(null);
     const [time, setTime] = useState(0);
-    const [workouts, setWorkouts] = useState<Workout[]>([]);
-    const [user, setUser] = useState([]);
+    const [workouts, setWorkouts] = useState<Machine[]>([]);
 
     useEffect(() => {
         setInterval(()=>{setTime(time => time + clockSpeed/1000)}, clockSpeed);
@@ -112,7 +109,7 @@ function CurrentSessionPage() {
     function getWorkouts(): void {
         fetchGetWorkouts()
         .then((res) => {
-                if (res.status === 200) {
+                if (res.ok) {
                     return res.json();
                 }
                 else {
@@ -121,6 +118,21 @@ function CurrentSessionPage() {
             })
         .then((json) => setWorkouts(json))
         .catch((error: unknown) => console.log(error));
+    }
+
+    function addWorkout(machineId): void {
+        console.log("trying to add a workout");
+        if (sessions && machineId) {
+            fetchPostWorkout(sessions, machineId)
+            .then((res) => {
+                    if (res.ok) {
+                        setWorkouts([...workouts, {machineId: machineId, sets: []}])
+                    } else {
+                        throw new Error();
+                    }
+                })
+            .catch((error: unknown) => console.log(error));
+        }
     }
 
     return <div className="container">
@@ -132,9 +144,18 @@ function CurrentSessionPage() {
         <CurrentSessionEndButton 
             endSession={endSession}
         />
+
+        <CurrentSessionTable workoutData={workouts} />
+        <WorkoutForm handleSubmit={addWorkout} />
+
         <Link to="/Machine">
             <button variant="outlined">
                     Go to Machine Page
+            </button>
+        </Link>
+        <Link to="/Sessions">
+            <button variant="outlined">
+                    Go to Sessions Page
             </button>
         </Link>
     </div>

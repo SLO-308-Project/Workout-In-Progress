@@ -1,4 +1,5 @@
 // src/app.tsx
+import { Link } from "react-router-dom";
 import {useState, useEffect} from "react";
 import MachineTable from "../components/machineTable";
 import MachineForm from "../components/machineForm";
@@ -66,6 +67,17 @@ function MachinePage()
                 removeMachine={removeOneMachine}
             />
             <MachineForm handleSubmit={addOneMachine} />
+
+            <Link to="/CurrentSession">
+                <button variant="outlined">
+                        Go to Current Session Page
+                </button>
+            </Link>
+            <Link to="/Sessions">
+                <button variant="outlined">
+                        Go to Main Sessions Page
+                </button>
+            </Link>
         </div>
     );
 }

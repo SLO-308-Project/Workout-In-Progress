@@ -7,7 +7,6 @@ const MainPage = () => {
     return (
         <Routes>
             <Route path="/Machine" element={<MachinePage />}></Route>
-            <Route path="/CurrentSessionPage" element={<CurrentSessionPage />}></Route>
             <Route path="/Sessions" element={<SessionPage />}></Route>
             <Route path="/CurrentSession" element={<CurrentSessionPage />}></Route>
         </Routes>
