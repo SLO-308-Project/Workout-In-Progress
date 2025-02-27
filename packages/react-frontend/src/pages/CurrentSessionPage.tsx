@@ -103,17 +103,6 @@ function CurrentSessionPage() {
 
     return <div className="container">
         <CurrentSessionStartButton 
-<<<<<<< HEAD
-            setTime={setTimeField}
-            timeData={times}
-        />
-
-        {/* <CurrentSessionTable
-                workoutData={workout}
-                removeWorkout={removeWorkout}
-        /> */}
-        <CurrentSessionEndButton setDeltaTime={setDeltaTime}/>
-=======
             sessionNum={sessionNum}
             sessionData={sessions}
             createSession={startSession}
@@ -121,7 +110,6 @@ function CurrentSessionPage() {
         <CurrentSessionEndButton 
             endSession={endSession}
         />
->>>>>>> 750271e (feat: create session start and end button)
     </div>
 }
 
