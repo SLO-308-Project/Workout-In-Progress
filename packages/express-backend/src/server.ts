@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import machineRoutes from "./routes/machineRoutes";
 import userRoutes from "./routes/userRoutes";
+import sessionRoutes from "./routes/sessionRoutes";
 
 import mongoose from "mongoose";
 
@@ -11,7 +12,7 @@ connectDB("mongodb://localhost:27017/Workout_In_Progress");
 function setupAPP(PORT: number)
 {
     //Setup Backend to listen for HTTP requests.
-    //Also add all enpoints from other files.
+    //Also add all endpoints from other files.
     const app = express();
 
     app.use(cors());
@@ -21,6 +22,7 @@ function setupAPP(PORT: number)
     //add Routes
     app.use("/machines", machineRoutes);
     app.use("/users", userRoutes);
+    app.use("/sessions", sessionRoutes);
 
     app.listen(PORT, () =>
     {
