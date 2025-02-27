@@ -18,6 +18,11 @@ function getSessionById(id: string) {
     return sessionModel.findById(id);
 }
 
+// Get most recent session with no time
+function getCurrentSession() {
+    return sessionModel.findOne({ time: 0}).sort("-date").exec();
+}
+
 // End a session
 function endSession(id: string) 
 {
@@ -40,4 +45,5 @@ export default {
     deleteSession,
     endSession,
     getSessionById,
+    getCurrentSession,
 };

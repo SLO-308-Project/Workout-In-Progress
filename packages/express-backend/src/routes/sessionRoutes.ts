@@ -20,6 +20,19 @@ router.get("/", (_req: Request, res: Response) =>
         });
 });
 
+// Get most recent session with no time (0 default)
+router.get("/recent", (_req: Request, res: Response) => {
+    sessionServices
+        .getCurrentSession()
+        .then((result) => {
+            return res.status(200).send(result);
+        })
+        .catch((err) => {
+            console.log(err);
+            return res.send("Error: " + err);
+        });
+});
+
 // Get a session by id
 router.get("/:id", (req: Request, res: Response) =>
     {
@@ -52,6 +65,7 @@ router.post("/", (req: Request, res: Response) =>
         });
 });
 
+// Updates a session with end time
 router.put("/:id", (req: Request, res: Response) => 
 {
     console.log(req.params.id);
