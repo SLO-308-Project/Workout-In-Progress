@@ -1,10 +1,10 @@
-import { getEnv } from "../util/env";
+import {getEnv} from "../util/env";
 
 const BACKEND_URL: string = getEnv("VITE_SERVER_URL");
 
 /**
  * Executes a get request to the backend to get a specific session
- * 
+ *
  * @returns {Promise} Promise returned by async fetch request
  */
 function fetchGetSession(id: string): Promise<Response>
@@ -13,13 +13,12 @@ function fetchGetSession(id: string): Promise<Response>
 }
 
 /**
- * 
+ *
  */
-function fetchCurrentSession() : Promise<Response>
+function fetchCurrentSession(): Promise<Response>
 {
     return fetch(`${BACKEND_URL}/sessions/recent`);
 }
-
 
 /**
  * Executes a Post request to the backend to start a new session.
@@ -34,9 +33,9 @@ function fetchStartSessions(): Promise<Response>
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            "time": 0,
-            "workout": []
-          }),
+            time: 0,
+            workout: [],
+        }),
     });
 }
 
@@ -63,10 +62,9 @@ function fetchGetSessions(): Promise<Response>
     return fetch(`${BACKEND_URL}/sessions`);
 }
 
-
 export {
-    fetchStartSessions, 
-    fetchEndSession, 
+    fetchStartSessions,
+    fetchEndSession,
     fetchGetSession,
     fetchCurrentSession,
     fetchGetSessions,
