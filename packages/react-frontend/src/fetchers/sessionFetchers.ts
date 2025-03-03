@@ -1,4 +1,6 @@
-const BACKEND_URL: string = "http://localhost:8000";
+import { getEnv } from "../util/env";
+
+const BACKEND_URL: string = getEnv("VITE_SERVER_URL");
 
 /**
  * Executes a GET request to the backend to retrieve sessions.
