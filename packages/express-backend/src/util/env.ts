@@ -11,8 +11,7 @@ export function getEnv(name: string)
         {
             return `test-${name}`;
         }
-        console.log(value);
-        //throw new Error(`Environment variable ${name} is not set.`);
+        throw new Error(`Environment variable ${name} is not set.`);
     }
     return value;
 }
