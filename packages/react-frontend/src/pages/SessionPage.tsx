@@ -21,8 +21,8 @@ function SessionPage()
     // Converts database time which is stored in seconds to hours and minutes
     function formatDuration(seconds: number): string
     {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
+        const hours = Math.floor(seconds / 3600 / 1000);
+        const minutes = Math.floor((seconds % 3600) / 60 / 1000);
         return `${hours}h ${minutes}m`;
     }
 
