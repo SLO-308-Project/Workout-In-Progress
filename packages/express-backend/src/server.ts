@@ -4,10 +4,15 @@ import machineRoutes from "./routes/machineRoutes";
 import userRoutes from "./routes/userRoutes";
 import sessionRoutes from "./routes/sessionRoutes";
 
+import {getEnv} from "./util/env";
+
 import mongoose from "mongoose";
 
 const app = setupAPP(8000);
-connectDB("mongodb://localhost:27017/Workout_In_Progress");
+//connectDB("mongodb://localhost:27017/Workout_In_Progress");
+const DB: string | undefined = getEnv("DB_URL");
+connectDB(DB);
+
 //----- Connect Listener -----
 function setupAPP(PORT: number)
 {
