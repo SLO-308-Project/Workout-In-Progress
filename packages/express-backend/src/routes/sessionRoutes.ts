@@ -36,21 +36,26 @@ router.post("/", (req: Request, res: Response) =>
 });
 
 // Delete a session with unique _id
-router.delete("/:id", (req: Request, res: Response) => {
+router.delete("/:id", (req: Request, res: Response) =>
+{
     sessionServices
         .deleteSession(req.params.id)
-        .then((result) => {
-            if (result == null) {
+        .then((result) =>
+        {
+            if (result == null)
+            {
                 return res.status(404).send("Session not found");
-            } else {
+            }
+            else
+            {
                 return res.status(204).send();
             }
         })
-        .catch((err) => {
+        .catch((err) =>
+        {
             console.log(err);
             return res.status(400).send("Bad Request: " + err);
         });
 });
-
 
 export default router;

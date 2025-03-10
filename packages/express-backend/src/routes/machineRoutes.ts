@@ -77,7 +77,7 @@ router.delete("/:userEmail/:name", (req: Request, res: Response) =>
 });
 
 //update machine by its unique name.
-//Body can have any attribute of machineType. 
+//Body can have any attribute of machineType.
 //Cannot accept null or undefined attributes.
 //result is the machine's previous values before update.
 router.patch("/:userEmail/:name", (req: Request, res: Response) =>

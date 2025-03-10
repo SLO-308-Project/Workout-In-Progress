@@ -1,11 +1,9 @@
 import {Link} from "react-router-dom";
-function CurrentPage() 
+function CurrentPage()
 {
     return (
         <Link to="/Machine">
-            <button variant="outlined">
-                    Go to Machine Page
-            </button>
+            <button variant="outlined">Go to Machine Page</button>
         </Link>
     );
 }

@@ -43,14 +43,13 @@ function createMachineLogAndSessionLog(user: userType)
 
 async function addUser(user: userType)
 {
-    return createMachineLogAndSessionLog(user)
-        .then(() =>
-        {
-            //both the machine and session logs have been created.
-            const userToAdd = new userModel(user);
-            const prom = userToAdd.save();
-            return prom;
-        });
+    return createMachineLogAndSessionLog(user).then(() =>
+    {
+        //both the machine and session logs have been created.
+        const userToAdd = new userModel(user);
+        const prom = userToAdd.save();
+        return prom;
+    });
 }
 
 export default {
