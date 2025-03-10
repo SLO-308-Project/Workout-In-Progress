@@ -13,8 +13,8 @@ function fetchPostWorkout(session_id: string, machineId: string): Promise<Respon
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({machineId: `${machineId}`}),
+        body: JSON.stringify({ machineId: `${machineId}` }),
     });
 }
 
-export {fetchGetWorkouts, fetchPostWorkout}
+export { fetchGetWorkouts, fetchPostWorkout }
