@@ -1,14 +1,14 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import CurrentSessionStartButton from "../components/currentSessionEnd";
 import CurrentSessionEndButton from "../components/currentSessionStart";
 import { Machine, Session } from "../types/sessionTypes"
 import { fetchGetWorkouts, fetchPostWorkout } from "../fetchers/workoutFetchers";
-import { 
-    fetchStartSessions, 
-    fetchEndSession, 
-    fetchCurrentSession, 
-    fetchGetSessions 
+import {
+    fetchStartSessions,
+    fetchEndSession,
+    fetchCurrentSession,
+    fetchGetSessions
 } from "../fetchers/currentSessionFetchers";
 import WorkoutForm from "../components/workoutForm";
 import CurrentSessionTable from "../components/currentSessionTable";
@@ -21,11 +21,17 @@ function CurrentSessionPage() {
     const [workouts, setWorkouts] = useState<Machine[]>([]);
 
     useEffect(() => {
-        setInterval(()=>{setTime(time => time + clockSpeed/1000)}, clockSpeed);
+        setInterval(() => { setTime(time => time + clockSpeed / 1000) }, clockSpeed);
         getCurrentSession();
         getSessionNumber();
-        getWorkouts();
     }, [])
+
+    // Getting workouts is triggered whenever the current session is updated 
+    useEffect(() => {
+        if (sessions !== null) {
+            getWorkouts(sessions)
+        }
+    }, [sessions])
 
     function startSession(): void {
         if (sessions !== null) {
@@ -66,28 +72,34 @@ function CurrentSessionPage() {
             })
     }
 
+    /*
+     * Dispatches the request to get the current session, sets the current session.
+     * */
     function getCurrentSession(): void {
         fetchCurrentSession()
             .then((res) => {
-                if (res.status === 200) {  
+                if (res.status === 200) {
                     console.log("200");
                     return res.json();
                 } else if (res.status === 204) {
                     console.log("204");
-                    return null;
+                    throw new Error("Got a 204 from fetch")
                 }
             })
             .then((json: Session[]) => {
                 if (json === null) {
                     console.log("No values");
+                    throw new Error("No current session?")
                 } else {
-                    setSessions(json[0]);
+                    setSessions(json[0])
                 }
             })
             .catch((err: unknown) => {
                 console.log("Error getting current session: ", err);
+                throw new Error(`Error getting current session: ${err}`);
             })
     }
+
 
     function getSessionNumber(): void {
         fetchGetSessions()
@@ -99,6 +111,7 @@ function CurrentSessionPage() {
                 }
             })
             .then((json: Session[]) => {
+                console.log(`session number: ${json.length}`);
                 setSessionNum(json.length);
             })
             .catch((err: unknown) => {
@@ -106,42 +119,45 @@ function CurrentSessionPage() {
             })
     }
 
-    function getWorkouts(): void {
-        fetchGetWorkouts()
-        .then((res) => {
-                if (res.ok) {
+    function getWorkouts(session: Session): void {
+        fetchGetWorkouts(session._id)
+            .then((res) => {
+                if (res.status == 201) {
                     return res.json();
-                }
-                else {
-                    throw new Error("No workouts found");
+                } else {
+                    throw new Error("Failed to get workouts");
                 }
             })
-        .then((json) => setWorkouts(json))
-        .catch((error: unknown) => console.log(error));
+            .then((json) => {
+                setWorkouts(json);
+            })
     }
 
     function addWorkout(machineId): void {
+        if (sessions === null) {
+            throw new Error("Could not get session. Session does not exist.")
+        }
         console.log("trying to add a workout");
         if (sessions && machineId) {
-            fetchPostWorkout(sessions, machineId)
-            .then((res) => {
+            fetchPostWorkout(sessions._id, machineId)
+                .then((res) => {
                     if (res.ok) {
-                        setWorkouts([...workouts, {machineId: machineId, sets: []}])
+                        setWorkouts([...workouts, { machineId: machineId, sets: [] }])
                     } else {
                         throw new Error();
                     }
                 })
-            .catch((error: unknown) => console.log(error));
+                .catch((error: unknown) => console.log(error));
         }
     }
 
     return <div className="container">
-        <CurrentSessionStartButton 
+        <CurrentSessionStartButton
             sessionNum={sessionNum}
             sessionData={sessions}
             createSession={startSession}
         />
-        <CurrentSessionEndButton 
+        <CurrentSessionEndButton
             endSession={endSession}
         />
 
@@ -149,13 +165,13 @@ function CurrentSessionPage() {
         <WorkoutForm handleSubmit={addWorkout} />
 
         <Link to="/Machine">
-            <button variant="outlined">
-                    Go to Machine Page
+            <button>
+                Go to Machine Page
             </button>
         </Link>
         <Link to="/Sessions">
-            <button variant="outlined">
-                    Go to Sessions Page
+            <button>
+                Go to Sessions Page
             </button>
         </Link>
     </div>

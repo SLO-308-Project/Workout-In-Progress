@@ -17,7 +17,7 @@ function CurrentSessionTableBody(props)
     {
         return (
             <tr key={index}>
-                <td>{"Workout: " + row.workout + " " + row.machine}</td>
+                <td>{"Workout: " + row.machineId}</td>
                 <td>{row.name}</td>
                 <td>
                     <button onClick={() => props.removeWorkout(row.name)}>

@@ -10,7 +10,10 @@ function WorkoutForm(props) {
     useEffect(() => {
         fetchGetMachine()
         .then((res: Response) => res.json())
-        .then((json) => setMachineOptions(json))
+        .then((json) => {
+                setMachineOptions(json);
+                setSelectedMachine(json[0]._id); // sets the initial machine to be the first one in the machine list
+            })
         .catch((error: unknown) => console.log(error))
     }, []);
 
