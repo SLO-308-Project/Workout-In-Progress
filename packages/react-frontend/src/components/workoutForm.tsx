@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { fetchGetMachine } from "../fetchers/machineFetchers"
 
 function WorkoutForm(props) {
 
@@ -8,19 +7,18 @@ function WorkoutForm(props) {
 
     // Gets the machines in the db and loads them into the options for the workout form
     useEffect(() => {
-        fetchGetMachine()
-        .then((res: Response) => res.json())
-        .then((json) => {
-                setMachineOptions(json);
-                setSelectedMachine(json[0]._id); // sets the initial machine to be the first one in the machine list
-            })
-        .catch((error: unknown) => console.log(error))
-    }, []);
+        setMachineOptions(props.machineOptions)
+    }, [props.machineOptions]);
 
 
     function submitWorkout() {
         console.log("TRYING TO SUBMIT A WORKOUT");
-        props.handleSubmit(selectedMachineId);
+        // handles default case
+        if (selectedMachineId === "") {
+            props.handleSubmit(machineOptions[0]._id)
+        } else {
+            props.handleSubmit(selectedMachineId);
+        }
     }
 
     return (

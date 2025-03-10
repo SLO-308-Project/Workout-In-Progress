@@ -4,6 +4,7 @@ import CurrentSessionStartButton from "../components/currentSessionEnd";
 import CurrentSessionEndButton from "../components/currentSessionStart";
 import { Machine, Session } from "../types/sessionTypes"
 import { fetchGetWorkouts, fetchPostWorkout } from "../fetchers/workoutFetchers";
+import { fetchGetMachine } from "../fetchers/machineFetchers"
 import {
     fetchStartSessions,
     fetchEndSession,
@@ -20,8 +21,13 @@ function CurrentSessionPage() {
     const [time, setTime] = useState(0);
     const [workouts, setWorkouts] = useState<Machine[]>([]);
 
+
+    // State for the users currently selected machine
+    const [machines, setMachines] = useState([]);
+
     useEffect(() => {
         setInterval(() => { setTime(time => time + clockSpeed / 1000) }, clockSpeed);
+        getMachines();
         getCurrentSession();
         getSessionNumber();
     }, [])
@@ -70,6 +76,15 @@ function CurrentSessionPage() {
             .catch((err: unknown) => {
                 console.log("Error ending session: ", err);
             })
+    }
+
+    function getMachines(): void {
+        fetchGetMachine()
+            .then((res: Response) => res.json())
+            .then((json) => {
+                setMachines(json);
+            })
+            .catch((error: unknown) => console.log(error))
     }
 
     /*
@@ -133,7 +148,7 @@ function CurrentSessionPage() {
             })
     }
 
-    function addWorkout(machineId): void {
+    function addWorkout(machineId: string): void {
         if (sessions === null) {
             throw new Error("Could not get session. Session does not exist.")
         }
@@ -161,8 +176,8 @@ function CurrentSessionPage() {
             endSession={endSession}
         />
 
-        <CurrentSessionTable workoutData={workouts} />
-        <WorkoutForm handleSubmit={addWorkout} />
+        <CurrentSessionTable workoutData={workouts} machineOptions = {machines}/>
+        <WorkoutForm handleSubmit={addWorkout} machineOptions={machines} />
 
         <Link to="/Machine">
             <button>

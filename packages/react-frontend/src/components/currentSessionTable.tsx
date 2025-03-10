@@ -3,8 +3,8 @@ function CurrentSessionHeader()
     return (
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Muscle</th>
+                <th>Workout</th>
+                <th>Machine</th>
                 <th>Remove</th>
             </tr>
         </thead>
@@ -13,14 +13,14 @@ function CurrentSessionHeader()
 
 function CurrentSessionTableBody(props)
 {
-    const rows = props.workoutData.map((row, index: number) =>
+    const rows = props.workouts.map((row, index: number) =>
     {
         return (
             <tr key={index}>
-                <td>{"Workout: " + row.machineId}</td>
-                <td>{row.name}</td>
+                <td>{"Workout: " + index}</td>
+                <td>{MachineIdToName(props.machineOptions, row.machineId)}</td>
                 <td>
-                    <button onClick={() => props.removeWorkout(row.name)}>
+                    <button onClick={() => props.removeWorkout(row.machineId)}>
                         Delete
                     </button>
                 </td>
@@ -30,13 +30,19 @@ function CurrentSessionTableBody(props)
     return <tbody> {rows} </tbody>;
 }
 
+// Helper function to convert a machineId into a name
+function MachineIdToName(machines, machineId) {
+    return machines.filter((machine) => machine._id === machineId)[0].name;
+}
+
 function CurrentSessionTable(props)
 {
     return (
         <table>
             <CurrentSessionHeader />
             <CurrentSessionTableBody
-                workoutData={props.workoutData}
+                workouts={props.workoutData}
+                machineOptions={props.machineOptions}
                 removeWorkout={props.removeWorkout}
             />
         </table>
