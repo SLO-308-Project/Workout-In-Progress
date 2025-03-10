@@ -1,35 +1,33 @@
-import {Router, Request, Response} from "express";
+import { Router, Request, Response } from "express";
 import workoutServices from "../services/workoutServices";
 // import {sessionType} from "../data/session";
 // import {machineType} from "../data/machine";
 
 const router = Router();
 
-// Get all workouts for a session
-router.get("/:sessionId", (req: Request, res: Response) => 
-{
+// Get all workouts for a session and passes it along to the client
+router.get("/:sessionId", (req: Request, res: Response) => {
     workoutServices
         .getWorkout(req.params.sessionId)
         .then((result) => {
-                return res.status(201).send(result);
-            })
+            return res.status(201).send(result);
+        })
         .catch((err) => {
-                console.log(err);
-                return res.send(err);
-            });
+            console.log(err);
+            return res.send(err);
+        });
 });
 
-// add an empty workout and assign it a machine
-router.post("/:sessionId", (req: Request, res: Response) =>
-{
+// Adds a workout with a machineid to a sessionid and passes it along to the client
+router.post("/:sessionId", (req: Request, res: Response) => {
     workoutServices
         .addWorkout(req.body.machineId, req.params.sessionId)
         .then((result) => {
-                return res.status(201).send(result);
-            }).catch((err) => {
-                console.log(err);
-        return res.send(err);
-    });
+            return res.status(201).send(result);
+        }).catch((err) => {
+            console.log(err);
+            return res.send(err);
+        });
 });
 
 
