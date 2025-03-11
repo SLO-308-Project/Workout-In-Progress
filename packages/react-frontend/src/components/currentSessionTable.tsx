@@ -20,7 +20,7 @@ function CurrentSessionTableBody(props)
                 <td>{"Workout: " + index}</td>
                 <td>{MachineIdToName(props.machineOptions, row.machineId)}</td>
                 <td>
-                    <button onClick={() => props.removeWorkout(row.machineId)}>
+                    <button onClick={() => props.removeWorkout(row._id)}>
                         Delete
                     </button>
                 </td>
@@ -43,7 +43,7 @@ function CurrentSessionTable(props)
             <CurrentSessionTableBody
                 workouts={props.workoutData}
                 machineOptions={props.machineOptions}
-                removeWorkout={props.removeWorkout}
+                removeWorkout={props.handleDelete}
             />
         </table>
     );

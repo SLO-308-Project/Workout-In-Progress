@@ -30,5 +30,16 @@ router.post("/:sessionId", (req: Request, res: Response) => {
         });
 });
 
+router.delete("/:sessionId/:workoutId", (req: Request, res: Response) => {
+    workoutServices
+        .removeWorkout(req.params.sessionId, req.params.workoutId)
+        .then((result) => {
+            return res.status(204).send(result);
+        }).catch((err) => {
+            console.log(err);
+            return res.send(err);
+        });
+});
+
 
 export default router;

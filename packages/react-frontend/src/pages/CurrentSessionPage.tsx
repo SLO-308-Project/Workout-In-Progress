@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import CurrentSessionStartButton from "../components/currentSessionEnd";
 import CurrentSessionEndButton from "../components/currentSessionStart";
 import { Machine, Session } from "../types/sessionTypes"
-import { fetchGetWorkouts, fetchPostWorkout } from "../fetchers/workoutFetchers";
+import { fetchGetWorkouts, fetchPostWorkout, fetchDeleteWorkout } from "../fetchers/workoutFetchers";
 import { fetchGetMachine } from "../fetchers/machineFetchers"
 import {
     fetchStartSessions,
@@ -157,7 +157,25 @@ function CurrentSessionPage() {
             fetchPostWorkout(sessions._id, machineId)
                 .then((res) => {
                     if (res.ok) {
-                        setWorkouts([...workouts, { machineId: machineId, sets: [] }])
+                        return res.json();
+                    } else {
+                        throw new Error();
+                    }
+                })
+                .then((res_data) => {
+                    setWorkouts([...workouts, { machineId: machineId, sets: [], _id: res_data._id}])
+                }) 
+                .catch((error: unknown) => console.log(error));
+        }
+    }
+
+    function removeWorkout(workoutId: string): void {
+        if (sessions && workoutId) {
+            fetchDeleteWorkout(sessions._id, workoutId)
+                .then((res) => {
+                    if (res.ok) {
+                        const new_workouts = workouts.filter((workout) => workout._id !== workoutId)
+                        setWorkouts(new_workouts)
                     } else {
                         throw new Error();
                     }
@@ -176,7 +194,7 @@ function CurrentSessionPage() {
             endSession={endSession}
         />
 
-        <CurrentSessionTable workoutData={workouts} machineOptions = {machines}/>
+        <CurrentSessionTable workoutData={workouts} machineOptions={machines} handleDelete={removeWorkout} />
         <WorkoutForm handleSubmit={addWorkout} machineOptions={machines} />
 
         <Link to="/Machine">

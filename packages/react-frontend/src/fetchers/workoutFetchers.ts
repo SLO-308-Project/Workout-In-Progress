@@ -17,4 +17,13 @@ function fetchPostWorkout(session_id: string, machineId: string): Promise<Respon
     });
 }
 
-export { fetchGetWorkouts, fetchPostWorkout }
+function fetchDeleteWorkout(session_id: string, workout_id: string): Promise<Response> {
+    return fetch(`${BACKEND_URL}/workouts/${session_id}/${workout_id}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+}
+
+export { fetchGetWorkouts, fetchPostWorkout, fetchDeleteWorkout }
