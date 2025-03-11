@@ -1,3 +1,5 @@
+// import immage from "../assets/plus2.jpg";
+
 function MachineTableHeader()
 {
     return (
@@ -33,13 +35,32 @@ function MachineTableBody(props)
 function MachineTable(props)
 {
     return (
-        <table>
+        <div>
+            <div className="flex justify-between bg-gray-500 p-2 rounded-xl">
+                <h1 className="text-3xl">Machines:</h1>
+                <input
+                    className="text-2xl origin-center hover:opacity-70"
+                    type="image"
+                    src="/plus.svg"
+                    height={10}
+                    alt="add">
+                </input>
+                <img
+                alt="test"
+                src="/plus2.jpg"
+                height={100}>   
+                </img>
+            </div>
+
+<table className="block justify-between bg-gray-400 p-2 rounded-xl">
             <MachineTableHeader />
             <MachineTableBody
                 machineData={props.machineData}
                 removeMachine={props.removeMachine}
             />
         </table>
+        </div>
+        
     );
 }
 

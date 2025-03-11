@@ -7,6 +7,7 @@ import {
     fetchPostMachine,
     fetchDeleteMachine,
 } from "../fetchers/machineFetchers";
+import {Machine} from "../types/sessionTypes";
 
 function MachinePage()
 {
@@ -64,7 +65,7 @@ function MachinePage()
     }
 
     return (
-        <div className="container">
+        <div className="container h-screen bg-gray-300 mx-auto px-4">
             <MachineTable
                 machineData={machines}
                 removeMachine={removeOneMachine}

@@ -23,24 +23,41 @@ function MachineForm(props)
     }
 
     return (
-        <form>
-            <label htmlFor="name">Name</label>
-            <input
-                type="text"
-                name="name"
-                id="name"
-                value={machine.name}
-                onChange={handleChange}
-            />
-            <label htmlFor="muscle">Muscle</label>
-            <input
-                type="text"
-                name="job"
-                id="job"
-                value={machine.muscle}
-                onChange={handleChange}
-            />
-            <input type="button" value="Submit" onClick={submitForm} />
+        <form className="block shadow-default bg-gray-400 p-2 rounded-xl">
+            <div className="flex text-2xl">
+                <label className="pr-1" htmlFor="name">
+                    Name:
+                </label>
+                <input className="w-full"
+                    type="text"
+                    name="name"
+                    id="name"
+                    value={machine.name}
+                    onChange={handleChange}
+                />
+            </div>
+            <hr className=""></hr>
+            <div className="flex justify-start text-2xl">
+                <label className="pr-1" htmlFor="muscle">
+                    Muscle:
+                </label>
+                <input
+                    className="w-full"
+                    type="text"
+                    name="job"
+                    id="job"
+                    value={machine.muscle}
+                    onChange={handleChange}
+                />
+            </div>
+            <div className="flex justify-end">
+                <input
+                    className="shadow-default bg-gray-500 px-2 rounded-xl hover:opacity-70"
+                    type="button"
+                    value="Submit"
+                    onClick={submitForm}
+                />
+            </div>
         </form>
     );
 }
