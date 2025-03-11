@@ -1,6 +1,7 @@
-import { connect, close } from "../util/mongo-memory-server-config";
+import {connect, close} from "../util/mongo-memory-server-config";
 import userModel, {userType} from "../../src/data/user";
 import userServices from "../../src/services/userServices";
+
 
 describe("User Services Tests", () =>
 {
@@ -16,7 +17,8 @@ describe("User Services Tests", () =>
     });
 
     // Build in memory database for tests
-    beforeEach(async () => {
+    beforeEach(async () =>
+    {
         let dummyUser: userType = {
             name: "Philip Buff",
             email: "pbuff@gmail.com",
@@ -45,24 +47,26 @@ describe("User Services Tests", () =>
         dummyUser = {
             name: "Jane Doe",
             email: "jdoe@gmail.com",
-            units: "lbs"
+            units: "lbs",
         };
         result = new userModel(dummyUser);
         await result.save();
     });
 
     // Clean up database entries for tests
-    afterEach(async () => {
+    afterEach(async () =>
+    {
         await userModel.deleteMany();
     });
 
     // userServices Tests
-    test("Add user -- successful", async () => {
-            const dummyUser = {
-                name: "Person Guy",
-                email: "pguy@gmail.com",
-                units: "lbs" as const,
-            };
+    test("Add user -- successful", async () =>
+    {
+        const dummyUser = {
+            name: "Person Guy",
+            email: "pguy@gmail.com",
+            units: "lbs" as const,
+        };
         const result = await userServices.addUser(dummyUser);
         expect(result).toBeTruthy();
         expect(result.name).toBe(dummyUser.name);

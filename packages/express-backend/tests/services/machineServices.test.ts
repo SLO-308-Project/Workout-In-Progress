@@ -1,4 +1,4 @@
-import { connect, close } from "../util/mongo-memory-server-config";
+import {connect, close} from "../util/mongo-memory-server-config";
 import machineModel, {machineType} from "../../src/data/machine";
 import machineServices from "../../src/services/machineServices";
 
@@ -16,46 +16,53 @@ describe("Machine Services Tests", () =>
     });
 
     // Build in memory database for tests
-    beforeEach(async () => {
-       let dummyMachine: machineType = {
-           name: "Bench Press",
-           muscle: "Pectoralis major"
-       };
-       let result = new machineModel(dummyMachine);
-       await result.save();
+    beforeEach(async () =>
+    {
 
-       dummyMachine = {
-           name: "Machine",
-           muscle: "Muscle",
-       };
+        // Need to add entries for machineLog and user to get functional
 
-       result = new machineModel(dummyMachine);
-       await result.save();
+        // Machine entries
+        let dummyMachine: machineType = {
+            name: "Bench Press",
+            muscle: "Pectoralis major",
+        };
+        let result = new machineModel(dummyMachine);
+        await result.save();
 
-       dummyMachine = {
-           name: "Leg Press",
-           muscle: "Gluteus maximus",
-       };
-       result = new machineModel(dummyMachine);
-       await result.save();
+        dummyMachine = {
+            name: "Machine",
+            muscle: "Muscle",
+        };
 
-       dummyMachine = {
-           name: "Pull Down",
-           muscle: "Latissimus Dorsi",
-       };
-       result = new machineModel(dummyMachine);
-       await result.save();
+        result = new machineModel(dummyMachine);
+        await result.save();
+
+        dummyMachine = {
+            name: "Leg Press",
+            muscle: "Gluteus maximus",
+        };
+        result = new machineModel(dummyMachine);
+        await result.save();
+
+        dummyMachine = {
+            name: "Pull Down",
+            muscle: "Latissimus Dorsi",
+        };
+        result = new machineModel(dummyMachine);
+        await result.save();
     });
 
     // Clean up database entries for tests
-    afterEach(async () => {
-       await machineModel.deleteMany();
+    afterEach(async () =>
+    {
+        await machineModel.deleteMany();
     });
 
     // machineServices tests
 
     // Set to fail currently, need to figure out how to test machines since heavily linked with user currently.
-    test("Fetch machine", async () => {
+    test("Fetch machine", async () =>
+    {
         const name = "Bench Press";
         const muscle = "Pectoralis major";
         const email = "bench@gmail.com";
