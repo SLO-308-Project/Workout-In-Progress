@@ -1,3 +1,4 @@
+// import { ObjectId } from "mongoose";
 import sessionModel from "../data/session";
 // import {machineType} from "../data/machine";
 
@@ -34,7 +35,30 @@ function addWorkout(machineId: string, sessionId: string)
                 throw new Error("Session not found.");
             }
             console.log("adding to the workout");
-            session.workout.push({machineId: machineId, sets: []});
+            session.workout.push({ machineId: machineId, sets: [] });
+            return session.save();
+        })
+        .catch((error) => {
+            console.log(error);
+            return null;
+        });
+}
+
+async function removeWorkout(sessionId: string, workoutId: string) {
+    if (!sessionId || !workoutId) {
+        console.log(`sessionId: ${sessionId} workoutId: ${workoutId}`)
+        throw new Error("Session or workout were null.");
+    }
+    return sessionModel
+        .findOne({ _id: sessionId })
+        .then((session) => {
+            if (!session) {
+                throw new Error()
+            }
+            console.log("removing workout");
+            console.log(`sessionId: ${sessionId} workoutId: ${workoutId}`)
+            console.log(`${session.workout.constructor.name}`);
+            session.workout.pull({ _id: workoutId })
             return session.save();
         })
         .catch((error) =>
@@ -44,7 +68,10 @@ function addWorkout(machineId: string, sessionId: string)
         });
 }
 
+// Removes a workout given a session id 
+
 export default {
     getWorkout,
     addWorkout,
+    removeWorkout,
 };

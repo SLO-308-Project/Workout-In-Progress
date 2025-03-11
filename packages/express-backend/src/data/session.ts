@@ -16,6 +16,10 @@ const sessionSchema = new mongoose.Schema(
         },
         workout: [
             {
+                _id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    auto: true,
+                },
                 machineId: {
                     type: mongoose.Schema.Types.ObjectId,
                     ref: "user.machines",

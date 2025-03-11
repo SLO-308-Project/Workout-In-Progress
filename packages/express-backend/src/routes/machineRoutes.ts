@@ -3,7 +3,7 @@ import machineServices from "../services/machineServices";
 import {machineType} from "../data/machine";
 // import { userType } from "../data/user";
 
-// all start with /users
+// all start with /machines
 const router = Router();
 
 //create machine.

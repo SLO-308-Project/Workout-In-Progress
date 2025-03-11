@@ -1,4 +1,5 @@
 // src/app.tsx
+import { Link } from "react-router-dom";
 import {useState, useEffect} from "react";
 import MachineTable from "../components/machineTable";
 import MachineForm from "../components/machineForm";
@@ -11,12 +12,8 @@ import {Machine} from "../types/sessionTypes";
 
 function MachinePage()
 {
-    const [machines, setMachine] = useState([
-        {
-            name: "Bench",
-            muscle: "Forearms",
-        },
-    ]);
+    const [machines, setMachine] = useState([]);
+
     function reloadUsers(): void
     {
         fetchGetMachine()
@@ -38,7 +35,7 @@ function MachinePage()
             {
                 if (res.status == 201)
                 {
-                    reloadUsers();
+                    setMachine([...machines, machine]);
                 }
             })
             .catch((error: unknown) =>
@@ -55,7 +52,7 @@ function MachinePage()
             {
                 if (res.ok)
                 {
-                    reloadUsers();
+                    setMachine(machines.filter((machine) => machine.name !== name));
                 }
             })
             .catch((error: unknown) =>
@@ -71,6 +68,17 @@ function MachinePage()
                 removeMachine={removeOneMachine}
             />
             <MachineForm handleSubmit={addOneMachine} />
+
+            <Link to="/CurrentSession">
+                <button variant="outlined">
+                        Go to Current Session Page
+                </button>
+            </Link>
+            <Link to="/Sessions">
+                <button variant="outlined">
+                        Go to Main Sessions Page
+                </button>
+            </Link>
         </div>
     );
 }

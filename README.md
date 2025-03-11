@@ -40,6 +40,9 @@ Product Vision: A workout logger for tracking workouts and viewing past workouts
         3. Click Debug URL
         4. Paste URL For Local Vite Instance (http://localhost:5173/)
         5. Note The Frontend Must Already Be Running To Launch The Debug Window
+    - "Tailwind CSS IntelliSense" This will add autocomplete to tailwind CSS classNames.
+       1. Open VScode settings to "file association" and add the item "*css" and value "tailwindcss". 
+       2. Open VScode settings to "editor quick suggestions" and change strings to on.
 
 ## Workflow: (NEEDS WORK)
 1. Work on your own branch.
