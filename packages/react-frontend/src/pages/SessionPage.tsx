@@ -1,9 +1,11 @@
 import {useState, useEffect} from "react";
 import {Link} from "react-router-dom";
 import SessionTable from "../components/sessionTable";
+import SessionStartButton from "../components/sessionNewSessionButton";
 import {
     fetchGetSessions,
     fetchDeleteSession,
+    fetchStartSessions,
 } from "../fetchers/sessionFetchers";
 import {Session} from "../types/sessionTypes";
 
@@ -68,10 +70,29 @@ function SessionPage()
             });
     }
 
+    function startSession(): void
+    {
+        fetchStartSessions()
+            .then((res) =>
+            {
+                if (res.status !== 201)
+                {
+                    throw new Error("No content added");
+                }
+            })
+            .catch((err: unknown) =>
+            {
+                console.log("Error starting session: ", err);
+            });
+    }
+
     return (
         <div className="container">
             <div className="title">
-                <h2>Sessions</h2>+
+                <h2>Sessions</h2>
+                <Link to="/CurrentSession">
+                    <SessionStartButton createSession={startSession} />
+                </Link>
             </div>
             <SessionTable
                 sessionData={sessions}
