@@ -242,6 +242,6 @@ function CurrentSessionPage()
         </Link>
     </div>
 }
+}
 
 export default CurrentSessionPage;
-
