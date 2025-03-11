@@ -1,4 +1,5 @@
 import {useState, useEffect} from "react";
+import { Link } from "react-router-dom";
 import SessionTable from "../components/sessionTable";
 import {
     fetchGetSessions,
@@ -20,8 +21,8 @@ function SessionPage()
     // Converts database time which is stored in seconds to hours and minutes
     function formatDuration(seconds: number): string
     {
-        const hours = Math.floor(seconds / 3600);
-        const minutes = Math.floor((seconds % 3600) / 60);
+        const hours = Math.floor(seconds / 3600 / 1000);
+        const minutes = Math.floor((seconds % 3600) / 60 / 1000);
         return `${hours}h ${minutes}m`;
     }
 
@@ -75,6 +76,17 @@ function SessionPage()
                 formatDuration={formatDuration}
                 deleteSession={deleteSession}
             />
+
+            <Link to="/CurrentSession">
+                <button variant="outlined">
+                        Go to Current Session Page
+                </button>
+            </Link>
+            <Link to="/Machine">
+                <button variant="outlined">
+                        Go to Machines Page
+                </button>
+            </Link>
         </div>
     );
 }

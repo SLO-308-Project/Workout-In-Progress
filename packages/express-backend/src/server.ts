@@ -3,6 +3,7 @@ import cors from "cors";
 import machineRoutes from "./routes/machineRoutes";
 import userRoutes from "./routes/userRoutes";
 import sessionRoutes from "./routes/sessionRoutes";
+import workoutRoutes from "./routes/workoutRoutes";
 
 import {getEnv} from "./util/env";
 
@@ -28,6 +29,8 @@ function setupAPP(PORT: number)
     app.use("/machines", machineRoutes);
     app.use("/users", userRoutes);
     app.use("/sessions", sessionRoutes);
+    app.use("/current", workoutRoutes);
+    app.use("/workouts", workoutRoutes);
 
     app.listen(PORT, () =>
     {
