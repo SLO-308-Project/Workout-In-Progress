@@ -9,6 +9,7 @@ export interface Set
 
 export interface Machine
 {
+    _id: string;
     machineId: string;
     sets: Set[];
 }
