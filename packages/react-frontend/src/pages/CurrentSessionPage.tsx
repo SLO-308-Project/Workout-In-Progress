@@ -109,7 +109,6 @@ function CurrentSessionPage()
     /*
      * Dispatches the request to get the current session, sets the current session.
      * */
-    function getCurrentSession(): void {
     function getCurrentSession(): void
     {
         fetchCurrentSession()
@@ -216,8 +215,8 @@ function CurrentSessionPage()
                 .catch((error: unknown) => console.log(error));
         }
     }
-
-    return <div className="container">
+    return (
+        <div className="container">
         <CurrentSessionStartButton
             sessionNum={sessionNum}
             sessionData={sessions}
@@ -240,8 +239,7 @@ function CurrentSessionPage()
                 Go to Sessions Page
             </button>
         </Link>
-    </div>
-}
+    </div>)
 }
 
 export default CurrentSessionPage;
