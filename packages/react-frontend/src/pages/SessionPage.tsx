@@ -1,17 +1,20 @@
 import {useState, useEffect} from "react";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import SessionTable from "../components/sessionTable";
 import SessionStartButton from "../components/sessionNewSessionButton";
 import {
     fetchGetSessions,
     fetchDeleteSession,
     fetchStartSessions,
+    fetchCurrentSession,
 } from "../fetchers/sessionFetchers";
 import {Session} from "../types/sessionTypes";
 
 function SessionPage()
 {
     const [sessions, setSessions] = useState<Session[]>([]);
+    const [currSession, setCurrSession] = useState<boolean>();
+    const navigate = useNavigate();
 
     // Helper function for date formatting
     function formatDate(dateString: string): string
@@ -47,9 +50,23 @@ function SessionPage()
             .catch((error: unknown) => console.log(error));
     }
 
+    function loadCurrSession(): void
+    {
+        fetchCurrentSession()
+            .then((res) =>
+            {
+                setCurrSession(res.status !== 204);
+            })
+            .catch((err) =>
+            {
+                console.log("Unable to find curr session", err);
+            });
+    }
+
     useEffect(() =>
     {
         loadSessions();
+        loadCurrSession();
     }, []);
 
     // Function to delete a session
@@ -72,6 +89,11 @@ function SessionPage()
 
     function startSession(): void
     {
+        if (currSession)
+        {
+            navigate("/CurrentSession");
+            return;
+        }
         fetchStartSessions()
             .then((res) =>
             {
@@ -79,10 +101,11 @@ function SessionPage()
                 {
                     throw new Error("No content added");
                 }
+                navigate("/CurrentSession");
             })
             .catch((err: unknown) =>
             {
-                console.log("Error starting session: ", err);
+                console.log("Error creating session: ", err);
             });
     }
 
@@ -90,9 +113,7 @@ function SessionPage()
         <div className="container">
             <div className="title">
                 <h2>Sessions</h2>
-                <Link to="/CurrentSession">
-                    <SessionStartButton createSession={startSession} />
-                </Link>
+                <SessionStartButton createSession={startSession} />
             </div>
             <SessionTable
                 sessionData={sessions}

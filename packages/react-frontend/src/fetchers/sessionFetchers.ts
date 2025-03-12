@@ -44,4 +44,17 @@ function fetchStartSessions(): Promise<Response>
     });
 }
 
-export {fetchGetSessions, fetchDeleteSession, fetchStartSessions};
+/**
+ *
+ */
+function fetchCurrentSession(): Promise<Response>
+{
+    return fetch(`${BACKEND_URL}/sessions/recent`);
+}
+
+export {
+    fetchGetSessions,
+    fetchDeleteSession,
+    fetchStartSessions,
+    fetchCurrentSession,
+};
