@@ -27,7 +27,7 @@ function SessionPage()
     function formatDuration(milliseconds: number): string
     {
         const hours = Math.floor(milliseconds / 3600 / 1000);
-        const minutes = Math.floor((milliseconds % 3600) / 60 / 1000);
+        const minutes = Math.floor((milliseconds / 60 / 1000) % 60);
         const second = Math.floor((milliseconds / 1000) % 60);
         return `${hours}h ${minutes}m ${second}s`;
     }
