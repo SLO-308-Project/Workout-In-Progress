@@ -31,10 +31,6 @@ function CurrentSessionPage()
 
     useEffect(() =>
     {
-        setInterval(() =>
-        {
-            setTime((time) => time + clockSpeed / 1000);
-        }, clockSpeed);
         getMachines();
         getCurrentSession();
         getSessionNumber();
@@ -46,6 +42,12 @@ function CurrentSessionPage()
         if (sessions !== null)
         {
             getWorkouts(sessions);
+            const interval = setInterval(() =>
+            {
+                setTime((time) => time + clockSpeed / 1000);
+            }, clockSpeed);
+
+            return () => clearInterval(interval);
         }
     }, [sessions]);
 
@@ -275,6 +277,7 @@ function CurrentSessionPage()
             <Link to="/Sessions">
                 <button>Go to Sessions Page</button>
             </Link>
+            <div>Time: {time}</div>
         </div>
     );
 }
