@@ -2,7 +2,6 @@ import {connect, close} from "../util/mongo-memory-server-config";
 import userModel, {userType} from "../../src/data/user";
 import userServices from "../../src/services/userServices";
 
-
 describe("User Services Tests", () =>
 {
     // In memory database setup
@@ -73,5 +72,33 @@ describe("User Services Tests", () =>
         expect(result.email).toBe(dummyUser.email);
         expect(result.units).toBe(dummyUser.units);
         expect(result).toHaveProperty("_id");
+    });
+
+    // Add user - test to hit the catch blocks
+    // Closes the connection to database to force an error to hit the catch blocks
+    // Reconnects after test finishes
+    test("Add user -- save error", async () =>
+    {
+        await close();
+        const dummyUser = {
+            name: "Person Guy",
+            email: "pguy@gmail.com",
+            units: "lbs" as const,
+            sessionLogId: undefined,
+            machineLogId: undefined,
+        };
+        try
+        {
+            await userServices.addUser(dummyUser);
+            fail("Test shouldn't get here");
+        }
+        catch (error)
+        {
+            expect(error).toBeTruthy();
+        }
+        finally
+        {
+            await connect();
+        }
     });
 });
