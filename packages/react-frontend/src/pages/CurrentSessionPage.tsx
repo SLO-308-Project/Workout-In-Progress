@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import CurrentSessionStartButton from "../components/currentSessionEnd";
 import CurrentSessionEndButton from "../components/currentSessionStart";
-import { Machine, Session } from "../types/sessionTypes"
+import { Machine, Session, Workout } from "../types/sessionTypes"
 import { fetchGetWorkouts, fetchPostWorkout, fetchDeleteWorkout } from "../fetchers/workoutFetchers";
 import { fetchGetMachine } from "../fetchers/machineFetchers"
 import {
@@ -12,18 +12,19 @@ import {
     fetchGetSessions
 } from "../fetchers/currentSessionFetchers";
 import WorkoutForm from "../components/workoutForm";
-import CurrentSessionTable from "../components/currentSessionTable";
+import WorkoutComponent from "../components/workoutComponent"
+// import CurrentSessionTable from "../components/currentSessionTable";
 const clockSpeed = 200;
 
 function CurrentSessionPage() {
     const [sessions, setSessions] = useState<Session | null>(null);
     const [sessionNum, setSessionNum] = useState<number | null>(null);
     const [time, setTime] = useState(0);
-    const [workouts, setWorkouts] = useState<Machine[]>([]);
+    const [workouts, setWorkouts] = useState<Workout[]>([]);
 
 
     // State for the users currently selected machine
-    const [machines, setMachines] = useState([]);
+    const [machines, setMachines] = useState<Machine[]>([]);
 
     useEffect(() => {
         setInterval(() => { setTime(time => time + clockSpeed / 1000) }, clockSpeed);
@@ -61,7 +62,6 @@ function CurrentSessionPage() {
     }
 
     function endSession(): void {
-        //console.log(sessions);
         if (sessions === null) {
             return;
         }
@@ -135,6 +135,7 @@ function CurrentSessionPage() {
     }
 
     function getWorkouts(session: Session): void {
+        console.log("testing");
         fetchGetWorkouts(session._id)
             .then((res) => {
                 if (res.status == 201) {
@@ -162,9 +163,12 @@ function CurrentSessionPage() {
                         throw new Error();
                     }
                 })
-                .then((res_data) => {
-                    setWorkouts([...workouts, { machineId: machineId, sets: [], _id: res_data._id}])
-                }) 
+                .then((res_data: Session) => {
+                    console.log(`RES_DATA: ${res_data._id}`);
+                    console.log(`MachineId: ${machineId}`);
+                    console.log(`SessionId: ${sessions._id}`);
+                    setWorkouts(res_data.workout)
+                })
                 .catch((error: unknown) => console.log(error));
         }
     }
@@ -184,6 +188,18 @@ function CurrentSessionPage() {
         }
     }
 
+    const machineIdToName = (machineId: string) => {
+        if (machines) {
+            return machines.filter((machine) => machine._id === machineId)[0].name
+        }
+    }
+
+    const listWorkouts = workouts.map(workout =>
+        <li key={workout._id}>
+            <WorkoutComponent id={workout._id} machineName={machineIdToName(workout.machineId)} handleDelete={removeWorkout} />
+        </li>
+    )
+
     return <div className="container">
         <CurrentSessionStartButton
             sessionNum={sessionNum}
@@ -194,7 +210,8 @@ function CurrentSessionPage() {
             endSession={endSession}
         />
 
-        <CurrentSessionTable workoutData={workouts} machineOptions={machines} handleDelete={removeWorkout} />
+        <ul className="workoutList">{listWorkouts}</ul>
+
         <WorkoutForm handleSubmit={addWorkout} machineOptions={machines} />
 
         <Link to="/Machine">
@@ -210,4 +227,5 @@ function CurrentSessionPage() {
     </div>
 }
 
+// <CurrentSessionTable workoutData={workouts} machineOptions={machines} handleDelete={removeWorkout} />
 export default CurrentSessionPage;

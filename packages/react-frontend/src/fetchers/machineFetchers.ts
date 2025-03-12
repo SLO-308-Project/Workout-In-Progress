@@ -23,8 +23,8 @@ const USER_EMAIL: string = "test1@gmail.com";
  * @returns {Promise} Promise returned by async fetch request
  * */
 function fetchGetMachine(
-    name: string | undefined,
-    muscle: string | undefined,
+    name: string | undefined = undefined,
+    muscle: string | undefined = undefined,
 ): Promise<Response>
 {
     let params = "";
