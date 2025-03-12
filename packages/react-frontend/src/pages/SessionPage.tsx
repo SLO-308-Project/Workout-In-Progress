@@ -1,15 +1,20 @@
 import {useState, useEffect} from "react";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import SessionTable from "../components/sessionTable";
+import SessionStartButton from "../components/sessionNewSessionButton";
 import {
     fetchGetSessions,
     fetchDeleteSession,
+    fetchStartSessions,
+    fetchCurrentSession,
 } from "../fetchers/sessionFetchers";
 import {Session} from "../types/sessionTypes";
 
 function SessionPage()
 {
     const [sessions, setSessions] = useState<Session[]>([]);
+    const [currSession, setCurrSession] = useState<boolean>();
+    const navigate = useNavigate();
 
     // Helper function for date formatting
     function formatDate(dateString: string): string
@@ -19,11 +24,12 @@ function SessionPage()
 
     // Helper function for duration formatting
     // Converts database time which is stored in seconds to hours and minutes
-    function formatDuration(seconds: number): string
+    function formatDuration(milliseconds: number): string
     {
-        const hours = Math.floor(seconds / 3600 / 1000);
-        const minutes = Math.floor((seconds % 3600) / 60 / 1000);
-        return `${hours}h ${minutes}m`;
+        const hours = Math.floor(milliseconds / 3600 / 1000);
+        const minutes = Math.floor((milliseconds / 60 / 1000) % 60);
+        const second = Math.floor((milliseconds / 1000) % 60);
+        return `${hours}h ${minutes}m ${second}s`;
     }
 
     // Function to fetch sessions
@@ -44,9 +50,23 @@ function SessionPage()
             .catch((error: unknown) => console.log(error));
     }
 
+    function loadCurrSession(): void
+    {
+        fetchCurrentSession()
+            .then((res) =>
+            {
+                setCurrSession(res.status !== 204);
+            })
+            .catch((err) =>
+            {
+                console.log("Unable to find curr session", err);
+            });
+    }
+
     useEffect(() =>
     {
         loadSessions();
+        loadCurrSession();
     }, []);
 
     // Function to delete a session
@@ -67,9 +87,34 @@ function SessionPage()
             });
     }
 
+    function startSession(): void
+    {
+        if (currSession)
+        {
+            navigate("/CurrentSession");
+            return;
+        }
+        fetchStartSessions()
+            .then((res) =>
+            {
+                if (res.status !== 201)
+                {
+                    throw new Error("No content added");
+                }
+                navigate("/CurrentSession");
+            })
+            .catch((err: unknown) =>
+            {
+                console.log("Error creating session: ", err);
+            });
+    }
+
     return (
         <div className="container">
-            <h2>Sessions</h2>
+            <div className="title">
+                <h2>Sessions</h2>
+                <SessionStartButton createSession={startSession} />
+            </div>
             <SessionTable
                 sessionData={sessions}
                 formatDate={formatDate}
@@ -78,14 +123,10 @@ function SessionPage()
             />
 
             <Link to="/CurrentSession">
-                <button variant="outlined">
-                        Go to Current Session Page
-                </button>
+                <button variant="outlined">Go to Current Session Page</button>
             </Link>
             <Link to="/Machine">
-                <button variant="outlined">
-                        Go to Machines Page
-                </button>
+                <button variant="outlined">Go to Machines Page</button>
             </Link>
         </div>
     );

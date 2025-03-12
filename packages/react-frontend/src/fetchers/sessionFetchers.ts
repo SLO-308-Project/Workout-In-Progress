@@ -25,4 +25,36 @@ function fetchDeleteSession(id: string): Promise<Response>
     });
 }
 
-export {fetchGetSessions, fetchDeleteSession};
+/**
+ * Executes a Post request to the backend to start a new session.
+ *
+ * @returns {Promise} Promise returned by async fetch request
+ */
+function fetchStartSessions(): Promise<Response>
+{
+    return fetch(`${BACKEND_URL}/sessions`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            time: 0,
+            workout: [],
+        }),
+    });
+}
+
+/**
+ *
+ */
+function fetchCurrentSession(): Promise<Response>
+{
+    return fetch(`${BACKEND_URL}/sessions/recent`);
+}
+
+export {
+    fetchGetSessions,
+    fetchDeleteSession,
+    fetchStartSessions,
+    fetchCurrentSession,
+};
