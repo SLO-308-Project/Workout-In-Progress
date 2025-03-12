@@ -63,6 +63,7 @@ function addMachine(machine: machineType, email: string)
         return machineLogModel.findOneAndUpdate(
             {_id: result[1]?.machineLogId}, //previously queried user.
             {$push: {machineIds: result[0]._id}}, //previously added machine _id.
+            {new: true}
         );
     });
 }
@@ -121,7 +122,7 @@ function updateMachine(
         .then((machineList) =>
         {
             const machine = machineList[0] as machineType;
-            return machineModel.findByIdAndUpdate(machine._id, updatedMachine); //update the machine.
+            return machineModel.findByIdAndUpdate(machine._id, updatedMachine, {new: true}); //update the machine.
         });
 }
 
