@@ -88,7 +88,6 @@ async function removeWorkout(sessionId: string, workoutId: string)
 //         });
 // }
 
-
 export default {
     getWorkout,
     addWorkout,

@@ -20,7 +20,8 @@ function getSessionById(id: string)
 }
 
 // Get most recent session with no time
-function getCurrentSession(): Promise<sessionType[]> {
+function getCurrentSession(): Promise<sessionType[]>
+{
     return sessionModel.aggregate([
         {
             $sort: {date: -1},
