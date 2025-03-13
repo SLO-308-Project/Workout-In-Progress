@@ -34,10 +34,6 @@ function CurrentSessionPage()
 
     useEffect(() =>
     {
-        setInterval(() =>
-        {
-            setTime((time) => time + clockSpeed / 1000);
-        }, clockSpeed);
         getMachines();
         getCurrentSession();
         getSessionNumber();
@@ -49,6 +45,12 @@ function CurrentSessionPage()
         if (sessions !== null)
         {
             getWorkouts(sessions);
+            const interval = setInterval(() =>
+            {
+                setTime((time) => time + clockSpeed / 1000);
+            }, clockSpeed);
+
+            return () => clearInterval(interval);
         }
     }, [sessions]);
 
@@ -67,7 +69,7 @@ function CurrentSessionPage()
                 }
                 else
                 {
-                    throw new Error("No content added");
+                    console.log("Nothing Found");
                 }
             })
             .then((json: Session) =>
@@ -96,7 +98,7 @@ function CurrentSessionPage()
                 }
                 else
                 {
-                    throw new Error("No session found");
+                    console.log("No session found");
                 }
             })
             .catch((err: unknown) =>
@@ -132,7 +134,8 @@ function CurrentSessionPage()
                 else if (res.status === 204)
                 {
                     console.log("204");
-                    throw new Error("Got a 204 from fetch");
+                    return null;
+                    //throw new Error("Got a 204 from fetch");
                 }
             })
             .then((json: Session[]) =>
@@ -181,7 +184,6 @@ function CurrentSessionPage()
 
     function getWorkouts(session: Session): void
     {
-        console.log("testing");
         fetchGetWorkouts(session._id)
             .then((res) =>
             {
@@ -287,13 +289,13 @@ function CurrentSessionPage()
             <ul className="workoutList">{listWorkouts}</ul>
 
             <WorkoutForm handleSubmit={addWorkout} machineOptions={machines} />
-
             <Link to="/Machine">
                 <button>Go to Machine Page</button>
             </Link>
             <Link to="/Sessions">
                 <button>Go to Sessions Page</button>
             </Link>
+            <div>Time: {time}</div>
         </div>
     );
 }

@@ -119,7 +119,7 @@ function updateMachine(
         .then((machineList) =>
         {
             const machine = machineList[0] as machineType;
-            return machineModel.findByIdAndUpdate(machine._id, updatedMachine); //update the machine.
+            return machineModel.findByIdAndUpdate(machine._id, updatedMachine, {new: true}); //update the machine.
         });
 }
 // returns the attributes for a machine by its id only.

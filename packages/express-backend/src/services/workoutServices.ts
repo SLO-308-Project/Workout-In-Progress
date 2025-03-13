@@ -45,6 +45,7 @@ async function addWorkout(machineId: string, sessionId: string)
         });
 }
 
+// Removes a workout given a session id
 async function removeWorkout(sessionId: string, workoutId: string)
 {
     if (!sessionId || !workoutId)
@@ -87,7 +88,6 @@ async function removeWorkout(sessionId: string, workoutId: string)
 //         });
 // }
 
-// Removes a workout given a session id
 
 export default {
     getWorkout,

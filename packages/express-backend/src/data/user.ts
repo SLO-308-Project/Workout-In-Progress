@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema(
             //reference to a session.
             type: mongoose.Schema.Types.ObjectId,
             ref: "session",
-            default: null,
+            require: false,
         },
         machineLogId: {
             //reference to a machineLog.
