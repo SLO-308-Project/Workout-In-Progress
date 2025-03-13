@@ -1,19 +1,29 @@
 # 308-Project
-
+### Team
+- Paul Motter
+- Tyler Pham
+- Josh Cavender
+- David Veronov
+ 
 # Workout In Progress
-Product Vision: A workout logger for tracking workouts and viewing past workouts.
+Workout In Progress is a workout tracking application. It helps keep track of when and what workouts you have completed, provides statistics on what has been completed, and provides tools for easily inputting workouts. Our goal is to create an app that eliminates a lot of the extra and unnecessary features that most workout apps provide. Trim down these elements into the core functionality that is easy and efficient to use.
+
+## Tech Spec Document
+[Tech Spec Doc](https://docs.google.com/document/d/1pv5Od8G1ek-ETLHgJwQMxAxre_nD8fRDjutjLOnxXK0/edit?usp=sharing)
 
 ## Figma Prototype
 [Figma Project](https://www.figma.com/design/40heWTG7s883OhvNfuJlLm/pmotter's-team-library?node-id=0-1&t=s2ZUUt3js5H2pfjs-1)
 
 [Figma Prototype Demo](https://www.figma.com/proto/40heWTG7s883OhvNfuJlLm/pmotter's-team-library?node-id=3317-2&p=f&t=qPZslnocKgtIEETe-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=3317%3A2)
 
-## UML Diagram
-[Draw.io UML Diagram](https://viewer.diagrams.net/?tags=%7B%7D&lightbox=1&highlight=0000ff&layers=1&nav=1&title=UML%20Diagram#Uhttps%3A%2F%2Fdrive.google.com%2Fuc%3Fid%3D1ltDPBsD1gQQ0TONN-j8DJo3RjuxZuwwO%26export%3Ddownload)
+## UML Diagrams
+[UML Class Diagram](https://drive.google.com/file/d/1ltDPBsD1gQQ0TONN-j8DJo3RjuxZuwwO/view?usp=sharing)
 
-[Draw.io Use Case Diagram](https://drive.google.com/file/d/1JPQv8tZrvDeD9GE1n6V-iyTVIcic6WOF/view?usp=sharing)
+[UML Use Case Diagram](https://drive.google.com/file/d/13Lz_-dlQdHMw1UA3KrU9TH2LY3W08dgx/view?usp=sharing)
 
-## Setup for dev: (NEEDS WORK)
+[UML Activity Diagram](https://drive.google.com/file/d/1RCC0hqDVSrnWCDgpppQ3kv7xycMe5lVk/view?usp=sharing)
+
+## Setup for dev
 1. Clone entire repo.
 2. Run ```npm install``` in the main directory to install all current dependencies.
 3. Create a .env file for both the frontend and backend packages
@@ -44,18 +54,14 @@ Product Vision: A workout logger for tracking workouts and viewing past workouts
        1. Open VScode settings to "file association" and add the item "*css" and value "tailwindcss". 
        2. Open VScode settings to "editor quick suggestions" and change strings to on.
 
-## Workflow: (NEEDS WORK)
-1. Work on your own branch.
-2. Pull and resolve conflicts often.
-
-## Scripts:
+## Scripts
 - ```npm run backdev``` Runs the dev environment for the backend.
 - ```npm run frontdev``` Runs the dev environment for the frontend.
 - ```npm run test``` Runs jest tests for all workspaces or the current workspace.
 - ```npm run format``` Runs the prettier formatter for all files.
 - ```npm run lint``` Runs the ESlint for all workspaces.
 
-## Conventional Commits:
+## Conventional Commits
 ```
 [type] [optional (scope)] [optional !]: [description]
 ```
