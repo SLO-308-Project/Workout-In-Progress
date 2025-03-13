@@ -3,16 +3,18 @@
 
 export interface Set
 {
-    attributeValues: {
-        name: string,
-        value: number
-    };
+    // attributeValues: {
+    //     name: string,
+    //     value: number
+    // };
+    reps: number;
     weight: number;
 }
 
 export interface Machine {
     _id: string;
     name: string;
+    muscle: string;
 }
 
 export interface Workout 
