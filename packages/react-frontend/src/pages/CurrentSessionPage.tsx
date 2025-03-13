@@ -2,7 +2,9 @@ import {useState, useEffect} from "react";
 import {Link} from "react-router-dom";
 import CurrentSessionStartButton from "../components/currentSessionEnd";
 import CurrentSessionEndButton from "../components/currentSessionStart";
-import {Machine, Session} from "../types/sessionTypes";
+import {Machine} from "../types/machine";
+import {Session} from "../types/session";
+import {Workout} from "../types/workout";
 import {
     fetchGetWorkouts,
     fetchPostWorkout,
@@ -16,7 +18,8 @@ import {
     fetchGetSessions,
 } from "../fetchers/currentSessionFetchers";
 import WorkoutForm from "../components/workoutForm";
-import CurrentSessionTable from "../components/currentSessionTable";
+import WorkoutComponent from "../components/workoutComponent";
+// import CurrentSessionTable from "../components/currentSessionTable";
 const clockSpeed = 200;
 
 function CurrentSessionPage()
@@ -24,10 +27,10 @@ function CurrentSessionPage()
     const [sessions, setSessions] = useState<Session | null>(null);
     const [sessionNum, setSessionNum] = useState<number | null>(null);
     const [time, setTime] = useState(0);
-    const [workouts, setWorkouts] = useState<Machine[]>([]);
+    const [workouts, setWorkouts] = useState<Workout[]>([]);
 
     // State for the users currently selected machine
-    const [machines, setMachines] = useState([]);
+    const [machines, setMachines] = useState<Machine[]>([]);
 
     useEffect(() =>
     {
@@ -82,7 +85,6 @@ function CurrentSessionPage()
 
     function endSession(): void
     {
-        //console.log(sessions);
         if (sessions === null)
         {
             return;
@@ -141,7 +143,7 @@ function CurrentSessionPage()
                 if (json === null)
                 {
                     console.log("No values");
-                    //throw new Error("No current session?");
+                    throw new Error("No current session?");
                 }
                 else
                 {
@@ -221,12 +223,12 @@ function CurrentSessionPage()
                         throw new Error();
                     }
                 })
-                .then((res_data) =>
+                .then((res_data: Session) =>
                 {
-                    setWorkouts([
-                        ...workouts,
-                        {machineId: machineId, sets: [], _id: res_data._id},
-                    ]);
+                    console.log(`RES_DATA: ${res_data._id}`);
+                    console.log(`MachineId: ${machineId}`);
+                    console.log(`SessionId: ${sessions._id}`);
+                    setWorkouts(res_data.workout);
                 })
                 .catch((error: unknown) => console.log(error));
         }
@@ -255,6 +257,26 @@ function CurrentSessionPage()
         }
     }
 
+    const machineIdToName = (machineId: string) =>
+    {
+        if (machines)
+        {
+            return machines.filter((machine) => machine._id === machineId)[0]
+                .name;
+        }
+    };
+
+    const listWorkouts = workouts.map((workout) => (
+        <li key={workout._id}>
+            <WorkoutComponent
+                workoutId={workout._id}
+                machineId={workout.machineId}
+                machineName={machineIdToName(workout.machineId)}
+                handleDelete={removeWorkout}
+            />
+        </li>
+    ));
+
     return (
         <div className="container">
             <CurrentSessionStartButton
@@ -264,13 +286,9 @@ function CurrentSessionPage()
             />
             <CurrentSessionEndButton endSession={endSession} />
 
-            <CurrentSessionTable
-                workoutData={workouts}
-                machineOptions={machines}
-                handleDelete={removeWorkout}
-            />
-            <WorkoutForm handleSubmit={addWorkout} machineOptions={machines} />
+            <ul className="workoutList">{listWorkouts}</ul>
 
+            <WorkoutForm handleSubmit={addWorkout} machineOptions={machines} />
             <Link to="/Machine">
                 <button>Go to Machine Page</button>
             </Link>
@@ -282,4 +300,5 @@ function CurrentSessionPage()
     );
 }
 
+// <CurrentSessionTable workoutData={workouts} machineOptions={machines} handleDelete={removeWorkout} />
 export default CurrentSessionPage;

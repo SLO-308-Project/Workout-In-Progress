@@ -27,14 +27,16 @@ const sessionSchema = new mongoose.Schema(
                 },
                 sets: [
                     {
-                        reps: {
-                            type: Number,
-                            required: true,
+                        _id: {
+                            type: mongoose.Schema.Types.ObjectId,
+                            auto: true,
                         },
-                        weight: {
-                            type: Number,
-                            required: true,
-                        },
+                        attributeValues: [
+                            {
+                                name: String,
+                                value: Number,
+                            },
+                        ],
                     },
                 ],
             },

@@ -45,6 +45,7 @@ async function addWorkout(machineId: string, sessionId: string)
         });
 }
 
+// Removes a workout given a session id
 async function removeWorkout(sessionId: string, workoutId: string)
 {
     if (!sessionId || !workoutId)
@@ -73,7 +74,19 @@ async function removeWorkout(sessionId: string, workoutId: string)
         });
 }
 
-// Removes a workout given a session id
+// async function updateSetAttributeValues(sessionId: string, workoutId: string) {
+//     if (!sessionId || !workoutId) {
+//         console.log(`sessionId: ${sessionId} workoutId: ${workoutId}`);
+//         throw new Error("Session or workout were null.");
+//     }
+//     return sessionModel
+//         .findOne({ _id: sessionId })
+//         .then((session) => {
+//             if (!session) {
+//                 throw new Error("DB failed to retrieve session");
+//             }
+//         });
+// }
 
 export default {
     getWorkout,

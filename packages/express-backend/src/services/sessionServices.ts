@@ -14,32 +14,34 @@ function addSession(session: sessionType)
 }
 
 // Get a session by _id
-function getSessionById(id: string) {
+function getSessionById(id: string)
+{
     return sessionModel.findById(id);
 }
 
 // Get most recent session with no time
-function getCurrentSession(): Promise<sessionType[]> {
+function getCurrentSession(): Promise<sessionType[]>
+{
     return sessionModel.aggregate([
         {
-            $sort: {date: -1}
+            $sort: {date: -1},
         },
         {
-            $limit: 1
+            $limit: 1,
         },
         {
-            $match: {time: 0}
-        }
+            $match: {time: 0},
+        },
     ]);
 }
 
 // End a session
-function endSession(id: string) 
+function endSession(id: string)
 {
     return sessionModel.findOneAndUpdate(
-        { _id: id}, 
-        [ { $set: { time: { $subtract: ["$$NOW", "$date" ] } } } ],
-        { new: true }
+        {_id: id},
+        [{$set: {time: {$subtract: ["$$NOW", "$date"]}}}],
+        {new: true},
     );
 }
 

@@ -3,11 +3,22 @@
 
 export interface Set
 {
+    // attributeValues: {
+    //     name: string,
+    //     value: number
+    // };
     reps: number;
     weight: number;
 }
 
 export interface Machine
+{
+    _id: string;
+    name: string;
+    muscle: string;
+}
+
+export interface Workout
 {
     _id: string;
     machineId: string;
@@ -19,5 +30,5 @@ export interface Session
     _id: string;
     date: string;
     time: number;
-    workout: Machine[];
+    workout: Workout[];
 }

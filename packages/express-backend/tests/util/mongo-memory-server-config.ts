@@ -10,7 +10,6 @@ const connect = async () =>
     const uri = mongoServer.getUri();
 
     await mongoose.connect(uri);
-
 };
 
 // Closes server
@@ -21,7 +20,4 @@ const close = async () =>
     await mongoServer.stop();
 };
 
-export {
-    connect,
-    close,
-};
+export {connect, close};
