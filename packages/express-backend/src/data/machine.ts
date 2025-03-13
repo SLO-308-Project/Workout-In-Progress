@@ -18,6 +18,22 @@ const machineSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
+        attributes: {
+            default: [],
+            type: [
+            {
+                name: {
+                    type: String,
+                    trim: true,
+                },
+                unit: {
+                    type: String,
+                    enum: ["lbs", "deg", "kgs", "s", "m", "reps", "cal"],
+                    required: true,
+                }
+            }
+            ]
+        }
     },
     {
         collection: "machines",
