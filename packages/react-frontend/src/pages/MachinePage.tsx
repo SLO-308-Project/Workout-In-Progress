@@ -1,81 +1,88 @@
 // src/app.tsx
 import { Link } from "react-router-dom";
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import MachineTable from "../components/machineTable";
 import MachineForm from "../components/machineForm";
+import MachineComponent from "../components/machineComponent";
 import {
     fetchGetMachine,
     fetchPostMachine,
     fetchDeleteMachine,
 } from "../fetchers/machineFetchers";
 
-function MachinePage()
-{
-    const [machines, setMachine] = useState([]);
+import { Machine } from "../types/machine";
 
-    function reloadUsers(): void
-    {
+function MachinePage() {
+    const [machines, setMachine] = useState<Machine[]>([]);
+
+    useEffect(() => {
+        getMachines();
+    }, []);
+
+    function getMachines(): void {
         fetchGetMachine()
             .then((res: Response) => res.json())
-            .then((json) => setMachine(json))
+            .then((res_data) => {
+                console.log(`GETMACHINES RES_DATA=${res_data}`);
+                setMachine(res_data);
+            })
             .catch((error: unknown) => console.log(error));
     }
 
-    useEffect(() =>
-    {
-        reloadUsers();
-    }, []);
-
-    function addOneMachine(machine): void
-    {
+    function addOneMachine(machine: Machine): void {
         console.log(`${machine.name} ${machine.muscle}`);
-        fetchPostMachine(machine.name, machine.muscle)
-            .then((res) =>
-            {
-                if (res.status == 201)
-                {
-                    setMachine([...machines, machine]);
+        fetchPostMachine(machine)
+            .then((res) => {
+                if (res.status == 201) {
+                    return res.json();
                 }
             })
-            .catch((error: unknown) =>
-            {
+            .then((res_data) => {
+                console.log(`RES_DATA=${JSON.stringify(res_data)}`)
+                setMachine([...machines, res_data])
+            })
+            .catch((error: unknown) => {
                 console.log(error);
             });
     }
 
-    // deletes locally, but not on the database... yet
-    function removeOneMachine(name: string)
-    {
+    function removeOneMachine(name: string) {
         fetchDeleteMachine(name)
-            .then((res) =>
-            {
-                if (res.ok)
-                {
+            .then((res) => {
+                if (res.ok) {
                     setMachine(machines.filter((machine) => machine.name !== name));
                 }
             })
-            .catch((error: unknown) =>
-            {
+            .catch((error: unknown) => {
                 console.log(error);
             });
     }
 
+    const listMachines = machines.map((machine: Machine) =>
+        <li key={machine._id}>
+            <MachineComponent machine={machine} handleDelete={removeOneMachine} />
+        </li>
+    )
+
+    //     <MachineTable
+    // machineData={machines}
+    // removeMachine={removeOneMachine}
+    //     />
     return (
         <div className="container">
-            <MachineTable
-                machineData={machines}
-                removeMachine={removeOneMachine}
-            />
+            <ul>{listMachines}</ul>
+
             <MachineForm handleSubmit={addOneMachine} />
+
 
             <Link to="/CurrentSession">
                 <button variant="outlined">
-                        Go to Current Session Page
+                    Go to Current Session Page
                 </button>
             </Link>
             <Link to="/Sessions">
                 <button variant="outlined">
-                        Go to Main Sessions Page
+                    Go to Main Sessions Page
                 </button>
             </Link>
         </div>

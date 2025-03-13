@@ -1,47 +1,91 @@
 // src/Form.jsx
-import {useState, ChangeEvent} from "react";
+import { useState } from "react";
+import AttributeForm from "../components/attributeForm";
+import AttributeComponent from "../components/attributeComponent";
+import { Attribute } from "../types/attribute";
+import { Machine } from "../types/machine";
 
-function MachineForm(props)
-{
-    const [machine, setMachine] = useState({
+function MachineForm(props) {
+    const [machine, setMachine] = useState<Machine>({
+        _id: "",
         name: "",
         muscle: "",
-    });
+        attributes: []
+    })
 
-    function handleChange(event: ChangeEvent<HTMLInputElement>)
-    {
-        const {name, value} = event.target;
-        if (name === "name")
-            setMachine({name: value, muscle: machine["muscle"]});
-        else setMachine({name: machine["name"], muscle: value});
+    function handleNameChange(name: string) {
+        setMachine(
+            {
+                ...machine,
+                name: name
+            })
     }
 
-    function submitForm()
-    {
-        props.handleSubmit(machine);
-        setMachine({name: "", muscle: ""});
+    function handleMuscleChange(muscle: string) {
+        setMachine({
+            ...machine,
+            muscle: muscle
+        })
     }
+
+    function addAttribute(attribute: Attribute) {
+        setMachine(
+            {
+                ...machine,
+                attributes: [...machine.attributes, attribute]
+            }
+        )
+    }
+
+    function deleteAttribute(attribute: Attribute) {
+        setMachine(
+            {
+                ...machine,
+                attributes: machine.attributes.filter((attr) => attr.name === attribute.name )
+            }
+        )
+    }
+
+    function submitForm() {
+        console.log(`IN SUBMITFORM: ${JSON.stringify(machine.attributes)}`);
+        console.log(`name: ${machine.name} muscle: ${machine.muscle}`);
+        if (!machine.name || !machine.muscle) {
+            alert("unfilled machien vals");
+        }
+        if (machine.attributes.length === 0) {
+            alert("machine needs at least 1 attribute");
+        } else
+            props.handleSubmit(machine);
+    }
+
+    const listAttributes = machine.attributes ?
+        machine.attributes.map((attribute: Attribute) =>
+            <li key={attribute.name}>
+                <AttributeComponent name={attribute.name} unit={attribute.unit} handleDelete={deleteAttribute} />
+            </li>
+        ) : <></>
 
     return (
-        <form>
-            <label htmlFor="name">Name</label>
-            <input
-                type="text"
-                name="name"
-                id="name"
-                value={machine.name}
-                onChange={handleChange}
-            />
-            <label htmlFor="muscle">Muscle</label>
-            <input
-                type="text"
-                name="job"
-                id="job"
-                value={machine.muscle}
-                onChange={handleChange}
-            />
-            <input type="button" value="Submit" onClick={submitForm} />
-        </form>
+        <>
+            <label style={{ fontSize: "24px", fontWeight: "bold" }}>
+                Add Machine
+            </label>
+            <form>
+                <label htmlFor="name">Name</label>
+                <input
+                    type="text"
+                    onChange={(event) => handleNameChange(event.target.value)}
+                />
+                <label htmlFor="muscle">Muscle</label>
+                <input
+                    type="text"
+                    onChange={(event) => handleMuscleChange(event.target.value)}
+                />
+                <AttributeForm handleAddAttribute={addAttribute} />
+                <ul>{listAttributes}</ul>
+                <input type="button" value="Add Machine" onClick={submitForm} />
+            </form>
+        </>
     );
 }
 

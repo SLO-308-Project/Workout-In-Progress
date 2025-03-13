@@ -1,12 +1,11 @@
-import {PipelineStage} from "mongoose";
-import machineModel, {machineType} from "../data/machine";
+import { PipelineStage } from "mongoose";
+import machineModel, { machineType } from "../data/machine";
 import machineLogModel from "../data/machineLog";
 import userModel from "../data/user";
 
-function getListOfMachinesAggregate(userEmail: string)
-{
+function getListOfMachinesAggregate(userEmail: string) {
     return [
-        {$match: {email: userEmail}}, // Find user by email
+        { $match: { email: userEmail } }, // Find user by email
         {
             //Attach all machineLogs as an array called collectedMachineLogs.
             $lookup: {
@@ -17,7 +16,7 @@ function getListOfMachinesAggregate(userEmail: string)
             },
         },
         //Turn collectedMachineLogs from an array into multiple objects.
-        {$unwind: "$collectedMachineLogs"},
+        { $unwind: "$collectedMachineLogs" },
         {
             //Attach all machines as an array called collectedMachines.
             $lookup: {
@@ -28,7 +27,7 @@ function getListOfMachinesAggregate(userEmail: string)
             },
         },
         //Turn collectedMachines from an array into multiple objects.
-        {$unwind: "$collectedMachines"},
+        { $unwind: "$collectedMachines" },
         {
             //renames "$collectedMachines.name" and "$collectedMachines.muscle" as top level fields called name and muscle.
             $project: {
@@ -40,64 +39,54 @@ function getListOfMachinesAggregate(userEmail: string)
     ];
 }
 
-//Helper for addMachine.
-function createMachineAndGetUser(machine: machineType, email: string)
-{
-    //first promise to add a machine and return _id.
-    const machineToAdd = new machineModel(machine);
-    const addedMachine = machineToAdd.save();
-
-    //Second promise to find a machineLogId
-    const foundUser = userModel.findOne({email: email});
-
-    //returns a promise of both. Then is called when both are successful. Catch is called when at least one has an error.
-    return Promise.all([addedMachine, foundUser]);
-}
 
 //adds a machine.
-function addMachine(machine: machineType, email: string)
-{
+// update: frontend needs the added machine document. not the machine log.
+async function addMachine(machine: machineType, email: string) {
+    console.log(`IN MACHINESERVICES machine: ${JSON.stringify(machine)}, email: ${email}`);
     //console.log(email);
-    return createMachineAndGetUser(machine, email).then((result) =>
-    {
-        return machineLogModel.findOneAndUpdate(
-            {_id: result[1]?.machineLogId}, //previously queried user.
-            {$push: {machineIds: result[0]._id}}, //previously added machine _id.
-        );
-    });
+    const machineToAdd = new machineModel(machine);
+
+    //Second promise to find a machineLogId
+    userModel.findOne({ email: email })
+        .then((foundUser) => 
+            machineLogModel.findOneAndUpdate(
+                { _id: foundUser?.machineLogId }, //previously queried user.
+                { $push: { machineIds: machineToAdd._id } }, //previously added machine _id.
+            )
+        )
+    .catch((err) => console.log(err));
+
+    return machineToAdd.save();
 }
 
 //gets machine's based on parameters.
-function getMachines(name: string, muscle: string, userEmail: string)
-{
+function getMachines(name: string, muscle: string, userEmail: string) {
     const listOfMachines: PipelineStage[] =
         getListOfMachinesAggregate(userEmail);
 
     //if there is a name add it to the aggregate to find it.
-    if (name)
-    {
-        listOfMachines.push({$match: {name: name}});
+    if (name) {
+        listOfMachines.push({ $match: { name: name } });
     }
     //if there is a muscle add it to the aggregate to find it.
-    if (muscle)
-    {
-        listOfMachines.push({$match: {muscle: muscle}});
+    if (muscle) {
+        listOfMachines.push({ $match: { muscle: muscle } });
     }
     return userModel.aggregate(listOfMachines);
 }
 
 //deletes a machine by it's unique name.
-function deleteMachine(userEmail: string, machineName: string)
-{
+// TODO: Fix this function to also delete a machine from the machine_log document. 
+async function deleteMachine(userEmail: string, machineName: string) {
     const listOfMachines: PipelineStage[] =
         getListOfMachinesAggregate(userEmail);
-    listOfMachines.push({$match: {name: machineName}}); //match with the correct machine.
+    listOfMachines.push({ $match: { name: machineName } }); //match with the correct machine.
     console.log(listOfMachines);
 
     return userModel
         .aggregate(listOfMachines) //get the machine that has the Id to remove.
-        .then((machineList) =>
-        {
+        .then((machineList) => {
             console.log(machineList);
             const machine = machineList[0] as machineType;
             return machineModel.findByIdAndDelete(machine._id); //remove the machine with the found Id
@@ -109,19 +98,68 @@ function updateMachine(
     userEmail: string,
     currentName: string,
     updatedMachine: machineType,
-)
-{
+) {
     //aggregate to get the machine to update.
     const listOfMachines: PipelineStage[] =
         getListOfMachinesAggregate(userEmail);
-    listOfMachines.push({$match: {name: currentName}});
+    listOfMachines.push({ $match: { name: currentName } });
 
     return userModel
         .aggregate(listOfMachines) //get the machine to upddate.
-        .then((machineList) =>
-        {
+        .then((machineList) => {
             const machine = machineList[0] as machineType;
             return machineModel.findByIdAndUpdate(machine._id, updatedMachine); //update the machine.
+        });
+}
+// returns the attributes for a machine by its id only.
+async function getAttributes(
+    machineId: string
+) {
+    return machineModel.findById(machineId)
+        .then((machine) => {
+            if (!machine) {
+                throw new Error("Machine not found");
+            }
+            return machine.attributes;
+        })
+        .catch((error) => {
+            console.log(error);
+            return null;
+        });
+
+}
+
+async function addAttribute(
+    machineId: string,
+    name: string,
+    unit: string
+) {
+    return machineModel.findById(machineId)
+        .then((machine) => {
+            if (!machine) {
+                throw new Error("Machine not found");
+            }
+            machine.attributes.push({ name: name, unit: unit });
+            return machine.save();
+        })
+        .catch((error) => {
+            console.log(error);
+            return null;
+        });
+}
+
+async function deleteAttribute(machineId: string, attrName: string) {
+    return machineModel.findById(machineId)
+        .then((machine) => {
+            if (!machine) {
+                throw new Error("Machine not found");
+            }
+            machine.attributes.pull({ name: attrName });
+            return machine.save();
+        })
+        .catch((error) => {
+            console.log(error);
+            return null;
         });
 }
 
@@ -130,4 +168,7 @@ export default {
     getMachines,
     deleteMachine,
     updateMachine,
+    getAttributes,
+    addAttribute,
+    deleteAttribute,
 };
