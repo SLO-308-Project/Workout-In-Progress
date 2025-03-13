@@ -41,5 +41,10 @@ router.delete("/:sessionId/:workoutId", (req: Request, res: Response) => {
         });
 });
 
+// router.post("/:workoutId/sets", (req: Request, res: Response) => {
+//     workoutServices
+//     .addSet(req.params.workoutId, req.body.attributeValues)
+// })
+
 
 export default router;

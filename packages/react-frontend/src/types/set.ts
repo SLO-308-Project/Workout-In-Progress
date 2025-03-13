@@ -1,9 +1,6 @@
+import { AttributeValue } from "../types/attributeValue";
 export interface Set
 {
-    // attributeValues: {
-    //     name: string,
-    //     value: number
-    // };
-    reps: number;
-    weight: number;
+    _id: string,
+    attributeValues: AttributeValue[],
 }

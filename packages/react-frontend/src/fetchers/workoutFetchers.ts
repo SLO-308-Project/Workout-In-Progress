@@ -1,3 +1,4 @@
+import { AttributeValue } from "../types/attributeValue";
 const BACKEND_URL: string = "http://localhost:8000";
 
 /**
@@ -26,4 +27,14 @@ function fetchDeleteWorkout(session_id: string, workout_id: string): Promise<Res
     });
 }
 
-export { fetchGetWorkouts, fetchPostWorkout, fetchDeleteWorkout }
+function fetchPostSet(workout_id: string, attributeValues: AttributeValue[]): Promise<Response> {
+    return fetch(`${BACKEND_URL}/workouts/${workout_id}/sets`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(attributeValues)
+    })
+}
+
+export { fetchGetWorkouts, fetchPostWorkout, fetchDeleteWorkout, fetchPostSet}

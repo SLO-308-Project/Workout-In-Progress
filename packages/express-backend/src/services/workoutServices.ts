@@ -37,19 +37,19 @@ async function addWorkout(machineId: string, sessionId: string) {
 
 async function removeWorkout(sessionId: string, workoutId: string) {
     if (!sessionId || !workoutId) {
-        console.log(`sessionId: ${sessionId} workoutId: ${workoutId}`)
+        console.log(`sessionId: ${sessionId} workoutId: ${workoutId}`);
         throw new Error("Session or workout were null.");
     }
     return sessionModel
         .findOne({ _id: sessionId })
         .then((session) => {
             if (!session) {
-                throw new Error()
+                throw new Error();
             }
             console.log("removing workout");
-            console.log(`sessionId: ${sessionId} workoutId: ${workoutId}`)
+            console.log(`sessionId: ${sessionId} workoutId: ${workoutId}`);
             console.log(`${session.workout.constructor.name}`);
-            session.workout.pull({ _id: workoutId })
+            session.workout.pull({ _id: workoutId });
             return session.save();
         })
         .catch((error) => {
@@ -57,6 +57,20 @@ async function removeWorkout(sessionId: string, workoutId: string) {
             return null;
         });
 }
+
+// async function updateSetAttributeValues(sessionId: string, workoutId: string) {
+//     if (!sessionId || !workoutId) {
+//         console.log(`sessionId: ${sessionId} workoutId: ${workoutId}`);
+//         throw new Error("Session or workout were null.");
+//     }
+//     return sessionModel
+//         .findOne({ _id: sessionId })
+//         .then((session) => {
+//             if (!session) {
+//                 throw new Error("DB failed to retrieve session");
+//             }
+//         });
+// }
 
 // Removes a workout given a session id 
 

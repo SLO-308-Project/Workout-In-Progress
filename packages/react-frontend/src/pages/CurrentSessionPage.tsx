@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import CurrentSessionStartButton from "../components/currentSessionEnd";
 import CurrentSessionEndButton from "../components/currentSessionStart";
-import { Machine, Session, Workout } from "../types/sessionTypes"
+import { Machine } from "../types/machine";
+import { Session } from "../types/session";
+import { Workout } from "../types/workout";
 import { fetchGetWorkouts, fetchPostWorkout, fetchDeleteWorkout } from "../fetchers/workoutFetchers";
 import { fetchGetMachine } from "../fetchers/machineFetchers"
 import {
@@ -196,7 +198,7 @@ function CurrentSessionPage() {
 
     const listWorkouts = workouts.map(workout =>
         <li key={workout._id}>
-            <WorkoutComponent id={workout._id} machineName={machineIdToName(workout.machineId)} handleDelete={removeWorkout} />
+            <WorkoutComponent workoutId={workout._id} machineId={workout.machineId} machineName={machineIdToName(workout.machineId)} handleDelete={removeWorkout} />
         </li>
     )
 
