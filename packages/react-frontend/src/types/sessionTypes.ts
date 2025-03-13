@@ -11,13 +11,14 @@ export interface Set
     weight: number;
 }
 
-export interface Machine {
+export interface Machine
+{
     _id: string;
     name: string;
     muscle: string;
 }
 
-export interface Workout 
+export interface Workout
 {
     _id: string;
     machineId: string;

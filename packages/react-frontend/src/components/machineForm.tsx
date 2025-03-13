@@ -1,73 +1,85 @@
 // src/Form.jsx
-import { useState } from "react";
+import {useState} from "react";
 import AttributeForm from "../components/attributeForm";
 import AttributeComponent from "../components/attributeComponent";
-import { Attribute } from "../types/attribute";
-import { Machine } from "../types/machine";
+import {Attribute} from "../types/attribute";
+import {Machine} from "../types/machine";
 
-function MachineForm(props) {
+function MachineForm(props)
+{
     const [machine, setMachine] = useState<Machine>({
         _id: "",
         name: "",
         muscle: "",
-        attributes: []
-    })
+        attributes: [],
+    });
 
-    function handleNameChange(name: string) {
-        setMachine(
-            {
-                ...machine,
-                name: name
-            })
-    }
-
-    function handleMuscleChange(muscle: string) {
+    function handleNameChange(name: string)
+    {
         setMachine({
             ...machine,
-            muscle: muscle
-        })
+            name: name,
+        });
     }
 
-    function addAttribute(attribute: Attribute) {
-        setMachine(
-            {
-                ...machine,
-                attributes: [...machine.attributes, attribute]
-            }
-        )
+    function handleMuscleChange(muscle: string)
+    {
+        setMachine({
+            ...machine,
+            muscle: muscle,
+        });
     }
 
-    function deleteAttribute(attribute: Attribute) {
-        setMachine(
-            {
-                ...machine,
-                attributes: machine.attributes.filter((attr) => attr.name === attribute.name )
-            }
-        )
+    function addAttribute(attribute: Attribute)
+    {
+        setMachine({
+            ...machine,
+            attributes: [...machine.attributes, attribute],
+        });
     }
 
-    function submitForm() {
+    function deleteAttribute(attribute: Attribute)
+    {
+        setMachine({
+            ...machine,
+            attributes: machine.attributes.filter(
+                (attr) => attr.name === attribute.name,
+            ),
+        });
+    }
+
+    function submitForm()
+    {
         console.log(`IN SUBMITFORM: ${JSON.stringify(machine.attributes)}`);
         console.log(`name: ${machine.name} muscle: ${machine.muscle}`);
-        if (!machine.name || !machine.muscle) {
+        if (!machine.name || !machine.muscle)
+        {
             alert("unfilled machien vals");
         }
-        if (machine.attributes.length === 0) {
+        if (machine.attributes.length === 0)
+        {
             alert("machine needs at least 1 attribute");
-        } else
-            props.handleSubmit(machine);
+        }
+        else props.handleSubmit(machine);
     }
 
-    const listAttributes = machine.attributes ?
-        machine.attributes.map((attribute: Attribute) =>
+    const listAttributes = machine.attributes ? (
+        machine.attributes.map((attribute: Attribute) => (
             <li key={attribute.name}>
-                <AttributeComponent name={attribute.name} unit={attribute.unit} handleDelete={deleteAttribute} />
+                <AttributeComponent
+                    name={attribute.name}
+                    unit={attribute.unit}
+                    handleDelete={deleteAttribute}
+                />
             </li>
-        ) : <></>
+        ))
+    ) : (
+        <></>
+    );
 
     return (
         <>
-            <label style={{ fontSize: "24px", fontWeight: "bold" }}>
+            <label style={{fontSize: "24px", fontWeight: "bold"}}>
                 Add Machine
             </label>
             <form>

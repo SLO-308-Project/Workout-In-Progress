@@ -1,68 +1,96 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 import AttributeForm from "./attributeForm";
-import AttributeComponent from "./attributeComponent"
-import { fetchGetAttributes, fetchPostAttribute, fetchDeleteAttribute } from "../fetchers/machineFetchers";
-import { Attribute } from "../types/attribute";
+import AttributeComponent from "./attributeComponent";
+import {
+    fetchGetAttributes,
+    fetchPostAttribute,
+    fetchDeleteAttribute,
+} from "../fetchers/machineFetchers";
+import {Attribute} from "../types/attribute";
 
-export default function Machine(props) {
+export default function Machine(props)
+{
     const [attributes, setAttributes] = useState<Attribute[]>([]);
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         getAttributes();
     }, [props.machine]);
 
-    function getAttributes(): void {
+    function getAttributes(): void
+    {
         console.log(`MACHINE._id = ${props.machine._id}`);
         fetchGetAttributes(props.machine._id)
-            .then((res) => {
-                if (res.ok) {
-                    return res.json()
+            .then((res) =>
+            {
+                if (res.ok)
+                {
+                    return res.json();
                 }
             })
-            .then((res_data) => {
+            .then((res_data) =>
+            {
                 console.log(`res_data.attributes = ${res_data.attributes}`);
 
                 console.log(`${JSON.stringify(res_data)}`);
-                setAttributes(res_data)
-            }
-            )
-            .catch((err) => {
+                setAttributes(res_data);
+            })
+            .catch((err) =>
+            {
                 console.log(err);
             });
     }
 
-    function deleteMachine(): void {
+    function deleteMachine(): void
+    {
         props.handleDelete(props.machine.name);
     }
 
-    function addAttribute(attribute: Attribute) {
-        console.log(`NAME: ${attribute.name} UNIT: ${attribute.unit}`)
+    function addAttribute(attribute: Attribute)
+    {
+        console.log(`NAME: ${attribute.name} UNIT: ${attribute.unit}`);
         fetchPostAttribute(props.machine._id, attribute)
-            .then((res) => {
-                if (res.ok) {
-                    return res.json()
+            .then((res) =>
+            {
+                if (res.ok)
+                {
+                    return res.json();
                 }
             })
             .then((res_data) => setAttributes(res_data.attributes))
             .catch((err) => console.log(err));
     }
 
-    function deleteAttribute(attrName: string) {
+    function deleteAttribute(attrName: string)
+    {
         fetchDeleteAttribute(props.machine._id, attrName)
-            .then((res) => {
-                if (res.ok) {
-                    setAttributes(attributes.filter((attribute) => attribute.name !== attrName));
+            .then((res) =>
+            {
+                if (res.ok)
+                {
+                    setAttributes(
+                        attributes.filter(
+                            (attribute) => attribute.name !== attrName,
+                        ),
+                    );
                 }
             })
             .catch((err) => console.log(err));
     }
 
-    const listAttributes = attributes ?
-        attributes.map((attribute: Attribute) =>
+    const listAttributes = attributes ? (
+        attributes.map((attribute: Attribute) => (
             <li key={attribute.name}>
-                <AttributeComponent name={attribute.name} unit={attribute.unit} handleDelete={deleteAttribute} />
+                <AttributeComponent
+                    name={attribute.name}
+                    unit={attribute.unit}
+                    handleDelete={deleteAttribute}
+                />
             </li>
-        ) : <></>
+        ))
+    ) : (
+        <></>
+    );
 
     return (
         <div className="machine">
@@ -70,7 +98,7 @@ export default function Machine(props) {
             <h4>{props.machine.muscle}</h4>
             <button onClick={deleteMachine}>Delete {props.machine.name}</button>
             <ul>{listAttributes}</ul>
-            <AttributeForm  handleAddAttribute={addAttribute} />
+            <AttributeForm handleAddAttribute={addAttribute} />
         </div>
-    )
+    );
 }

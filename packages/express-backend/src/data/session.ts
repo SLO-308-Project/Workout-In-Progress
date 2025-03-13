@@ -35,12 +35,12 @@ const sessionSchema = new mongoose.Schema(
                             {
                                 name: String,
                                 value: Number,
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
-            }
-        ]
+            },
+        ],
     },
     {
         collection: "sessions",

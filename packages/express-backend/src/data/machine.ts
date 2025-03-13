@@ -21,19 +21,19 @@ const machineSchema = new mongoose.Schema(
         attributes: {
             default: [],
             type: [
-            {
-                name: {
-                    type: String,
-                    trim: true,
+                {
+                    name: {
+                        type: String,
+                        trim: true,
+                    },
+                    unit: {
+                        type: String,
+                        enum: ["lbs", "deg", "kgs", "s", "m", "reps", "cal"],
+                        required: true,
+                    },
                 },
-                unit: {
-                    type: String,
-                    enum: ["lbs", "deg", "kgs", "s", "m", "reps", "cal"],
-                    required: true,
-                }
-            }
-            ]
-        }
+            ],
+        },
     },
     {
         collection: "machines",

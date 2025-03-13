@@ -1,5 +1,5 @@
 import {useState, useEffect} from "react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import SessionTable from "../components/sessionTable";
 import {
     fetchGetSessions,
@@ -78,14 +78,10 @@ function SessionPage()
             />
 
             <Link to="/CurrentSession">
-                <button variant="outlined">
-                        Go to Current Session Page
-                </button>
+                <button variant="outlined">Go to Current Session Page</button>
             </Link>
             <Link to="/Machine">
-                <button variant="outlined">
-                        Go to Machines Page
-                </button>
+                <button variant="outlined">Go to Machines Page</button>
             </Link>
         </div>
     );

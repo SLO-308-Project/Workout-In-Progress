@@ -1,7 +1,7 @@
 // src/main.tsx
 import ReactDOMClient from "react-dom/client";
 import "./main.css";
-import { BrowserRouter } from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
 import MainPage from "./pages/MainPage";
 
 // Create the container
@@ -16,7 +16,7 @@ const root = ReactDOMClient.createRoot(container);
 
 //  Initial render: Render an element to the Root
 root.render(
-    <BrowserRouter> 
-        <MainPage /> 
-    </BrowserRouter>
+    <BrowserRouter>
+        <MainPage />
+    </BrowserRouter>,
 );

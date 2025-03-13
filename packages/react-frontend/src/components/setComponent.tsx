@@ -1,12 +1,14 @@
-import { useState } from "react";
-import { AttributeValue } from "../types/attributeValue";
+import {useState} from "react";
+import {AttributeValue} from "../types/attributeValue";
 
-export default function SetComponent(props) {
-    const listAttributeValues = props.set.attributeValues.map((attributeValue: AttributeValue) =>
-        <li key={props.set._id}>
-            {attributeValue.name}: 
-            {attributeValue.value}
-        </li>
+export default function SetComponent(props)
+{
+    const listAttributeValues = props.set.attributeValues.map(
+        (attributeValue: AttributeValue) => (
+            <li key={props.set._id}>
+                {attributeValue.name}:{attributeValue.value}
+            </li>
+        ),
     );
 
     return (
@@ -14,5 +16,5 @@ export default function SetComponent(props) {
             <p>Set {props.index}</p>
             <ul>{listAttributeValues}</ul>
         </div>
-    )
+    );
 }

@@ -1,4 +1,4 @@
-import { Workout } from "./workout";
+import {Workout} from "./workout";
 export interface Session
 {
     _id: string;

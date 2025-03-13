@@ -1,5 +1,6 @@
 // add more units by expanding this enum
-export enum Unit {
+export enum Unit
+{
     LBS = "lbs",
     KGS = "kgs",
     SECONDS = "s",

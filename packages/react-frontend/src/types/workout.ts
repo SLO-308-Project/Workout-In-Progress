@@ -1,5 +1,5 @@
-import { Set } from "./set"
-export interface Workout 
+import {Set} from "./set";
+export interface Workout
 {
     _id: string;
     machineId: string;

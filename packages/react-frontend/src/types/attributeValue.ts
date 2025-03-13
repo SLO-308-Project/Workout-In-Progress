@@ -1,4 +1,5 @@
-export interface AttributeValue {
-    name: string,
-    value: number
+export interface AttributeValue
+{
+    name: string;
+    value: number;
 }
