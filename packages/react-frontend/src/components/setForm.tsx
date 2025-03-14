@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useCallback} from "react";
 import {Attribute} from "../types/attribute";
 import {AttributeValue} from "../types/attributeValue";
 import {fetchGetAttributes} from "../fetchers/machineFetchers";
@@ -10,17 +10,7 @@ export default function SetForm(props)
         [],
     );
 
-    useEffect(() =>
-    {
-        getAttributes();
-    }, [props.machineId]);
-
-    useEffect(() =>
-    {
-        populateAttributeValues();
-    }, [attributes]);
-
-    function getAttributes(): void
+    const getAttributes = useCallback(() =>
     {
         fetchGetAttributes(props.machineId)
             .then((res) =>
@@ -38,16 +28,26 @@ export default function SetForm(props)
             {
                 console.log(err);
             });
-    }
+    }, [props.machineId]);
 
     // HACK: populating attribute values with placeholders on render. so that handleAttributeValueChange can find an attributeValue in its filter.
-    function populateAttributeValues(): void
+    const populateAttributeValues = useCallback(() =>
     {
         setAttributeValues(() =>
         {
             return attributes.map((attr) => ({name: attr.name, value: -1}));
         });
-    }
+    }, [attributes]);
+
+    useEffect(() =>
+    {
+        getAttributes();
+    }, [getAttributes]);
+
+    useEffect(() =>
+    {
+        populateAttributeValues();
+    }, [populateAttributeValues]);
 
     function handleAttributeValueChange(name: string, value: number)
     {

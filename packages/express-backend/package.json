@@ -6,8 +6,9 @@
         "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles",
         "tsc": "tsc",
         "dev": "npx nodemon src/server.ts",
-        "lint": "eslint .",
-        "start": "node build/server.ts"
+        "lint": "npx eslint .",
+        "start": "node build/server.ts",
+        "coverage": "npx jest --coverage"
     },
     "author": "",
     "license": "ISC",

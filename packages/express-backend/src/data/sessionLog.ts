@@ -19,5 +19,5 @@ const sessionLogSchema = new mongoose.Schema(
 );
 
 const sessionLogModel = mongoose.model("sessionLog", sessionLogSchema);
-export type sessionLogType = mongoose.InferSchemaType<typeof sessionLogSchema>;
+export type SessionLogType = mongoose.InferSchemaType<typeof sessionLogSchema>;
 export default sessionLogModel;

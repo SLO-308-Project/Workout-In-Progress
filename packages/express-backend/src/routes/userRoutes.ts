@@ -1,7 +1,6 @@
 import {Router, Request, Response} from "express";
 import userServices from "../services/userServices";
-import {userType} from "../data/user";
-// import {userType} from "../data/user";
+import {UserType} from "../data/user";
 
 //all start with /users
 const router = Router();
@@ -20,7 +19,7 @@ router.post("/", (req: Request, res: Response) =>
      * }
      */
     userServices
-        .addUser(req.body as userType)
+        .addUser(req.body as UserType)
         .then((result) =>
         {
             return res.status(201).send(result);

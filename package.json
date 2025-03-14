@@ -8,7 +8,8 @@
         "format": "npx prettier . --write",
         "lint": "npm run lint --prefix packages/react-frontend & npm run lint --prefix packages/express-backend",
         "frontdev": "npm run -w react-frontend dev",
-        "backdev": "npm run -w express-backend dev"
+        "backdev": "npm run -w express-backend dev",
+        "coverage": "npm run -w express-backend coverage & npm run -w react-frontend coverage"
     },
     "repository": {
         "type": "git",

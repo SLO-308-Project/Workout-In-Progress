@@ -1,7 +1,6 @@
 // src/app.tsx
 import {Link} from "react-router-dom";
 import {useState, useEffect} from "react";
-import MachineTable from "../components/machineTable";
 import MachineForm from "../components/machineForm";
 import MachineComponent from "../components/machineComponent";
 import {

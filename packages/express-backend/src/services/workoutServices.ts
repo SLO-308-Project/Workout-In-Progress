@@ -1,9 +1,10 @@
-// import { ObjectId } from "mongoose";
 import sessionModel from "../data/session";
-// import {machineType} from "../data/machine";
 
-// gets all workouts for a session id
-// returns the array of json workouts or null if it failed
+/**
+ * Gets all workouts for a session
+ * @param {String} session_id - Object id of session to search
+ * @returns {Proimse} - List of workout or Null on failure
+ */
 async function getWorkout(session_id: string)
 {
     return sessionModel
@@ -23,7 +24,13 @@ async function getWorkout(session_id: string)
         });
 }
 
-// Creates a new empty workout for a session
+/**
+ * Creates a new workout for a session
+ *
+ * @param {String} machineId - Machine id to add for a workout
+ * @param {String} sessionId - Session id for workout to be added to
+ * @returns {Promise} - Workout added
+ */
 async function addWorkout(machineId: string, sessionId: string)
 {
     return sessionModel
@@ -45,7 +52,13 @@ async function addWorkout(machineId: string, sessionId: string)
         });
 }
 
-// Removes a workout given a session id
+/**
+ * Removes a workout given a session id
+ *
+ * @param {String} sessionId - Session id of workout to be removed
+ * @param {String} workoutId - Workout id of workout of the session that is removed
+ * @returns {Promise} - Remove workout
+ */
 async function removeWorkout(sessionId: string, workoutId: string)
 {
     if (!sessionId || !workoutId)

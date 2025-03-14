@@ -44,5 +44,5 @@ const machineSchema = new mongoose.Schema(
 //Schema for machine.
 const machineModel = mongoose.model("machine", machineSchema);
 //type for a machine
-export type machineType = mongoose.InferSchemaType<typeof machineSchema>; //typescript  type inference.
+export type MachineType = mongoose.InferSchemaType<typeof machineSchema>; //typescript  type inference.
 export default machineModel;
