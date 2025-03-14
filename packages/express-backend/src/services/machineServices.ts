@@ -7,7 +7,7 @@ import userModel from "../data/user";
  * Gets list of all machines associated with a user
  *
  * @param {String} userEmail - The user email
- * @return {Promise} List of machines
+ * @return {Promise} - List of machines
  */
 function getListOfMachinesAggregate(userEmail: string)
 {
@@ -52,7 +52,7 @@ function getListOfMachinesAggregate(userEmail: string)
  * @param {MachineType} machine - Machine to add
  * @param {email} string - User email associated to machine
  *
- * @returns {Promise} The added machine
+ * @returns {Promise} - Machine added
  */
 async function addMachine(machine: MachineType, email: string)
 {
@@ -75,6 +75,7 @@ async function addMachine(machine: MachineType, email: string)
 
     return machineToAdd.save();
 }
+
 /**
  * Get all machines that machine the critera
  *
@@ -82,7 +83,7 @@ async function addMachine(machine: MachineType, email: string)
  * @param {String} muscle - Name of muscle group to find
  * @param {String} userEmail - User associated with search
  *
- * @returns {Promise<MachineType[]>} List of machines meeting criteria
+ * @returns {Promise<MachineType[]>} - List of machines meeting criteria
  */
 async function getMachines(
     name: string,
@@ -113,7 +114,7 @@ async function getMachines(
  * @param {String} userEmail - Associated user
  * @param {String} machineName - Name of Machine
  *
- * @returns {Promise} - To remove machine
+ * @returns {Promise} - Remove machine
  */
 async function deleteMachine(userEmail: string, machineName: string)
 {
@@ -131,6 +132,7 @@ async function deleteMachine(userEmail: string, machineName: string)
             return machineModel.findByIdAndDelete(machine._id); //remove the machine with the found Id
         });
 }
+
 /**
  * Update a machine with a new one
  *
@@ -138,7 +140,7 @@ async function deleteMachine(userEmail: string, machineName: string)
  * @param {String} currentName - Name of machine to change
  * @param {MachineType} updatedMachine - New machine to replace the old one with
  *
- * @returns {Promise} - To update machine
+ * @returns {Promise} - Update machine
  */
 async function updateMachine(
     userEmail: string,
@@ -155,7 +157,7 @@ async function updateMachine(
         .aggregate(listOfMachines) //get the machine to update.
         .then((machineList) =>
         {
-            const machine = machineList[0] as machineType;
+            const machine = machineList[0] as MachineType;
             return machineModel.findByIdAndUpdate(
                 machine._id,
                 {
@@ -170,12 +172,11 @@ async function updateMachine(
         });
 }
 
-// returns the attributes for a machine by its id only.
 /**
- * Get the attributes of a machine
+ * Get the attributes of a machine by id
  *
- * @param {String} machineId
- * @returns {Promise} Get attributes of a machine
+ * @param {String} machineId - Object id of machine to search
+ * @returns {Promise} - Get attributes of a machine
  */
 async function getAttributes(machineId: string)
 {
@@ -202,7 +203,7 @@ async function getAttributes(machineId: string)
  * @param {String} machineId - Id to idenify the machine
  * @param {String} name - Name of attribute
  * @param {String} unit - Unit of measure for given measure
- * @returns {Promise} To add my attribute
+ * @returns {Promise} - Attribute added to machine
  */
 async function addAttribute(machineId: string, name: string, unit: string)
 {
@@ -229,7 +230,7 @@ async function addAttribute(machineId: string, name: string, unit: string)
  *
  * @param {String} machineId - Unique Id of the machine
  * @param {String} attrName - Attribute to remove
- * @returns {Promise} To remvoe objstacles
+ * @returns {Promise} - Remove attribute
  */
 async function deleteAttribute(machineId: string, attrName: string)
 {

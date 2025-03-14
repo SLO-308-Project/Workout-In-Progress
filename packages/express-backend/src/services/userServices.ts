@@ -2,8 +2,12 @@ import machineLogModel from "../data/machineLog";
 import userModel, {UserType} from "../data/user";
 import sessionLogModel from "../data/sessionLog";
 
-//Add a user.
-
+/**
+ * Create logs for machine and sessions for a user
+ *
+ * @param {UserType} user - User logs are being added to
+ * @returns {Promise} - Create session and machine log
+ */
 function createMachineLogAndSessionLog(user: UserType)
 {
     const createdSessionLog = new sessionLogModel()
@@ -41,6 +45,12 @@ function createMachineLogAndSessionLog(user: UserType)
     );
 }
 
+/**
+ * Add a new user
+ *
+ * @param {UserType} user - User to be added
+ * @returns {Promise} - Add user
+ */
 async function addUser(user: UserType)
 {
     return createMachineLogAndSessionLog(user).then(() =>
