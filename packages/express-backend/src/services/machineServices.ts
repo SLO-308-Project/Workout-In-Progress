@@ -77,7 +77,7 @@ async function addMachine(machine: MachineType, email: string)
 }
 
 /**
- * Get all machines that machine the critera
+ * Get all machines that match the critera
  *
  * @param {String} name - Name of machine to find
  * @param {String} muscle - Name of muscle group to find
@@ -167,7 +167,9 @@ async function updateMachine(
                         attributes: updatedMachine.attributes,
                     },
                 },
-                {new: true},
+                {
+                    new: true,
+                },
             ); //update the machine.
         });
 }
