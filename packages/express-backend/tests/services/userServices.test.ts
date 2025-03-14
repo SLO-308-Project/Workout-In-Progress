@@ -39,7 +39,7 @@ describe("User Services Tests", () =>
         });
         await dummyUser.save();
 
-        dummyUser = new userModel ({
+        dummyUser = new userModel({
             name: "Jane Doe",
             email: "jdoe@gmail.com",
             units: "lbs",
@@ -72,7 +72,7 @@ describe("User Services Tests", () =>
     // Add user - test to hit the catch blocks
     // Closes the connection to database to force an error to hit the catch blocks
     // Reconnects after test finishes
-    test("Add user -- save error", async () =>
+    test("Add user -- failure (save error)", async () =>
     {
         await close();
         const dummyUser = {

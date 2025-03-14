@@ -1,12 +1,12 @@
 import {connect, close} from "../util/mongo-memory-server-config";
 import machineModel from "../../src/data/machine";
-import userModel  from "../../src/data/user";
+import userModel from "../../src/data/user";
 import machineLogModel from "../../src/data/machineLog";
 import machineServices from "../../src/services/machineServices";
 import {Types} from "mongoose";
 
-describe("Machine Services Tests", () => {
-
+describe("Machine Services Tests", () =>
+{
     // In memory database setup
     beforeAll(async () =>
     {
@@ -28,40 +28,48 @@ describe("Machine Services Tests", () => {
             _id: new Types.ObjectId("65f18342cf5b93ee8b0b87d4"),
             name: "Bench Press",
             muscle: "Pectoralis major",
-            attributes: [{
-                name: "weight",
-                unit: "lbs",
-            }]
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "lbs",
+                },
+            ],
         });
         await dummyMachine1.save();
 
         const dummyMachine2 = new machineModel({
             name: "Machine",
             muscle: "Muscle",
-            attributes: [{
-                name: "weight",
-                unit: "kgs",
-            }]
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "kgs",
+                },
+            ],
         });
         await dummyMachine2.save();
 
         const dummyMachine3 = new machineModel({
             name: "Leg Press",
             muscle: "Gluteus maximus",
-            attributes: [{
-                name: "weight",
-                unit: "lbs",
-            }]
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "lbs",
+                },
+            ],
         });
         await dummyMachine3.save();
 
         const dummyMachine4 = new machineModel({
             name: "Pull Down",
             muscle: "Latissimus Dorsi",
-            attribute: [{
-                name: "weight",
-                unit: "lbs",
-            }]
+            attribute: [
+                {
+                    name: "weight",
+                    unit: "lbs",
+                },
+            ],
         });
         await dummyMachine4.save();
 
@@ -119,10 +127,12 @@ describe("Machine Services Tests", () => {
         const updatedMachine = new machineModel({
             name: "Leg Press",
             muscle: "Quadriceps",
-            attributes: [{
-                name: "weight",
-                unit: "lbs",
-            }]
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "lbs",
+                },
+            ],
         });
         const result = await machineServices.updateMachine(
             email,
@@ -153,10 +163,12 @@ describe("Machine Services Tests", () => {
         const newMachine = new machineModel({
             name: "Shoulder Press",
             muscle: "Deltoids",
-            attributes: [{
-                name: "weight",
-                unit: "kgs",
-            }]
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "kgs",
+                },
+            ],
         });
         const result = await machineServices.addMachine(newMachine, email);
         expect(result).toBeTruthy();
@@ -165,7 +177,8 @@ describe("Machine Services Tests", () => {
     });
 
     //Get attributes
-    test("Get attributes --- successful", async () => {
+    test("Get attributes --- successful", async () =>
+    {
         const machineId = "65f18342cf5b93ee8b0b87d4";
         const result = await machineServices.getAttributes(machineId);
         expect(result).toBeTruthy();
@@ -173,27 +186,37 @@ describe("Machine Services Tests", () => {
         expect(result![0].unit).toBe("lbs");
     });
 
-    test("Add attribute --- successful", async () => {
+    test("Add attribute --- successful", async () =>
+    {
         const machineId = "65f18342cf5b93ee8b0b87d4";
         const name = "calories";
         const unit = "cal";
-        const result = await machineServices.addAttribute(machineId, name, unit);
+        const result = await machineServices.addAttribute(
+            machineId,
+            name,
+            unit,
+        );
         expect(result).toBeTruthy();
         expect(result!.attributes[1].name).toBe(name);
         expect(result!.attributes[1].unit).toBe(unit);
     });
 
-    test("Delete attribute --- successful", async () => {
+    test("Delete attribute --- successful", async () =>
+    {
         const machineId = "65f18342cf5b93ee8b0b87d4";
         const attrName = "weight";
-        const result = await machineServices.deleteAttribute(machineId, attrName);
+        const result = await machineServices.deleteAttribute(
+            machineId,
+            attrName,
+        );
         expect(result).toBeTruthy();
         // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
         expect(result!.attributes.length).toBe(0);
     });
 
     // These tests exist to hit the catch blocks
-    test("Add machine --- failure", async () => {
+    test("Add machine --- failure", async () =>
+    {
         try
         {
             // breaks database connection to force an error
@@ -202,10 +225,12 @@ describe("Machine Services Tests", () => {
             const newMachine = new machineModel({
                 name: "Shoulder Press",
                 muscle: "Deltoids",
-                attributes: [{
-                    name: "weight",
-                    unit: "kgs",
-                }]
+                attributes: [
+                    {
+                        name: "weight",
+                        unit: "kgs",
+                    },
+                ],
             });
             await machineServices.addMachine(newMachine, email);
             fail("Test shouldn't get here");
@@ -214,11 +239,13 @@ describe("Machine Services Tests", () => {
         {
             expect(error).toBeTruthy();
         }
-        finally {
+        finally
+        {
             await connect();
         }
     });
-    test("Get attribute --- failure", async () => {
+    test("Get attribute --- failure", async () =>
+    {
         try
         {
             // machine id is not a machine in database forces error
@@ -232,7 +259,8 @@ describe("Machine Services Tests", () => {
         }
     });
 
-    test("Add attribute --- failure", async () => {
+    test("Add attribute --- failure", async () =>
+    {
         try
         {
             const machineId = "65f11142cf5b93ee8b0b87d4";
@@ -247,7 +275,8 @@ describe("Machine Services Tests", () => {
         }
     });
 
-    test("Delete attribute --- failure", async () => {
+    test("Delete attribute --- failure", async () =>
+    {
         try
         {
             const machineId = "65f11142cf5b93ee8b0b87d4";
@@ -260,6 +289,4 @@ describe("Machine Services Tests", () => {
             expect(error).toBeTruthy();
         }
     });
-
-
 });

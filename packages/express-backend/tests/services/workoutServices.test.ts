@@ -4,20 +4,24 @@ import sessionModel from "../../src/data/session";
 import {Types} from "mongoose";
 import machineModel from "../../src/data/machine";
 
-describe("Workout Services Tests", () => {
+describe("Workout Services Tests", () =>
+{
     // In memory database setup
-    beforeAll(async () => {
+    beforeAll(async () =>
+    {
         await connect();
     });
 
-    afterAll(async () => {
+    afterAll(async () =>
+    {
         await close();
     });
 
     // Build in memory database for tests
-    beforeEach(async () => {
+    beforeEach(async () =>
+    {
         // Session entry needed for most workout functionality
-        const dummySession = new sessionModel ({
+        const dummySession = new sessionModel({
             _id: new Types.ObjectId("65f18f3ac6dc7f8d5a1234ab"),
             date: new Date("2025-03-08T12:45:00.000Z"),
             time: 6000,
@@ -40,25 +44,25 @@ describe("Workout Services Tests", () => {
             _id: new Types.ObjectId("61f12342cf4b93ee8b0b37d4"),
             name: "Treadmill",
             muscle: "Hamstring",
-            attributes: [{
-                name: "calories",
-                unit: "cal",
-            }]
+            attributes: [
+                {
+                    name: "calories",
+                    unit: "cal",
+                },
+            ],
         });
         await dummyMachine.save();
     });
 
-
-
-
     // Clean up database entries
-    afterEach (async () => {
+    afterEach(async () =>
+    {
         await sessionModel.deleteMany();
         await machineModel.deleteMany();
     });
 
-    test("Get workout --- successful", async () => {
-
+    test("Get workout --- successful", async () =>
+    {
         const sessionId = "65f18f3ac6dc7f8d5a1234ab";
         const machineId = "6458a28d1f3d7c9a8e1b2c46";
         const result = await workoutServices.getWorkout(sessionId);
@@ -67,16 +71,21 @@ describe("Workout Services Tests", () => {
         expect(result![0].sets.length).toBe(4);
     });
 
-    test("Remove workout --- successful", async () => {
+    test("Remove workout --- successful", async () =>
+    {
         const sessionId = "65f18f3ac6dc7f8d5a1234ab";
         const workoutId = "6458a28d1f3d7c9a8e1b2c46";
-        const result = await workoutServices.removeWorkout(sessionId, workoutId);
+        const result = await workoutServices.removeWorkout(
+            sessionId,
+            workoutId,
+        );
         expect(result).toBeTruthy();
         // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
         expect(result!._id!.toString()).toBe(sessionId);
     });
 
-    test("Add workout", async () => {
+    test("Add workout", async () =>
+    {
         const sessionId = "65f18f3ac6dc7f8d5a1234ab";
         const machineId = "61f12342cf4b93ee8b0b37d4";
         const result = await workoutServices.addWorkout(machineId, sessionId);
@@ -85,9 +94,9 @@ describe("Workout Services Tests", () => {
         expect(result!.workout.length).toBe(2);
     });
 
-
     // These tests exist to hit the catch blocks
-    test("Get workout --- failure (session id not found)", async () => {
+    test("Get workout --- failure (session id not found)", async () =>
+    {
         try
         {
             // invalid session id forces error
@@ -101,7 +110,8 @@ describe("Workout Services Tests", () => {
         }
     });
 
-    test("Get workout --- failure (invalid session id)", async () => {
+    test("Get workout --- failure (invalid session id)", async () =>
+    {
         try
         {
             // invalid session id forces error
@@ -115,7 +125,8 @@ describe("Workout Services Tests", () => {
         }
     });
 
-    test("Remove workout --- failure (session id not found)", async () => {
+    test("Remove workout --- failure (session id not found)", async () =>
+    {
         try
         {
             const sessionId = "6458a28d1f3d7c9a8e1b2c46";
@@ -129,7 +140,8 @@ describe("Workout Services Tests", () => {
         }
     });
 
-    test("Remove workout --- failure (invalid session id)", async () => {
+    test("Remove workout --- failure (invalid session id)", async () =>
+    {
         try
         {
             const sessionId = "";
@@ -143,7 +155,8 @@ describe("Workout Services Tests", () => {
         }
     });
 
-    test("Add workout --- failure (session id not found)", async () => {
+    test("Add workout --- failure (session id not found)", async () =>
+    {
         try
         {
             // invalid session id forces error
@@ -158,7 +171,8 @@ describe("Workout Services Tests", () => {
         }
     });
 
-    test("Add workout --- failure (invalid session id)", async () => {
+    test("Add workout --- failure (invalid session id)", async () =>
+    {
         try
         {
             // invalid session id forces error
