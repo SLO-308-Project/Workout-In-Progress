@@ -121,14 +121,14 @@ describe("Session Services Tests", () =>
 
     // Test get all sessions
     // Verify the amount of entries returned matches expected
-    test("Get list of sessions", async () =>
+    test("Get list of sessions --- successful", async () =>
     {
         const result = await sessionServices.getAllSessions();
         expect(result.length).toBe(5);
     });
 
     // Get current session
-    test("Get current session", async () =>
+    test("Get current session --- successful", async () =>
     {
         const result = await sessionServices.getCurrentSession();
         expect(result).toBeTruthy();
@@ -141,7 +141,7 @@ describe("Session Services Tests", () =>
 
     // End current session
     // Build a current session to end so we can get the generated session id
-    test("End current session", async () =>
+    test("End current session --- successful", async () =>
     {
         // Store ID - check if exists or empty for type safety
         const sessionId = "65f49b7c1d34a2e5f6c89d0a";
@@ -154,7 +154,7 @@ describe("Session Services Tests", () =>
 
     // Get session by ID
     // Build a new session into the database to extract auto generated ID
-    test("Get session by ID", async () =>
+    test("Get session by ID --- successful", async () =>
     {
         const dummySession = {
             date: new Date("2025-01-08T12:45:00.000Z"),
@@ -185,7 +185,7 @@ describe("Session Services Tests", () =>
 
     // Add session
     // Verify session is added and data matches
-    test("Add session", async () =>
+    test("Add session --- successful", async () =>
     {
         const dummySession = new sessionModel({
             date: new Date("2025-03-10T15:20:00.000Z"),
@@ -208,7 +208,7 @@ describe("Session Services Tests", () =>
     });
 
     // Delete session
-    test("Delete session by id", async () =>
+    test("Delete session by id --- successful", async () =>
     {
         const dummySession = {
             date: new Date("2025-03-18T12:45:00.000Z"),
