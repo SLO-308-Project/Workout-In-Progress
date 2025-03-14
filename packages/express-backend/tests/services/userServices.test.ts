@@ -1,5 +1,5 @@
 import {connect, close} from "../util/mongo-memory-server-config";
-import userModel, {userType} from "../../src/data/user";
+import userModel from "../../src/data/user";
 import userServices from "../../src/services/userServices";
 
 describe("User Services Tests", () =>
@@ -18,38 +18,33 @@ describe("User Services Tests", () =>
     // Build in memory database for tests
     beforeEach(async () =>
     {
-        let dummyUser: userType = {
+        let dummyUser = new userModel({
             name: "Philip Buff",
             email: "pbuff@gmail.com",
             units: "lbs",
-        };
-        let result = new userModel(dummyUser);
-        await result.save();
+        });
+        await dummyUser.save();
 
-        dummyUser = {
+        dummyUser = new userModel({
             name: "Anna Bolick",
             email: "abolick@gmail.com",
             units: "kilos",
-        };
+        });
+        await dummyUser.save();
 
-        result = new userModel(dummyUser);
-        await result.save();
-
-        dummyUser = {
+        dummyUser = new userModel({
             name: "John Smith",
             email: "jsmith@gmail.com",
             units: "lbs",
-        };
-        result = new userModel(dummyUser);
-        await result.save();
+        });
+        await dummyUser.save();
 
-        dummyUser = {
+        dummyUser = new userModel({
             name: "Jane Doe",
             email: "jdoe@gmail.com",
             units: "lbs",
-        };
-        result = new userModel(dummyUser);
-        await result.save();
+        });
+        await dummyUser.save();
     });
 
     // Clean up database entries for tests
@@ -77,7 +72,7 @@ describe("User Services Tests", () =>
     // Add user - test to hit the catch blocks
     // Closes the connection to database to force an error to hit the catch blocks
     // Reconnects after test finishes
-    test("Add user -- save error", async () =>
+    test("Add user -- failure (save error)", async () =>
     {
         await close();
         const dummyUser = {

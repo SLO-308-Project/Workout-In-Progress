@@ -1,5 +1,5 @@
 import {connect, close} from "../util/mongo-memory-server-config";
-import sessionModel, {sessionType} from "../../src/data/session";
+import sessionModel from "../../src/data/session";
 import sessionServices from "../../src/services/sessionServices";
 import {Types} from "mongoose";
 
@@ -19,7 +19,25 @@ describe("Session Services Tests", () =>
     // Build in memory database for tests
     beforeEach(async () =>
     {
-        let dummySession = {
+        // Entry that mimics a current session entry
+        const dummyCurrentSession = new sessionModel({
+            _id: new Types.ObjectId("65f49b7c1d34a2e5f6c89d0a"),
+            date: new Date("2025-03-10T12:40:00.000Z"),
+            time: 0,
+            workout: [
+                {
+                    machineId: new Types.ObjectId("65f3a12b7d8c4e9b2a1d5f7e"),
+                    sets: [
+                        {reps: 6, weight: 290},
+                        {reps: 3, weight: 210},
+                    ],
+                },
+            ],
+        });
+        await dummyCurrentSession.save();
+
+        // Session entries
+        let dummySession = new sessionModel({
             date: new Date("2025-03-10T17:30:00.000Z"),
             time: 0,
             workout: [
@@ -32,11 +50,10 @@ describe("Session Services Tests", () =>
                     ],
                 },
             ],
-        };
-        let result = new sessionModel(dummySession);
-        await result.save();
+        });
+        await dummySession.save();
 
-        dummySession = {
+        dummySession = new sessionModel({
             date: new Date("2025-03-05T08:15:00.000Z"),
             time: 4500,
             workout: [
@@ -49,12 +66,10 @@ describe("Session Services Tests", () =>
                     ],
                 },
             ],
-        };
+        });
+        await dummySession.save();
 
-        result = new sessionModel(dummySession);
-        await result.save();
-
-        dummySession = {
+        dummySession = new sessionModel({
             date: new Date("2025-03-07T17:30:00.000Z"),
             time: 3600,
             workout: [
@@ -75,11 +90,10 @@ describe("Session Services Tests", () =>
                     ],
                 },
             ],
-        };
-        result = new sessionModel(dummySession);
-        await result.save();
+        });
+        await dummySession.save();
 
-        dummySession = {
+        dummySession = new sessionModel({
             date: new Date("2025-03-08T12:45:00.000Z"),
             time: 6000,
             workout: [
@@ -93,9 +107,8 @@ describe("Session Services Tests", () =>
                     ],
                 },
             ],
-        };
-        result = new sessionModel(dummySession);
-        await result.save();
+        });
+        await dummySession.save();
     });
 
     // Clean up database entries for tests
@@ -108,14 +121,14 @@ describe("Session Services Tests", () =>
 
     // Test get all sessions
     // Verify the amount of entries returned matches expected
-    test("Get list of sessions", async () =>
+    test("Get list of sessions --- successful", async () =>
     {
         const result = await sessionServices.getAllSessions();
-        expect(result.length).toBe(4);
+        expect(result.length).toBe(5);
     });
 
     // Get current session
-    test("Get current session", async () =>
+    test("Get current session --- successful", async () =>
     {
         const result = await sessionServices.getCurrentSession();
         expect(result).toBeTruthy();
@@ -128,26 +141,10 @@ describe("Session Services Tests", () =>
 
     // End current session
     // Build a current session to end so we can get the generated session id
-    test("End current session", async () =>
+    test("End current session --- successful", async () =>
     {
-        const dummyCurrentSession = {
-            date: new Date("2025-03-10T12:40:00.000Z"),
-            time: 0,
-            workout: [
-                {
-                    machineId: new Types.ObjectId("65f3a12b7d8c4e9b2a1d5f7e"),
-                    sets: [
-                        {reps: 6, weight: 290},
-                        {reps: 3, weight: 210},
-                    ],
-                },
-            ],
-        };
-        const res = new sessionModel(dummyCurrentSession);
-        await res.save();
         // Store ID - check if exists or empty for type safety
-        const sessionId = res._id?.toString() || "";
-
+        const sessionId = "65f49b7c1d34a2e5f6c89d0a";
         const result = await sessionServices.endSession(sessionId);
         expect(result).toBeTruthy();
         // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
@@ -157,7 +154,7 @@ describe("Session Services Tests", () =>
 
     // Get session by ID
     // Build a new session into the database to extract auto generated ID
-    test("Get session by ID", async () =>
+    test("Get session by ID --- successful", async () =>
     {
         const dummySession = {
             date: new Date("2025-01-08T12:45:00.000Z"),
@@ -188,9 +185,9 @@ describe("Session Services Tests", () =>
 
     // Add session
     // Verify session is added and data matches
-    test("Add session", async () =>
+    test("Add session --- successful", async () =>
     {
-        const dummySession: sessionType = {
+        const dummySession = new sessionModel({
             date: new Date("2025-03-10T15:20:00.000Z"),
             time: 3900,
             workout: [
@@ -202,9 +199,7 @@ describe("Session Services Tests", () =>
                     ],
                 },
             ],
-            // Had to force with as sessionType for types to work properly
-            // Has to do with the way mongoose changes the document
-        } as sessionType;
+        });
         const result = await sessionServices.addSession(dummySession);
         expect(result).toBeTruthy();
         expect(result.date).toBe(dummySession.date);
@@ -213,7 +208,7 @@ describe("Session Services Tests", () =>
     });
 
     // Delete session
-    test("Delete session by id", async () =>
+    test("Delete session by id --- successful", async () =>
     {
         const dummySession = {
             date: new Date("2025-03-18T12:45:00.000Z"),

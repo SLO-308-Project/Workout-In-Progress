@@ -1,9 +1,9 @@
 import {connect, close} from "../util/mongo-memory-server-config";
-import machineModel, {machineType} from "../../src/data/machine";
-import userModel, {userType} from "../../src/data/user";
-import machineLogModel, {machineLogType} from "../../src/data/machineLog";
-import {Types} from "mongoose";
+import machineModel from "../../src/data/machine";
+import userModel from "../../src/data/user";
+import machineLogModel from "../../src/data/machineLog";
 import machineServices from "../../src/services/machineServices";
+import {Types} from "mongoose";
 
 describe("Machine Services Tests", () =>
 {
@@ -21,58 +21,77 @@ describe("Machine Services Tests", () =>
     // Build in memory database for tests
     beforeEach(async () =>
     {
-        // Need to add entries for machineLog and user to get functional
-
         // Machine entries
-        let dummyMachine: machineType = {
+
+        // Machine with a forced _id for testing purposes
+        const dummyMachine1 = new machineModel({
+            _id: new Types.ObjectId("65f18342cf5b93ee8b0b87d4"),
             name: "Bench Press",
             muscle: "Pectoralis major",
-        };
-        const machine1 = new machineModel(dummyMachine);
-        await machine1.save();
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "lbs",
+                },
+            ],
+        });
+        await dummyMachine1.save();
 
-        dummyMachine = {
+        const dummyMachine2 = new machineModel({
             name: "Machine",
             muscle: "Muscle",
-        };
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "kgs",
+                },
+            ],
+        });
+        await dummyMachine2.save();
 
-        const machine2 = new machineModel(dummyMachine);
-        await machine2.save();
-
-        dummyMachine = {
+        const dummyMachine3 = new machineModel({
             name: "Leg Press",
             muscle: "Gluteus maximus",
-        };
-        const machine3 = new machineModel(dummyMachine);
-        await machine3.save();
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "lbs",
+                },
+            ],
+        });
+        await dummyMachine3.save();
 
-        dummyMachine = {
+        const dummyMachine4 = new machineModel({
             name: "Pull Down",
             muscle: "Latissimus Dorsi",
-        };
-        const machine4 = new machineModel(dummyMachine);
-        await machine4.save();
+            attribute: [
+                {
+                    name: "weight",
+                    unit: "lbs",
+                },
+            ],
+        });
+        await dummyMachine4.save();
 
         // Machine Log entry
-        const dummyMachineLog: machineLogType = {
+        const dummyMachineLog = new machineLogModel({
             machineIds: [
                 // Type assertion since we know it can't be null since we created
-                machine1._id as Types.ObjectId,
-                machine2._id as Types.ObjectId,
-                machine3._id as Types.ObjectId,
-                machine4._id as Types.ObjectId,
+                dummyMachine1._id,
+                dummyMachine2._id,
+                dummyMachine3._id,
+                dummyMachine4._id,
             ],
-        };
-        const machineLogResult = new machineLogModel(dummyMachineLog);
-        await machineLogResult.save();
+        });
+        await dummyMachineLog.save();
 
         // User entry
-        const dummyUser: userType = {
+        const dummyUser = new userModel({
             name: "Philip Buff",
             email: "pbuff@gmail.com",
             units: "lbs",
-            machineLogId: machineLogResult._id,
-        };
+            machineLogId: dummyMachineLog._id,
+        });
         const userResult = new userModel(dummyUser);
         await userResult.save();
     });
@@ -88,40 +107,46 @@ describe("Machine Services Tests", () =>
     // machineServices tests
 
     // Fetch machine
-    test("Fetch machine", async () =>
+    test("Fetch machine --- successful", async () =>
     {
         const name = "Bench Press";
         const muscle = "Pectoralis major";
         const email = "pbuff@gmail.com";
-        const machine = await machineServices.getMachines(name, muscle, email);
-        expect(machine).toBeTruthy();
-        expect(machine.length).toBe(1);
-        // Type assertion, we know the data exists if we get this far in the tests
-        expect((machine[0] as machineType).name).toBe(name);
-        expect((machine[0] as machineType).muscle).toBe(muscle);
+        const result = await machineServices.getMachines(name, muscle, email);
+        expect(result).toBeTruthy();
+        expect(result.length).toBe(1);
+        expect(result[0].name).toBe(name);
+        expect(result[0].muscle).toBe(muscle);
     });
 
     // Update machine
-    test("Update machine", async () =>
+    test("Update machine --- successful", async () =>
     {
         const email = "pbuff@gmail.com";
         const currentName = "Leg Press";
-        const updatedMachine = {
+        const updatedMachine = new machineModel({
             name: "Leg Press",
             muscle: "Quadriceps",
-        };
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "lbs",
+                },
+            ],
+        });
         const result = await machineServices.updateMachine(
             email,
             currentName,
             updatedMachine,
         );
         expect(result).toBeTruthy();
+        // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
         expect(result!.name).toBe(updatedMachine.name);
         expect(result!.muscle).toBe(updatedMachine.muscle);
     });
 
     // Delete machine
-    test("Delete machine", async () =>
+    test("Delete machine --- successful", async () =>
     {
         const email = "pbuff@gmail.com";
         const name = "Pull Down";
@@ -132,17 +157,136 @@ describe("Machine Services Tests", () =>
     });
 
     // Add machine
-    test("Add machine", async () =>
+    test("Add machine --- successful", async () =>
     {
         const email = "pbuff@gmail.com";
-        const newMachine = {
+        const newMachine = new machineModel({
             name: "Shoulder Press",
             muscle: "Deltoids",
-        };
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "kgs",
+                },
+            ],
+        });
         const result = await machineServices.addMachine(newMachine, email);
-        // Add machine returns
+        expect(result).toBeTruthy();
+        expect(result.name).toBe(newMachine.name);
+        expect(result.muscle).toBe(newMachine.muscle);
+    });
+
+    //Get attributes
+    test("Get attributes --- successful", async () =>
+    {
+        const machineId = "65f18342cf5b93ee8b0b87d4";
+        const result = await machineServices.getAttributes(machineId);
+        expect(result).toBeTruthy();
+        expect(result![0].name).toBe("weight");
+        expect(result![0].unit).toBe("lbs");
+    });
+
+    test("Add attribute --- successful", async () =>
+    {
+        const machineId = "65f18342cf5b93ee8b0b87d4";
+        const name = "calories";
+        const unit = "cal";
+        const result = await machineServices.addAttribute(
+            machineId,
+            name,
+            unit,
+        );
+        expect(result).toBeTruthy();
+        expect(result!.attributes[1].name).toBe(name);
+        expect(result!.attributes[1].unit).toBe(unit);
+    });
+
+    test("Delete attribute --- successful", async () =>
+    {
+        const machineId = "65f18342cf5b93ee8b0b87d4";
+        const attrName = "weight";
+        const result = await machineServices.deleteAttribute(
+            machineId,
+            attrName,
+        );
         expect(result).toBeTruthy();
         // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
-        expect(result!.machineIds.length).toBe(5);
+        expect(result!.attributes.length).toBe(0);
+    });
+
+    // These tests exist to hit the catch blocks
+    test("Add machine --- failure", async () =>
+    {
+        try
+        {
+            // breaks database connection to force an error
+            await close();
+            const email = "pbuff@gmail.com";
+            const newMachine = new machineModel({
+                name: "Shoulder Press",
+                muscle: "Deltoids",
+                attributes: [
+                    {
+                        name: "weight",
+                        unit: "kgs",
+                    },
+                ],
+            });
+            await machineServices.addMachine(newMachine, email);
+            fail("Test shouldn't get here");
+        }
+        catch (error)
+        {
+            expect(error).toBeTruthy();
+        }
+        finally
+        {
+            await connect();
+        }
+    });
+    test("Get attribute --- failure", async () =>
+    {
+        try
+        {
+            // machine id is not a machine in database forces error
+            const machineId = "65f11142cf5b93ee8b0b87d4";
+            await machineServices.getAttributes(machineId);
+            fail("Test shouldn't get here");
+        }
+        catch (error)
+        {
+            expect(error).toBeTruthy();
+        }
+    });
+
+    test("Add attribute --- failure", async () =>
+    {
+        try
+        {
+            const machineId = "65f11142cf5b93ee8b0b87d4";
+            const name = "calories";
+            const unit = "cal";
+            await machineServices.addAttribute(machineId, name, unit);
+            fail("Test shouldn't get here");
+        }
+        catch (error)
+        {
+            expect(error).toBeTruthy();
+        }
+    });
+
+    test("Delete attribute --- failure", async () =>
+    {
+        try
+        {
+            const machineId = "65f11142cf5b93ee8b0b87d4";
+            const attrName = "weight";
+            await machineServices.deleteAttribute(machineId, attrName);
+            fail("Test shouldn't get here");
+        }
+        catch (error)
+        {
+            expect(error).toBeTruthy();
+        }
     });
 });

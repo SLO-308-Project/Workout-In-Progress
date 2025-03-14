@@ -65,7 +65,11 @@ async function addMachine(machine: machineType, email: string)
 }
 
 //gets machine's based on parameters.
-function getMachines(name: string, muscle: string, userEmail: string)
+async function getMachines(
+    name: string,
+    muscle: string,
+    userEmail: string,
+): Promise<machineType[]>
 {
     const listOfMachines: PipelineStage[] =
         getListOfMachinesAggregate(userEmail);
@@ -103,7 +107,7 @@ async function deleteMachine(userEmail: string, machineName: string)
 }
 
 //updates a machine based on parameters
-function updateMachine(
+async function updateMachine(
     userEmail: string,
     currentName: string,
     updatedMachine: machineType,
@@ -115,15 +119,26 @@ function updateMachine(
     listOfMachines.push({$match: {name: currentName}});
 
     return userModel
-        .aggregate(listOfMachines) //get the machine to upddate.
+        .aggregate(listOfMachines) //get the machine to update.
         .then((machineList) =>
         {
             const machine = machineList[0] as machineType;
-            return machineModel.findByIdAndUpdate(machine._id, updatedMachine, {
-                new: true,
-            }); //update the machine.
+            return machineModel.findByIdAndUpdate(
+                machine._id,
+                {
+                    $set: {
+                        name: updatedMachine.name,
+                        muscle: updatedMachine.muscle,
+                        attributes: updatedMachine.attributes,
+                    },
+                },
+                {
+                    new: true,
+                },
+            ); //update the machine.
         });
 }
+
 // returns the attributes for a machine by its id only.
 async function getAttributes(machineId: string)
 {
@@ -167,15 +182,18 @@ async function addAttribute(machineId: string, name: string, unit: string)
 async function deleteAttribute(machineId: string, attrName: string)
 {
     return machineModel
-        .findById(machineId)
+        .findByIdAndUpdate(
+            machineId,
+            {$pull: {attributes: {name: attrName}}},
+            {new: true},
+        )
         .then((machine) =>
         {
             if (!machine)
             {
                 throw new Error("Machine not found");
             }
-            machine.attributes.pull({name: attrName});
-            return machine.save();
+            return machine;
         })
         .catch((error) =>
         {
