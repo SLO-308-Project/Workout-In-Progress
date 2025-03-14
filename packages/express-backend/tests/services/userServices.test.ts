@@ -1,5 +1,5 @@
 import {connect, close} from "../util/mongo-memory-server-config";
-import userModel, {userType} from "../../src/data/user";
+import userModel, {UserType} from "../../src/data/user";
 import userServices from "../../src/services/userServices";
 
 describe("User Services Tests", () =>
@@ -18,7 +18,7 @@ describe("User Services Tests", () =>
     // Build in memory database for tests
     beforeEach(async () =>
     {
-        let dummyUser: userType = {
+        let dummyUser: UserType = {
             name: "Philip Buff",
             email: "pbuff@gmail.com",
             units: "lbs",

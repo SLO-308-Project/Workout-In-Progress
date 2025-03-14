@@ -1,4 +1,3 @@
-import {useState} from "react";
 import {AttributeValue} from "../types/attributeValue";
 
 export default function SetComponent(props)

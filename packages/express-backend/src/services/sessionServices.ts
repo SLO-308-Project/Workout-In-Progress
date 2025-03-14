@@ -1,4 +1,4 @@
-import sessionModel, {sessionType} from "../data/session";
+import sessionModel, {SessionType} from "../data/session";
 
 // Returns all sessions
 function getAllSessions()
@@ -7,7 +7,7 @@ function getAllSessions()
 }
 
 // Adds a session
-function addSession(session: sessionType)
+function addSession(session: SessionType)
 {
     const sessionToAdd = new sessionModel(session);
     return sessionToAdd.save();
@@ -20,7 +20,7 @@ function getSessionById(id: string)
 }
 
 // Get most recent session with no time
-function getCurrentSession(): Promise<sessionType[]>
+function getCurrentSession(): Promise<SessionType[]>
 {
     return sessionModel.aggregate([
         {

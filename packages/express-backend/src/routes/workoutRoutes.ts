@@ -1,5 +1,7 @@
 import {Router, Request, Response} from "express";
 import workoutServices from "../services/workoutServices";
+import {WorkoutRequest} from "../types/express";
+
 // import {sessionType} from "../data/session";
 // import {machineType} from "../data/machine";
 
@@ -22,7 +24,7 @@ router.get("/:sessionId", (req: Request, res: Response) =>
 });
 
 // Adds a workout with a machineid to a sessionid and passes it along to the client
-router.post("/:sessionId", (req: Request, res: Response) =>
+router.post("/:sessionId", (req: WorkoutRequest, res: Response) =>
 {
     workoutServices
         .addWorkout(req.body.machineId, req.params.sessionId)

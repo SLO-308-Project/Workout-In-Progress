@@ -1,7 +1,7 @@
 import {connect, close} from "../util/mongo-memory-server-config";
-import machineModel, {machineType} from "../../src/data/machine";
-import userModel, {userType} from "../../src/data/user";
-import machineLogModel, {machineLogType} from "../../src/data/machineLog";
+import machineModel, {MachineType} from "../../src/data/machine";
+import userModel, {UserType} from "../../src/data/user";
+import machineLogModel, {MachineLogType} from "../../src/data/machineLog";
 import {Types} from "mongoose";
 import machineServices from "../../src/services/machineServices";
 
@@ -24,7 +24,7 @@ describe("Machine Services Tests", () =>
         // Need to add entries for machineLog and user to get functional
 
         // Machine entries
-        let dummyMachine: machineType = {
+        let dummyMachine: MachineType = {
             name: "Bench Press",
             muscle: "Pectoralis major",
         };
@@ -54,7 +54,7 @@ describe("Machine Services Tests", () =>
         await machine4.save();
 
         // Machine Log entry
-        const dummyMachineLog: machineLogType = {
+        const dummyMachineLog: MachineLogType = {
             machineIds: [
                 // Type assertion since we know it can't be null since we created
                 machine1._id as Types.ObjectId,
@@ -67,7 +67,7 @@ describe("Machine Services Tests", () =>
         await machineLogResult.save();
 
         // User entry
-        const dummyUser: userType = {
+        const dummyUser: UserType = {
             name: "Philip Buff",
             email: "pbuff@gmail.com",
             units: "lbs",
@@ -97,8 +97,8 @@ describe("Machine Services Tests", () =>
         expect(machine).toBeTruthy();
         expect(machine.length).toBe(1);
         // Type assertion, we know the data exists if we get this far in the tests
-        expect((machine[0] as machineType).name).toBe(name);
-        expect((machine[0] as machineType).muscle).toBe(muscle);
+        expect((machine[0] as MachineType).name).toBe(name);
+        expect((machine[0] as MachineType).muscle).toBe(muscle);
     });
 
     // Update machine
@@ -139,10 +139,13 @@ describe("Machine Services Tests", () =>
             name: "Shoulder Press",
             muscle: "Deltoids",
         };
-        const result = await machineServices.addMachine(newMachine, email);
+        const result: MachineType = await machineServices.addMachine(
+            newMachine,
+            email,
+        );
         // Add machine returns
         expect(result).toBeTruthy();
         // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
-        expect(result!.machineIds.length).toBe(5);
+        expect(result.machineIds.length).toBe(5);
     });
 });

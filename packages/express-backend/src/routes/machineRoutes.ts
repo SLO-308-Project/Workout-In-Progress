@@ -1,6 +1,7 @@
 import {Router, Request, Response} from "express";
 import machineServices from "../services/machineServices";
-import {machineType} from "../data/machine";
+import {MachineType} from "../data/machine";
+import {MachineRequest} from "../types/express";
 // import { userType } from "../data/user";
 
 // all start with /machines
@@ -8,16 +9,16 @@ const router = Router();
 
 //create machine.
 //req.body of type machine.
+/**req.body = machine =
+ * {
+ * name: String
+ * muscle: String
+ * }
+ * */
 router.post("/:userEmail/", (req: Request, res: Response) =>
 {
-    /**req.body = machine =
-     * {
-     * name: String
-     * muscle: String
-     * }
-     * */
     machineServices
-        .addMachine(req.body as machineType, req.params.userEmail)
+        .addMachine(req.body as MachineType, req.params.userEmail)
         .then((result) =>
         {
             return res.status(201).send(result);
@@ -86,7 +87,7 @@ router.patch("/:userEmail/:name", (req: Request, res: Response) =>
         .updateMachine(
             req.params.userEmail,
             req.params.name,
-            req.body as machineType,
+            req.body as MachineType,
         )
         .then((result) =>
         {
@@ -114,14 +115,10 @@ router.get("/:id/attributes", (req: Request, res: Response) =>
 });
 
 // post an attribute for a machineid
-router.post("/:id/attributes", (req: Request, res: Response) =>
+router.post("/:id/attributes", (req: MachineRequest, res: Response) =>
 {
     machineServices
-        .addAttribute(
-            req.params.id,
-            req.body.name as string,
-            req.body.unit as string,
-        )
+        .addAttribute(req.params.id, req.body.name, req.body.unit)
         .then((result) =>
         {
             return res.status(201).send(result);

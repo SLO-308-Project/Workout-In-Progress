@@ -4,13 +4,14 @@ import stylistic from "@stylistic/eslint-plugin";
 
 export default tseslint.config({
     files: ["**/*.ts"],
+    ignores: ["**/coverage/**"],
     extends: [
         eslint.configs.recommended,
         ...tseslint.configs.recommendedTypeChecked,
     ],
     languageOptions: {
         parserOptions: {
-            project: true,
+            projectService: true,
             tsconfigRootDir: import.meta.dirname,
         },
     },
@@ -19,6 +20,7 @@ export default tseslint.config({
     },
     rules: {
         "@stylistic/semi": "error",
+        "eslint-comments/no-unused-disable": "off",
         "@typescript-eslint/no-unsafe-assignment": "error",
         "@typescript-eslint/no-explicit-any": "error",
         "@typescript-eslint/explicit-function-return-type": "off",

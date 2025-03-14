@@ -1,6 +1,6 @@
 import {Router, Request, Response} from "express";
 import sessionServices from "../services/sessionServices";
-import {sessionType} from "../data/session";
+import {SessionType} from "../data/session";
 
 const router = Router();
 
@@ -63,7 +63,7 @@ router.get("/:id", (req: Request, res: Response) =>
 router.post("/", (req: Request, res: Response) =>
 {
     sessionServices
-        .addSession(req.body as sessionType)
+        .addSession(req.body as SessionType)
         .then((result) =>
         {
             return res.status(201).send(result);

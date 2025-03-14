@@ -10,10 +10,11 @@ export default [
     // JavaScript and TypeScript recommended rules
     js.configs.recommended,
     ...tseslint.configs.recommended,
-
+    {
+        ignores: ["coverage/**"],
+    },
     {
         files: ["**/*.{ts,tsx}"],
-
         languageOptions: {
             ecmaVersion: 2020,
             globals: {

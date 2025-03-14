@@ -48,5 +48,5 @@ const sessionSchema = new mongoose.Schema(
 );
 
 const sessionModel = mongoose.model("session", sessionSchema);
-export type sessionType = mongoose.InferSchemaType<typeof sessionSchema>;
+export type SessionType = mongoose.InferSchemaType<typeof sessionSchema>;
 export default sessionModel;

@@ -1,10 +1,10 @@
 import machineLogModel from "../data/machineLog";
-import userModel, {userType} from "../data/user";
+import userModel, {UserType} from "../data/user";
 import sessionLogModel from "../data/sessionLog";
 
 //Add a user.
 
-function createMachineLogAndSessionLog(user: userType)
+function createMachineLogAndSessionLog(user: UserType)
 {
     const createdSessionLog = new sessionLogModel()
         .save()
@@ -41,7 +41,7 @@ function createMachineLogAndSessionLog(user: userType)
     );
 }
 
-async function addUser(user: userType)
+async function addUser(user: UserType)
 {
     return createMachineLogAndSessionLog(user).then(() =>
     {

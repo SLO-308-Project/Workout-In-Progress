@@ -1,5 +1,5 @@
 import {connect, close} from "../util/mongo-memory-server-config";
-import sessionModel, {sessionType} from "../../src/data/session";
+import sessionModel, {SessionType} from "../../src/data/session";
 import sessionServices from "../../src/services/sessionServices";
 import {Types} from "mongoose";
 
@@ -190,7 +190,7 @@ describe("Session Services Tests", () =>
     // Verify session is added and data matches
     test("Add session", async () =>
     {
-        const dummySession: sessionType = {
+        const dummySession: SessionType = {
             date: new Date("2025-03-10T15:20:00.000Z"),
             time: 3900,
             workout: [
@@ -204,7 +204,7 @@ describe("Session Services Tests", () =>
             ],
             // Had to force with as sessionType for types to work properly
             // Has to do with the way mongoose changes the document
-        } as sessionType;
+        } as SessionType;
         const result = await sessionServices.addSession(dummySession);
         expect(result).toBeTruthy();
         expect(result.date).toBe(dummySession.date);
