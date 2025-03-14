@@ -65,7 +65,11 @@ async function addMachine(machine: machineType, email: string)
 }
 
 //gets machine's based on parameters.
-async function getMachines(name: string, muscle: string, userEmail: string): Promise<machineType[]>
+async function getMachines(
+    name: string,
+    muscle: string,
+    userEmail: string,
+): Promise<machineType[]>
 {
     const listOfMachines: PipelineStage[] =
         getListOfMachinesAggregate(userEmail);
@@ -121,15 +125,20 @@ async function updateMachine(
             const machine = machineList[0] as machineType;
             return machineModel.findByIdAndUpdate(
                 machine._id,
-                { $set: {
-                    name: updatedMachine.name,
+                {
+                    $set: {
+                        name: updatedMachine.name,
                         muscle: updatedMachine.muscle,
                         attributes: updatedMachine.attributes,
-                    }},
-                { new: true,
-            }); //update the machine.
+                    },
+                },
+                {
+                    new: true,
+                },
+            ); //update the machine.
         });
 }
+
 // returns the attributes for a machine by its id only.
 async function getAttributes(machineId: string)
 {
@@ -173,15 +182,18 @@ async function addAttribute(machineId: string, name: string, unit: string)
 async function deleteAttribute(machineId: string, attrName: string)
 {
     return machineModel
-        .findById(machineId)
+        .findByIdAndUpdate(
+            machineId,
+            {$pull: {attributes: {name: attrName}}},
+            {new: true},
+        )
         .then((machine) =>
         {
             if (!machine)
             {
                 throw new Error("Machine not found");
             }
-            machine.attributes.pull({name: attrName});
-            return machine.save();
+            return machine;
         })
         .catch((error) =>
         {
