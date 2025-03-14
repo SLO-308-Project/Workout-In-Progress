@@ -85,7 +85,7 @@ async function addMachine(machine: MachineType, email: string)
  *
  * @returns {Promise} List of machines meeting criteria
  */
-function getMachines(name: string, muscle: string, userEmail: string)
+async function getMachines(name: string, muscle: string, userEmail: string)
 {
     const listOfMachines: PipelineStage[] =
         getListOfMachinesAggregate(userEmail);
@@ -128,8 +128,6 @@ async function deleteMachine(userEmail: string, machineName: string)
             return machineModel.findByIdAndDelete(machine._id); //remove the machine with the found Id
         });
 }
-
-//updates a machine based on parameters
 /**
  * Update a machine with a new one
  *
@@ -139,7 +137,7 @@ async function deleteMachine(userEmail: string, machineName: string)
  *
  * @returns {Promise} - To update machine
  */
-function updateMachine(
+async function updateMachine(
     userEmail: string,
     currentName: string,
     updatedMachine: MachineType,
@@ -151,13 +149,21 @@ function updateMachine(
     listOfMachines.push({$match: {name: currentName}});
 
     return userModel
-        .aggregate(listOfMachines) //get the machine to upddate.
+        .aggregate(listOfMachines) //get the machine to update.
         .then((machineList) =>
         {
-            const machine = machineList[0] as MachineType;
-            return machineModel.findByIdAndUpdate(machine._id, updatedMachine, {
-                new: true,
-            }); //update the machine.
+            const machine = machineList[0] as machineType;
+            return machineModel.findByIdAndUpdate(
+                machine._id,
+                {
+                    $set: {
+                        name: updatedMachine.name,
+                        muscle: updatedMachine.muscle,
+                        attributes: updatedMachine.attributes,
+                    },
+                },
+                {new: true},
+            ); //update the machine.
         });
 }
 // returns the attributes for a machine by its id only.
