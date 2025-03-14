@@ -5,8 +5,8 @@ import machineLogModel, {machineLogType} from "../../src/data/machineLog";
 import {Types} from "mongoose";
 import machineServices from "../../src/services/machineServices";
 
-describe("Machine Services Tests", () =>
-{
+describe("Machine Services Tests", () => {
+
     // In memory database setup
     beforeAll(async () =>
     {
@@ -24,43 +24,54 @@ describe("Machine Services Tests", () =>
         // Need to add entries for machineLog and user to get functional
 
         // Machine entries
-        let dummyMachine: machineType = {
+        const dummyMachine1 = new machineModel({
             name: "Bench Press",
             muscle: "Pectoralis major",
-        };
-        const machine1 = new machineModel(dummyMachine);
-        await machine1.save();
+            attributes: [{
+                name: "weight",
+                unit: "lbs",
+            }]
+        });
+        await dummyMachine1.save();
 
-        dummyMachine = {
+        const dummyMachine2 = new machineModel({
             name: "Machine",
             muscle: "Muscle",
-        };
+            attributes: [{
+                name: "weight",
+                unit: "kgs",
+            }]
+        });
+        await dummyMachine2.save();
 
-        const machine2 = new machineModel(dummyMachine);
-        await machine2.save();
-
-        dummyMachine = {
+        const dummyMachine3 = new machineModel({
             name: "Leg Press",
             muscle: "Gluteus maximus",
-        };
-        const machine3 = new machineModel(dummyMachine);
-        await machine3.save();
+            attributes: [{
+                name: "weight",
+                unit: "lbs",
+            }]
+        });
+        await dummyMachine3.save();
 
-        dummyMachine = {
+        const dummyMachine4 = new machineModel({
             name: "Pull Down",
             muscle: "Latissimus Dorsi",
-        };
-        const machine4 = new machineModel(dummyMachine);
-        await machine4.save();
+            attribute: [{
+                name: "weight",
+                unit: "lbs",
+            }]
+        });
+        await dummyMachine4.save();
 
         // Machine Log entry
         const dummyMachineLog: machineLogType = {
             machineIds: [
                 // Type assertion since we know it can't be null since we created
-                machine1._id as Types.ObjectId,
-                machine2._id as Types.ObjectId,
-                machine3._id as Types.ObjectId,
-                machine4._id as Types.ObjectId,
+                dummyMachine1._id as Types.ObjectId,
+                dummyMachine2._id as Types.ObjectId,
+                dummyMachine3._id as Types.ObjectId,
+                dummyMachine4._id as Types.ObjectId,
             ],
         };
         const machineLogResult = new machineLogModel(dummyMachineLog);
@@ -106,16 +117,21 @@ describe("Machine Services Tests", () =>
     {
         const email = "pbuff@gmail.com";
         const currentName = "Leg Press";
-        const updatedMachine = {
+        const updatedMachine = new machineModel({
             name: "Leg Press",
             muscle: "Quadriceps",
-        };
+            attributes: [{
+                name: "weight",
+                unit: "lbs",
+            }]
+        });
         const result = await machineServices.updateMachine(
             email,
             currentName,
             updatedMachine,
         );
         expect(result).toBeTruthy();
+        // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
         expect(result!.name).toBe(updatedMachine.name);
         expect(result!.muscle).toBe(updatedMachine.muscle);
     });
@@ -135,14 +151,17 @@ describe("Machine Services Tests", () =>
     test("Add machine", async () =>
     {
         const email = "pbuff@gmail.com";
-        const newMachine = {
+        const newMachine = new machineModel({
             name: "Shoulder Press",
             muscle: "Deltoids",
-        };
+            attributes: [{
+                name: "weight",
+                unit: "kgs",
+            }]
+        });
         const result = await machineServices.addMachine(newMachine, email);
-        // Add machine returns
         expect(result).toBeTruthy();
-        // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
-        expect(result!.machineIds.length).toBe(5);
+        expect(result.name).toBe(newMachine.name);
+        expect(result.muscle).toBe(newMachine.muscle);
     });
 });

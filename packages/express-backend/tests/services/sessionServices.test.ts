@@ -19,7 +19,7 @@ describe("Session Services Tests", () =>
     // Build in memory database for tests
     beforeEach(async () =>
     {
-        let dummySession = {
+        let dummySession = new sessionModel({
             date: new Date("2025-03-10T17:30:00.000Z"),
             time: 0,
             workout: [
@@ -32,9 +32,8 @@ describe("Session Services Tests", () =>
                     ],
                 },
             ],
-        };
-        let result = new sessionModel(dummySession);
-        await result.save();
+        });
+        await dummySession.save();
 
         dummySession = {
             date: new Date("2025-03-05T08:15:00.000Z"),
@@ -54,7 +53,7 @@ describe("Session Services Tests", () =>
         result = new sessionModel(dummySession);
         await result.save();
 
-        dummySession = {
+        dummySession = new sessionModel({
             date: new Date("2025-03-07T17:30:00.000Z"),
             time: 3600,
             workout: [
@@ -75,7 +74,7 @@ describe("Session Services Tests", () =>
                     ],
                 },
             ],
-        };
+        });
         result = new sessionModel(dummySession);
         await result.save();
 
