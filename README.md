@@ -23,6 +23,13 @@ Workout In Progress is a workout tracking application. It helps keep track of wh
 
 [UML Activity Diagram](https://drive.google.com/file/d/1RCC0hqDVSrnWCDgpppQ3kv7xycMe5lVk/view?usp=sharing)
 
+## Test Coverage Report
+Date: 3/14/2025 3pm 
+
+Backend Report:
+![image](https://github.com/user-attachments/assets/e515ebe7-0347-4ec8-aa81-2803a7cef5f1)
+
+
 ## Setup for dev
 1. Clone entire repo.
 2. Run ```npm install``` in the main directory to install all current dependencies.
@@ -58,6 +65,7 @@ Workout In Progress is a workout tracking application. It helps keep track of wh
 - ```npm run backdev``` Runs the dev environment for the backend.
 - ```npm run frontdev``` Runs the dev environment for the frontend.
 - ```npm run test``` Runs jest tests for all workspaces or the current workspace.
+- ```npm run coverage``` Runs jest tests with coverage report for all workspaces or the current workspace.
 - ```npm run format``` Runs the prettier formatter for all files.
 - ```npm run lint``` Runs the ESlint for all workspaces.
 
