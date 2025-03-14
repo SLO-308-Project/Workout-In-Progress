@@ -75,7 +75,6 @@ async function addMachine(machine: MachineType, email: string)
 
     return machineToAdd.save();
 }
-
 /**
  * Get all machines that machine the critera
  *
@@ -83,9 +82,13 @@ async function addMachine(machine: MachineType, email: string)
  * @param {String} muscle - Name of muscle group to find
  * @param {String} userEmail - User associated with search
  *
- * @returns {Promise} List of machines meeting criteria
+ * @returns {Promise<MachineType[]>} List of machines meeting criteria
  */
-async function getMachines(name: string, muscle: string, userEmail: string)
+async function getMachines(
+    name: string,
+    muscle: string,
+    userEmail: string,
+): Promise<MachineType[]>
 {
     const listOfMachines: PipelineStage[] =
         getListOfMachinesAggregate(userEmail);
@@ -166,6 +169,7 @@ async function updateMachine(
             ); //update the machine.
         });
 }
+
 // returns the attributes for a machine by its id only.
 /**
  * Get the attributes of a machine
@@ -230,15 +234,18 @@ async function addAttribute(machineId: string, name: string, unit: string)
 async function deleteAttribute(machineId: string, attrName: string)
 {
     return machineModel
-        .findById(machineId)
+        .findByIdAndUpdate(
+            machineId,
+            {$pull: {attributes: {name: attrName}}},
+            {new: true},
+        )
         .then((machine) =>
         {
             if (!machine)
             {
                 throw new Error("Machine not found");
             }
-            machine.attributes.pull({name: attrName});
-            return machine.save();
+            return machine;
         })
         .catch((error) =>
         {
