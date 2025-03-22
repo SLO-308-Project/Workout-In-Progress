@@ -1,3 +1,4 @@
+import "../temp.css"
 import {useState, useEffect} from "react";
 
 function WorkoutForm(props)
@@ -26,7 +27,7 @@ function WorkoutForm(props)
     }
 
     return (
-        <div>
+        <div className="component">
             <label>Select one of your Machines:</label>
             <select
                 onChange={(event) => setSelectedMachine(event.target.value)}

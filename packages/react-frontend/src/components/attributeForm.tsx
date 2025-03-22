@@ -1,3 +1,4 @@
+import "../temp.css"
 import {Unit} from "../types/unit";
 import {Attribute} from "../types/attribute";
 import {useState} from "react";
@@ -36,7 +37,7 @@ function AttributeForm(props)
     }
 
     return (
-        <div className="attributeForm">
+        <div className="component attributeForm">
             <label>
                 Attribute Name:
                 <input

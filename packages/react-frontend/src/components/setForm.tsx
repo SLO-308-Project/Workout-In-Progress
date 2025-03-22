@@ -1,3 +1,4 @@
+import "../temp.css"
 import {useState, useEffect} from "react";
 import {Attribute} from "../types/attribute";
 import {AttributeValue} from "../types/attributeValue";
@@ -87,7 +88,7 @@ export default function SetForm(props)
     ));
 
     return (
-        <div className="setForm">
+        <div className="setForm component">
             <ul>{listAttributeValueBoxes}</ul>
             <input type="button" value="✓" onClick={handleSubmit} />
         </div>

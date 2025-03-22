@@ -1,4 +1,5 @@
 // src/Form.jsx
+import "../temp.css"
 import {useState} from "react";
 import AttributeForm from "../components/attributeForm";
 import AttributeComponent from "../components/attributeComponent";
@@ -78,7 +79,7 @@ function MachineForm(props)
     );
 
     return (
-        <>
+        <div className="component">
             <label style={{fontSize: "24px", fontWeight: "bold"}}>
                 Add Machine
             </label>
@@ -97,7 +98,7 @@ function MachineForm(props)
                 <ul>{listAttributes}</ul>
                 <input type="button" value="Add Machine" onClick={submitForm} />
             </form>
-        </>
+        </div>
     );
 }
 

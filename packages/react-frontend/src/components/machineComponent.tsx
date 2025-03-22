@@ -1,3 +1,4 @@
+import "../temp.css"
 import {useState, useEffect} from "react";
 import AttributeForm from "./attributeForm";
 import AttributeComponent from "./attributeComponent";
@@ -93,7 +94,7 @@ export default function Machine(props)
     );
 
     return (
-        <div className="machine">
+        <div className="component machine">
             <h2>{props.machine.name}</h2>
             <h4>{props.machine.muscle}</h4>
             <button onClick={deleteMachine}>Delete {props.machine.name}</button>

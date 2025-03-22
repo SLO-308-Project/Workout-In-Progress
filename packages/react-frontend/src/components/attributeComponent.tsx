@@ -1,3 +1,5 @@
+import "../temp.css"
+
 export default function Attribute(props)
 {
     function deleteAttribute(): void
@@ -6,7 +8,7 @@ export default function Attribute(props)
     }
 
     return (
-        <div>
+        <div className="component">
             <div>Name: {props.name}</div>
             <div>Unit: {props.unit}</div>
             <div>

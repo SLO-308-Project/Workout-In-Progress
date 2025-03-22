@@ -1,3 +1,4 @@
+import "../temp.css"
 import {useState} from "react";
 import {AttributeValue} from "../types/attributeValue";
 
@@ -12,8 +13,8 @@ export default function SetComponent(props)
     );
 
     return (
-        <div className="setComponent">
-            <p>Set {props.index}</p>
+        <div className="setComponent component">
+            <p>Set {props.index + 1}</p>
             <ul>{listAttributeValues}</ul>
         </div>
     );

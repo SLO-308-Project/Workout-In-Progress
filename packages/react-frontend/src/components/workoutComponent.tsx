@@ -1,3 +1,4 @@
+import "../temp.css"
 import {useState} from "react";
 import {Set} from "../types/set";
 import {AttributeValue} from "../types/attributeValue";
@@ -25,7 +26,7 @@ export default function Workout(props)
         sets.map((set: Set, index) => <SetComponent set={set} index={index} />);
 
     return (
-        <div className="workout">
+        <div className="workout component">
             <h2>{props.machineName}</h2>
             <button onClick={() => props.handleDelete(props.workoutId)}>
                 Delete

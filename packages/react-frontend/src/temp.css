@@ -1,0 +1,7 @@
+.component {
+    border: 2px solid black; /* Creates the box */
+    padding: 10px; /* Adds space inside the box */
+    margin: 10px; /* Adds space between boxes */
+    border-radius: 5px; /* Optional: Rounds the corners */
+    background-color: #f9f9f9; /* Optional: Light background */
+}
