@@ -7,7 +7,7 @@
         "test": "npm run -w react-frontend test & npm run -w express-backend test",
         "format": "npx prettier . --write",
         "lint": "npm run lint --prefix packages/react-frontend & npm run lint --prefix packages/express-backend",
-        "frontdev": "npm run -w react-frontend dev",
+        "frontdev": "npm run -w native-frontend start",
         "backdev": "npm run -w express-backend dev"
     },
     "repository": {
