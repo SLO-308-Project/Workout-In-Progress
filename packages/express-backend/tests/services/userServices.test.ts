@@ -21,6 +21,7 @@ describe("User Services Tests", () =>
         let dummyUser = new userModel({
             name: "Philip Buff",
             email: "pbuff@gmail.com",
+            password: "pass123",
             units: "lbs",
         });
         await dummyUser.save();
@@ -28,6 +29,7 @@ describe("User Services Tests", () =>
         dummyUser = new userModel({
             name: "Anna Bolick",
             email: "abolick@gmail.com",
+            password: "pass1234",
             units: "kilos",
         });
         await dummyUser.save();
@@ -35,6 +37,7 @@ describe("User Services Tests", () =>
         dummyUser = new userModel({
             name: "John Smith",
             email: "jsmith@gmail.com",
+            password: "pass12",
             units: "lbs",
         });
         await dummyUser.save();
@@ -42,6 +45,7 @@ describe("User Services Tests", () =>
         dummyUser = new userModel({
             name: "Jane Doe",
             email: "jdoe@gmail.com",
+            password: "pass12345",
             units: "lbs",
         });
         await dummyUser.save();
@@ -59,6 +63,7 @@ describe("User Services Tests", () =>
         const dummyUser = {
             name: "Person Guy",
             email: "pguy@gmail.com",
+            password: "password123",
             units: "lbs" as const,
         };
         const result = await userServices.addUser(dummyUser);
@@ -78,6 +83,7 @@ describe("User Services Tests", () =>
         const dummyUser = {
             name: "Person Guy",
             email: "pguy@gmail.com",
+            password: "password123!",
             units: "lbs" as const,
             sessionLogId: undefined,
             machineLogId: undefined,

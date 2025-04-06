@@ -62,6 +62,18 @@ async function addUser(user: UserType)
     });
 }
 
+// Optional includePassword for auth checks since schema set to hide password from select
+async function getUser(email: string, includePassword: boolean = false)
+{
+    let query = userModel.findOne({email});
+    if (includePassword)
+    {
+        query = query.select("+password");
+    }
+    return query;
+}
+
 export default {
     addUser,
+    getUser,
 };
