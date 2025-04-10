@@ -4,17 +4,6 @@ import { useState } from "react";
 import { View, TextInput, Pressable, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-// WHATS BEEN DONE:
-// Setup skeleton for porting
-// Ported (but didn't test) attributeComponent
-// Installed react-native-picker
-// WHERE TO PICKUP:
-// Port over:
-// attributeForm
-// machineComponent
-// machineForm
-// Should have working machine page by the end... hopefully...
-
 type Props = {
     handleAddAttribute: (attribute: Attribute) => void;
 }
@@ -22,17 +11,17 @@ type Props = {
 function AttributeForm({ handleAddAttribute }: Props) {
     const [attribute, setAttribute] = useState<Attribute>({
         name: "",
-        unit: Unit["LBS"], // default is the first unit in the enum. which is lbs
+        unit: Unit.LBS, // default is the first unit in the enum. which is lbs
     });
 
     const listAttributeEnum = Object.keys(Unit).map((opt: string) => (
-        <Picker.Item key={opt} label={Unit[opt]} value={opt} />
+        <Picker.Item key={opt} label={Unit[opt]} value={Unit[opt]} />
     ));
 
     function handleUnitChange(unit: Unit) {
         setAttribute({
             ...attribute,
-            unit: Unit[unit],
+            unit: unit,
         });
     }
 
@@ -45,11 +34,11 @@ function AttributeForm({ handleAddAttribute }: Props) {
 
     return (
         <View className="attributeForm">
-            <TextInput placeholder="Attribute name" onChangeText={(name) => handleNameChange(name)} />
-            <Picker selectedValue={attribute.unit} onValueChange={handleUnitChange}>
+            <TextInput value={attribute.name} className="w-full bg-white px-4 py-3 border border-gray-300 rounded-xl text-base mb-4" placeholder="Attribute name" onChangeText={(name) => handleNameChange(name)} />
+            <Picker selectedValue={attribute.unit} onValueChange={(value) => handleUnitChange(value)}>
                 {listAttributeEnum}
             </Picker>
-            <Pressable onPress={handleAddAttribute}><Text>Add Attribute</Text></Pressable>
+            <Pressable className="bg-blue-600 px-6 py-3 rounded-xl" onPress={() => handleAddAttribute(attribute)}><Text>Add Attribute</Text></Pressable>
         </View>
     );
 }

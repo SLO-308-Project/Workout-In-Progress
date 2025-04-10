@@ -1,27 +1,23 @@
+import { Unit } from "@/types/unit";
 import { View, Pressable, Text } from "react-native";
 
 type Props = {
     name: string;
-    unit: string;
+    unit: Unit;
     handleDelete: (name: string) => void;
 }
 
-export default function Attribute({ name, unit, handleDelete }: Props)
-{
-    function deleteAttribute(): void
-    {
-        handleDelete(name);
-    }
-
+export default function Attribute({ name, unit, handleDelete }: Props) {
+    // function deleteAttribute(): void {
+    //     handleDelete(name);
+    // }
     return (
         <View>
-            <View>Name: {name}</View>
-            <View>Unit: {unit}</View>
-            <View>
-                <Pressable onPress={deleteAttribute}>
-                    <Text>-</Text>
-                </Pressable>
-            </View>
+            <Text>Name: {name}</Text>
+            <Text>Unit: {unit}</Text>
+            <Pressable className="bg-blue-600 px-6 py-3 rounded-xl" onPress={() => handleDelete(name)}>
+                <Text>-</Text>
+            </Pressable>
         </View>
     );
 }
