@@ -1,5 +1,5 @@
 import { View, Text, Pressable } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import AttributeForm from "./attributeForm";
 import AttributeComponent from "./attributeComponent";
 import {
@@ -18,11 +18,8 @@ type Props = {
 export default function MachineComponent({ machine, handleDelete }: Props) {
     const [attributes, setAttributes] = useState<Attribute[]>([]);
 
-    useEffect(() => {
-        getAttributes();
-    }, [machine]);
 
-    function getAttributes(): void {
+    const getAttributes = useCallback(() => {
         console.log(`MACHINE._id = ${machine._id}`);
         fetchGetAttributes(machine._id)
             .then((res) => {
@@ -39,7 +36,11 @@ export default function MachineComponent({ machine, handleDelete }: Props) {
             .catch((err) => {
                 console.log(err);
             });
-    }
+    }, [machine]);
+
+    useEffect(() => {
+        getAttributes();
+    }, [getAttributes]);
 
     function deleteMachine(): void {
         handleDelete(machine.name);

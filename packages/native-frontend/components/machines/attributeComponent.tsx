@@ -8,9 +8,6 @@ type Props = {
 }
 
 export default function Attribute({ name, unit, handleDelete }: Props) {
-    // function deleteAttribute(): void {
-    //     handleDelete(name);
-    // }
     return (
         <View>
             <Text>Name: {name}</Text>

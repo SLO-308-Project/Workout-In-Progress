@@ -1,5 +1,5 @@
 import "@/global.css";
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useState, useEffect } from "react";
 import MachineForm from "@/components/machines/machineForm";
 import MachineComponent from "@/components/machines/machineComponent";
@@ -32,7 +32,7 @@ function MachinePage() {
     console.log(`${machine.name} ${machine.muscle}`);
     fetchPostMachine(machine)
       .then((res) => {
-        if (res.status == 201) {
+        if (res.status === 201) {
           return res.json();
         }
       })
