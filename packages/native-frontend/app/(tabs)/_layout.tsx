@@ -10,7 +10,8 @@ export default function TabLayout() {
           height: 80,
           paddingBottom: 20,
           paddingTop: 10
-        }
+        },
+        headerShown: false
       }}
     >
       <Tabs.Screen
@@ -23,10 +24,10 @@ export default function TabLayout() {
       <Tabs.Screen
         name="currSession"
         options={{
-          title: "",
+          title: "Current Session",
           tabBarIcon: ({ color }) => (
             <AntDesign size={28} name="pluscircleo" color={color} />
-          )
+          ),
         }}
       />
       <Tabs.Screen

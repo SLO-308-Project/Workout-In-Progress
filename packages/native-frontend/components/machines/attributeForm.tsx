@@ -33,12 +33,35 @@ function AttributeForm({ handleAddAttribute }: Props) {
     }
 
     return (
-        <View className="attributeForm">
-            <TextInput value={attribute.name} className="w-full bg-white px-4 py-3 border border-gray-300 rounded-xl text-base mb-4" placeholder="Attribute name" onChangeText={(name) => handleNameChange(name)} />
-            <Picker selectedValue={attribute.unit} onValueChange={(value) => handleUnitChange(value)}>
-                {listAttributeEnum}
-            </Picker>
-            <Pressable className="bg-blue-600 px-6 py-3 rounded-xl" onPress={() => handleAddAttribute(attribute)}><Text>Add Attribute</Text></Pressable>
+        <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 m-4">
+            {/* Attribute Name Input */}
+            <TextInput
+                value={attribute.name}
+                className="w-full bg-gray-50 px-4 py-3 border border-gray-200 rounded-xl text-base text-gray-900 mb-4"
+                placeholder="Attribute name"
+                placeholderTextColor="#A0A0A0"
+                onChangeText={(name) => handleNameChange(name)}
+            />
+
+            {/* Picker styled as a rounded input */}
+            <View className="w-full bg-gray-50 px-4 py-3 border border-gray-200 rounded-xl mb-4">
+                <Picker
+                    selectedValue={attribute.unit}
+                    onValueChange={(value) => handleUnitChange(value)}
+                >
+                    {listAttributeEnum}
+                </Picker>
+            </View>
+
+            {/* Add Attribute Button */}
+            <Pressable
+                className="bg-blue-600 px-6 py-3 rounded-xl active:opacity-75"
+                onPress={() => handleAddAttribute(attribute)}
+            >
+                <Text className="text-white text-center font-semibold">
+                    Add Attribute
+                </Text>
+            </Pressable>
         </View>
     );
 }

@@ -24,20 +24,25 @@ export default function WorkoutForm({ machineOptions, handleSubmit }: Props) {
     }
 
     const listMachineOptions = machineOptions.map((machine: Machine, idx: number) => (
-        <Picker.Item key={idx} label={machine.name} value={machine._id} />
-    ))
+        <Picker.Item
+            key={idx}
+            label={machine.name}
+            value={machine._id}
+            color="#000"
+        />
 
+    ))
 
     return (
         <View>
-            <Text>Select one of your Machines:</Text>
-            <Picker 
-                selectedValue={selectedMachineId}
-                onValueChange={(value: string) => setSelectedMachineId(value)}>
-                {listMachineOptions}
-            </Picker>
-            <Pressable className="bg-orange-600 px-6 py-3 rounded-xl" onPress={submitWorkout}>
-                <Text className="">Add Workout</Text>
+                <Picker
+                    selectedValue={selectedMachineId}
+                    onValueChange={(value: string) => setSelectedMachineId(value)}
+                >
+                    {listMachineOptions}
+                </Picker>
+            <Pressable className="bg-orange-100 px-6 py-3 rounded-full active:opacity-80 transition-all duration-200 items-center" onPress={submitWorkout}>
+                <Text className="text-orange-600 text-base font-semibold">Add Workout</Text>
             </Pressable>
         </View>
     );

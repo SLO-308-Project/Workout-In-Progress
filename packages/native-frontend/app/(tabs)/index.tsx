@@ -1,5 +1,6 @@
-import { Text, View } from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { fetchGetSessions, fetchDeleteSession, fetchStartSessions, fetchCurrentSession } from '@/fetchers/sessionFetchers';
 import { Session } from '@/types/session';
@@ -85,21 +86,23 @@ export default function HomeScreen() {
   }
 
   const listSessions = sessions.map((session: Session, idx: number) => (
-    <SessionComponent 
-      key={idx}
-      idx={idx + 1}
-      date={formatDate(session.date)}
-      duration={formatDuration(session.time)}
-      deleteSession={deleteSession}
-      session={session}
-    />
+      <SessionComponent
+        key={idx}
+        idx={idx + 1}
+        date={formatDate(session.date)}
+        duration={formatDuration(session.time)}
+        deleteSession={deleteSession}
+        session={session}
+      />
   ))
 
   return (
-    <View>
-      <Text>View your Sessions</Text>
-      {listSessions}
-    </View>
+    <SafeAreaView edges={["top"]} className="flex-1 bg-white px-4 pt-4">
+      <ScrollView showsVerticalScrollIndicator={false} className="container">
+        <Text className="text-3xl font-semibold text-black tracking-tight pt-4">Your Sessions</Text>
+        {listSessions}
+      </ScrollView>
+    </SafeAreaView>
   )
 }
 

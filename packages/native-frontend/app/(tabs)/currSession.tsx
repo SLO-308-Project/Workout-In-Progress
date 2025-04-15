@@ -1,5 +1,6 @@
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Machine } from '@/types/machine';
 import { Session } from '@/types/session';
@@ -243,33 +244,54 @@ export default function CurrentSessionPage() {
   ));
 
   function sessionData() {
-    if (sessions === null) {
-      return (
-        <Text>No Active Session.</Text>
-      )
-    }
     return (
-      <View>
-        <Text>Session: {sessionNum}</Text>
-        <Text>Start Date: {formatDate(sessions.date)}</Text>
-        <Text>Duration:{formatDuration((Date.now() - new Date(sessions.date).getTime()))}</Text>
+      <View className="bg-white rounded-2xl space-y-1 mt-4">
+        <Text className="text-base text-black font-semibold">
+          Session: {sessionNum}
+        </Text>
+        <Text className="text-sm text-neutral-700">
+          Start Date: {formatDate(sessions.date)}
+        </Text>
+        <Text className="text-sm text-neutral-700">
+          Duration: {formatDuration(Date.now() - new Date(sessions.date).getTime())}
+        </Text>
       </View>
 
     )
   }
 
   return (
-    <View>
-      {sessionData()}
-      <Pressable onPress={startSession}><Text>Start Session</Text></Pressable>
-      {sessions && (
-        <Pressable onPress={endSession}><Text>End</Text></Pressable>
+    <SafeAreaView edges={["top"]} className="flex-1 bg-white px-4 pt-4">
+      <Text className="text-3xl font-semibold text-black tracking-tight pt-4">Current Session</Text>
+      {!sessions && (
+        <View className="flex-1 justify-center items-center bg-white">
+          <Pressable
+            onPress={startSession}
+            className="w-60 h-60 bg-green-100 rounded-full justify-center items-center active:opacity-80 transition-all duration-200"
+          >
+            <Text className="text-green-600 text-xl font-semibold">Start</Text>
+          </Pressable>
+        </View>
       )}
-      {sessions && listWorkouts}
-      {sessions && (
-        <WorkoutForm handleSubmit={addWorkout} machineOptions={machines} />
-      )}
-
-    </View>
+      <ScrollView showsVerticalScrollIndicator={false} className="container">
+        {sessions && sessionData()}
+        {sessions && listWorkouts}
+        {sessions && (
+          <WorkoutForm handleSubmit={addWorkout} machineOptions={machines} />
+        )}
+        {sessions && (
+          <View className="items-center mt-8">
+            <Pressable
+              onPress={endSession}
+              className="bg-red-100 px-9 py-3 rounded-full active:opacity-80 transition-all duration-200"
+            >
+              <Text className="text-red-600 text-base font-semibold text-center">
+                End
+              </Text>
+            </Pressable>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   )
 }

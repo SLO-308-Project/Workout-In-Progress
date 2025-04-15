@@ -87,12 +87,36 @@ export default function MachineComponent({ machine, handleDelete }: Props) {
     );
 
     return (
-        <View>
-            <Text>{machine.name}</Text>
-            <Text>{machine.muscle}</Text>
-            <Pressable className="bg-blue-600 px-6 py-3 rounded-xl" onPress={deleteMachine}><Text>Delete {machine.name}</Text></Pressable>
-            {listAttributes}
-            <AttributeForm handleAddAttribute={addAttribute} />
+        <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 m-4">
+            {/* Machine info */}
+            <View className="mb-4">
+                <Text className="text-2xl font-bold text-gray-900">
+                    {machine.name}
+                </Text>
+                <Text className="text-base text-gray-600">
+                    {machine.muscle}
+                </Text>
+            </View>
+
+            {/* Delete button */}
+            <Pressable
+                onPress={deleteMachine}
+                className="bg-red-50 border border-red-300 px-4 py-2 rounded-full active:opacity-75 mb-4"
+            >
+                <Text className="text-red-600 font-semibold text-center">
+                    Delete {machine.name}
+                </Text>
+            </Pressable>
+
+            {/* Attribute list */}
+            <View className="mb-4">
+                {listAttributes}
+            </View>
+
+            {/* Attribute form */}
+            <View>
+                <AttributeForm handleAddAttribute={addAttribute} />
+            </View>
         </View>
     );
 }

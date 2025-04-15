@@ -71,16 +71,50 @@ export default function MachineForm({ handleSubmit }: Props) {
         ))
         : (<></>
         );
-    
+
 
     return (
         <View>
-            <Text className="text-center">Add Machine</Text>
-            <TextInput className="w-full bg-white px-4 py-3 border border-gray-300 rounded-xl text-base mb-4" value={machine.name} placeholder="name" onChangeText={(text) => handleNameChange(text)} />
-            <TextInput className="w-full bg-white px-4 py-3 border border-gray-300 rounded-xl text-base mb-4" value={machine.muscle} placeholder="muscle" onChangeText={(text) => handleMuscleChange(text)} />
-            <AttributeForm handleAddAttribute={addAttribute} />
-            {listAttributes}
-            <Pressable className="bg-blue-600 px-6 py-3 rounded-xl" onPress={submitForm}><Text>Add Machine</Text></Pressable>
+            <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 m-4">
+                {/* Form Heading */}
+                <Text className="text-center text-2xl font-bold text-gray-900 mb-4">
+                    Add Machine
+                </Text>
+
+                {/* Machine Name Input */}
+                <TextInput
+                    className="w-full bg-gray-50 px-4 py-3 border border-gray-200 rounded-xl text-base mb-4"
+                    value={machine.name}
+                    placeholder="Name"
+                    placeholderTextColor="#A0A0A0"
+                    onChangeText={(text) => handleNameChange(text)}
+                />
+
+                {/* Muscle Group Input */}
+                <TextInput
+                    className="w-full bg-gray-50 px-4 py-3 border border-gray-200 rounded-xl text-base mb-4"
+                    value={machine.muscle}
+                    placeholder="Muscle"
+                    placeholderTextColor="#A0A0A0"
+                    onChangeText={(text) => handleMuscleChange(text)}
+                />
+
+                {/* Attribute Form */}
+                <AttributeForm handleAddAttribute={addAttribute} />
+
+                {/* List of Attributes */}
+                {listAttributes}
+
+                {/* Submit Button */}
+                <Pressable
+                    className="bg-blue-600 px-6 py-3 rounded-xl active:opacity-75"
+                    onPress={submitForm}
+                >
+                    <Text className="text-white text-center font-semibold">
+                        Add Machine
+                    </Text>
+                </Pressable>
+            </View>
         </View>
     );
 }

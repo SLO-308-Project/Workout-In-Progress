@@ -1,5 +1,6 @@
 import "@/global.css";
-import { ScrollView } from 'react-native';
+import { ScrollView, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState, useEffect } from "react";
 import MachineForm from "@/components/machines/machineForm";
 import MachineComponent from "@/components/machines/machineComponent";
@@ -68,10 +69,13 @@ function MachinePage() {
   ));
 
   return (
-    <ScrollView className="container">
-      {listMachines}
-      <MachineForm handleSubmit={addOneMachine} />
-    </ScrollView>
+    <SafeAreaView edges={["top"]} className="flex-1 bg-white px-4 pt-4">
+      <ScrollView showsVerticalScrollIndicator={false} className="container">
+        <Text className="text-3xl font-semibold text-black tracking-tight pt-4">Machines</Text>
+        {listMachines}
+        <MachineForm handleSubmit={addOneMachine} />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 export default MachinePage;
