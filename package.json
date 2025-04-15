@@ -7,7 +7,7 @@
         "test": "npm run -w react-frontend test & npm run -w express-backend test",
         "format": "npx prettier . --write",
         "lint": "npm run lint --prefix packages/react-frontend & npm run lint --prefix packages/express-backend",
-        "frontdev": "npm run -w react-frontend dev",
+        "frontdev": "npm run -w native-frontend start",
         "backdev": "npm run -w express-backend dev",
         "coverage": "npm run -w express-backend coverage & npm run -w react-frontend coverage"
     },
@@ -46,6 +46,8 @@
         "vite": "^6.0.5"
     },
     "dependencies": {
-        "dotenv": "^16.4.7"
+        "dotenv": "^16.4.7",
+        "react-native-reanimated": "3.16.2",
+        "tailwindcss": "^3.4.17"
     }
 }
