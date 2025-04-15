@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useCallback} from "react";
 import AttributeForm from "./attributeForm";
 import AttributeComponent from "./attributeComponent";
 import {
@@ -12,12 +12,7 @@ export default function Machine(props)
 {
     const [attributes, setAttributes] = useState<Attribute[]>([]);
 
-    useEffect(() =>
-    {
-        getAttributes();
-    }, [props.machine]);
-
-    function getAttributes(): void
+    const getAttributes = useCallback(() =>
     {
         console.log(`MACHINE._id = ${props.machine._id}`);
         fetchGetAttributes(props.machine._id)
@@ -39,7 +34,12 @@ export default function Machine(props)
             {
                 console.log(err);
             });
-    }
+    }, [props.machine]);
+
+    useEffect(() =>
+    {
+        getAttributes();
+    }, [getAttributes]);
 
     function deleteMachine(): void
     {

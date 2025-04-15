@@ -18,5 +18,5 @@ const userListSchema = new mongoose.Schema(
 );
 
 const userListModel = mongoose.model("userList", userListSchema);
-export type userListType = mongoose.InferSchemaType<typeof userListSchema>;
+export type UserListType = mongoose.InferSchemaType<typeof userListSchema>;
 export default userListModel;

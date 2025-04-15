@@ -1,130 +1,109 @@
-import {connect, close} from "../util/mongo-memory-server-config";
-import machineModel, {machineType} from "../../src/data/machine";
-import userModel, {userType} from "../../src/data/user";
-import machineLogModel, {machineLogType} from "../../src/data/machineLog";
-import {Types} from "mongoose";
+import machineModel from "../../src/data/machine";
+import machineLogModel from "../../src/data/machineLog";
+import userModel from "../../src/data/user";
 import machineServices from "../../src/services/machineServices";
 
 describe("Machine Services Tests", () =>
 {
-    // In memory database setup
-    beforeAll(async () =>
-    {
-        await connect();
-    });
+    beforeAll(() =>
+    {});
 
     afterAll(async () =>
+    {});
+
+    // Clean up for each test
+    beforeEach(() =>
     {
-        await close();
-    });
-
-    // Build in memory database for tests
-    beforeEach(async () =>
-    {
-        // Need to add entries for machineLog and user to get functional
-
-        // Machine entries
-        let dummyMachine: machineType = {
-            name: "Bench Press",
-            muscle: "Pectoralis major",
-        };
-        const machine1 = new machineModel(dummyMachine);
-        await machine1.save();
-
-        dummyMachine = {
-            name: "Machine",
-            muscle: "Muscle",
-        };
-
-        const machine2 = new machineModel(dummyMachine);
-        await machine2.save();
-
-        dummyMachine = {
-            name: "Leg Press",
-            muscle: "Gluteus maximus",
-        };
-        const machine3 = new machineModel(dummyMachine);
-        await machine3.save();
-
-        dummyMachine = {
-            name: "Pull Down",
-            muscle: "Latissimus Dorsi",
-        };
-        const machine4 = new machineModel(dummyMachine);
-        await machine4.save();
-
-        // Machine Log entry
-        const dummyMachineLog: machineLogType = {
-            machineIds: [
-                // Type assertion since we know it can't be null since we created
-                machine1._id as Types.ObjectId,
-                machine2._id as Types.ObjectId,
-                machine3._id as Types.ObjectId,
-                machine4._id as Types.ObjectId,
-            ],
-        };
-        const machineLogResult = new machineLogModel(dummyMachineLog);
-        await machineLogResult.save();
-
-        // User entry
-        const dummyUser: userType = {
-            name: "Philip Buff",
-            email: "pbuff@gmail.com",
-            units: "lbs",
-            machineLogId: machineLogResult._id,
-        };
-        const userResult = new userModel(dummyUser);
-        await userResult.save();
+        jest.clearAllMocks();
     });
 
     // Clean up database entries for tests
     afterEach(async () =>
-    {
-        await machineModel.deleteMany();
-        await machineLogModel.deleteMany();
-        await userModel.deleteMany();
-    });
+    {});
 
     // machineServices tests
 
     // Fetch machine
-    test("Fetch machine", async () =>
+    test("Fetch machine --- successful", async () =>
     {
+        const expected = [
+            {
+                name: "Bench Press",
+                muscle: "Pectoralis major",
+            },
+        ];
+        const email = "pbuff@gmail.com";
         const name = "Bench Press";
         const muscle = "Pectoralis major";
-        const email = "pbuff@gmail.com";
-        const machine = await machineServices.getMachines(name, muscle, email);
-        expect(machine).toBeTruthy();
-        expect(machine.length).toBe(1);
-        // Type assertion, we know the data exists if we get this far in the tests
-        expect((machine[0] as machineType).name).toBe(name);
-        expect((machine[0] as machineType).muscle).toBe(muscle);
+        userModel.aggregate = jest.fn().mockResolvedValue(expected);
+
+        const result = await machineServices.getMachines(name, muscle, email);
+        expect(result).toBeTruthy();
+        expect(result.length).toBe(1);
+        expect(result[0].name).toBe(name);
+        expect(result[0].muscle).toBe(muscle);
     });
 
     // Update machine
-    test("Update machine", async () =>
+    test("Update machine --- successful", async () =>
     {
         const email = "pbuff@gmail.com";
         const currentName = "Leg Press";
-        const updatedMachine = {
+        const machines = [
+            new machineModel({
+                name: "Leg Press",
+                muscle: "Gluteus maximus",
+                attributes: [
+                    {
+                        name: "wegith",
+                        unit: "lbs",
+                    },
+                ],
+            }),
+        ];
+
+        const updatedMachine = new machineModel({
+            name: "Leg Press",
+            muscle: "Quadriceps",
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "lbs",
+                },
+            ],
+        });
+        const expected = {
             name: "Leg Press",
             muscle: "Quadriceps",
         };
+        userModel.aggregate = jest.fn().mockResolvedValue(machines);
+        machineModel.findByIdAndUpdate = jest.fn().mockResolvedValue(expected);
         const result = await machineServices.updateMachine(
             email,
             currentName,
             updatedMachine,
         );
         expect(result).toBeTruthy();
+        // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
         expect(result!.name).toBe(updatedMachine.name);
         expect(result!.muscle).toBe(updatedMachine.muscle);
     });
 
     // Delete machine
-    test("Delete machine", async () =>
+    test("Delete machine --- successful", async () =>
     {
         const email = "pbuff@gmail.com";
         const name = "Pull Down";
+        const expected = {
+            name: "Pull Down",
+        };
+        const list = [
+            {
+                name: "Pull Down",
+            },
+        ];
+        userModel.aggregate = jest.fn().mockResolvedValue(list);
+        machineModel.findByIdAndDelete = jest.fn().mockResolvedValue(expected);
         const result = await machineServices.deleteMachine(email, name);
         expect(result).toBeTruthy();
         // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
@@ -132,17 +111,96 @@ describe("Machine Services Tests", () =>
     });
 
     // Add machine
-    test("Add machine", async () =>
+    test("Add machine --- successful", async () =>
     {
         const email = "pbuff@gmail.com";
-        const newMachine = {
+        const machineList: (typeof machineModel)[] = [];
+        const newMachine = new machineModel({
             name: "Shoulder Press",
             muscle: "Deltoids",
-        };
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "kgs",
+                },
+            ],
+        });
+        userModel.findOne = jest.fn().mockResolvedValue(machineList);
+        machineLogModel.findOneAndUpdate = jest
+            .fn()
+            .mockResolvedValue(newMachine);
+        jest.spyOn(machineModel.prototype, "save").mockResolvedValue(
+            newMachine,
+        );
         const result = await machineServices.addMachine(newMachine, email);
-        // Add machine returns
+        expect(result).toBeTruthy();
+        expect(result.name).toBe(newMachine.name);
+        expect(result.muscle).toBe(newMachine.muscle);
+    });
+
+    //Get attributes
+    test("Get attributes --- successful", async () =>
+    {
+        const machineId = "65f18342cf5b93ee8b0b87d4";
+        const expected = {
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "lbs",
+                },
+            ],
+        };
+        machineModel.findById = jest.fn().mockResolvedValue(expected);
+        const result = await machineServices.getAttributes(machineId);
+        expect(result).toBeTruthy();
+        expect(result![0].name).toBe("weight");
+        expect(result![0].unit).toBe("lbs");
+    });
+
+    test("Add attribute --- successful", async () =>
+    {
+        const machineId = "65f18342cf5b93ee8b0b87d4";
+        const name = "calories";
+        const unit = "cal";
+        const machine = new machineModel({
+            name: "Shoulder Press",
+            muscle: "Deltoids",
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "kgs",
+                },
+            ],
+        });
+        machineModel.findById = jest.fn().mockResolvedValue(machine);
+        jest.spyOn(machineModel.prototype, "save").mockResolvedValue(machine);
+        const result = await machineServices.addAttribute(
+            machineId,
+            name,
+            unit,
+        );
+        console.log(result);
+        expect(result).toBeTruthy();
+        expect(result!.attributes[1].name).toBe(name);
+        expect(result!.attributes[1].unit).toBe(unit);
+    });
+
+    test("Delete attribute --- successful", async () =>
+    {
+        const machineId = "65f18342cf5b93ee8b0b87d4";
+        const attrName = "weight";
+        const machine = new machineModel({
+            name: "Shoulder Press",
+            muscle: "Deltoids",
+            attributes: [],
+        });
+        machineModel.findByIdAndUpdate = jest.fn().mockResolvedValue(machine);
+        const result = await machineServices.deleteAttribute(
+            machineId,
+            attrName,
+        );
         expect(result).toBeTruthy();
         // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
-        expect(result!.machineIds.length).toBe(5);
+        expect(result!.attributes.length).toBe(0);
     });
 });

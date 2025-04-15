@@ -3,11 +3,14 @@
     "version": "1.0.0",
     "main": "server.ts",
     "scripts": {
-        "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles",
+        "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testPathIgnorePatterns memoryServices",
+        "memTest": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testPathIgnorePatterns services",
         "tsc": "tsc",
         "dev": "npx nodemon src/server.ts",
-        "lint": "eslint .",
-        "start": "node build/server.ts"
+        "lint": "npx eslint .",
+        "start": "node build/server.ts",
+        "coverage": "npx jest --coverage",
+        "specCoverage": "npx jest --coverage --testPathIgnorePatterns memoryServices"
     },
     "author": "",
     "license": "ISC",

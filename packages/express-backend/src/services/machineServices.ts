@@ -1,8 +1,14 @@
 import {PipelineStage} from "mongoose";
-import machineModel, {machineType} from "../data/machine";
+import machineModel, {MachineType} from "../data/machine";
 import machineLogModel from "../data/machineLog";
 import userModel from "../data/user";
 
+/**
+ * Gets list of all machines associated with a user
+ *
+ * @param {String} userEmail - The user email
+ * @return {Promise} - List of machines
+ */
 function getListOfMachinesAggregate(userEmail: string)
 {
     return [
@@ -40,9 +46,15 @@ function getListOfMachinesAggregate(userEmail: string)
     ];
 }
 
-//adds a machine.
-// update: frontend needs the added machine document. not the machine log.
-async function addMachine(machine: machineType, email: string)
+/**
+ * Add a machine
+ *
+ * @param {MachineType} machine - Machine to add
+ * @param {email} string - User email associated to machine
+ *
+ * @returns {Promise} - Machine added
+ */
+async function addMachine(machine: MachineType, email: string)
 {
     console.log(
         `IN MACHINESERVICES machine: ${JSON.stringify(machine)}, email: ${email}`,
@@ -64,8 +76,20 @@ async function addMachine(machine: machineType, email: string)
     return machineToAdd.save();
 }
 
-//gets machine's based on parameters.
-function getMachines(name: string, muscle: string, userEmail: string)
+/**
+ * Get all machines that match the critera
+ *
+ * @param {String} name - Name of machine to find
+ * @param {String} muscle - Name of muscle group to find
+ * @param {String} userEmail - User associated with search
+ *
+ * @returns {Promise<MachineType[]>} - List of machines meeting criteria
+ */
+async function getMachines(
+    name: string,
+    muscle: string,
+    userEmail: string,
+): Promise<MachineType[]>
 {
     const listOfMachines: PipelineStage[] =
         getListOfMachinesAggregate(userEmail);
@@ -83,8 +107,15 @@ function getMachines(name: string, muscle: string, userEmail: string)
     return userModel.aggregate(listOfMachines);
 }
 
-//deletes a machine by it's unique name.
 // TODO: Fix this function to also delete a machine from the machine_log document.
+/**
+ * Removes a machine
+ *
+ * @param {String} userEmail - Associated user
+ * @param {String} machineName - Name of Machine
+ *
+ * @returns {Promise} - Remove machine
+ */
 async function deleteMachine(userEmail: string, machineName: string)
 {
     const listOfMachines: PipelineStage[] =
@@ -97,16 +128,24 @@ async function deleteMachine(userEmail: string, machineName: string)
         .then((machineList) =>
         {
             console.log(machineList);
-            const machine = machineList[0] as machineType;
+            const machine = machineList[0] as MachineType;
             return machineModel.findByIdAndDelete(machine._id); //remove the machine with the found Id
         });
 }
 
-//updates a machine based on parameters
-function updateMachine(
+/**
+ * Update a machine with a new one
+ *
+ * @param {String} userEmail - Associated user
+ * @param {String} currentName - Name of machine to change
+ * @param {MachineType} updatedMachine - New machine to replace the old one with
+ *
+ * @returns {Promise} - Update machine
+ */
+async function updateMachine(
     userEmail: string,
     currentName: string,
-    updatedMachine: machineType,
+    updatedMachine: MachineType,
 )
 {
     //aggregate to get the machine to update.
@@ -115,16 +154,32 @@ function updateMachine(
     listOfMachines.push({$match: {name: currentName}});
 
     return userModel
-        .aggregate(listOfMachines) //get the machine to upddate.
+        .aggregate(listOfMachines) //get the machine to update.
         .then((machineList) =>
         {
-            const machine = machineList[0] as machineType;
-            return machineModel.findByIdAndUpdate(machine._id, updatedMachine, {
-                new: true,
-            }); //update the machine.
+            const machine = machineList[0] as MachineType;
+            return machineModel.findByIdAndUpdate(
+                machine._id,
+                {
+                    $set: {
+                        name: updatedMachine.name,
+                        muscle: updatedMachine.muscle,
+                        attributes: updatedMachine.attributes,
+                    },
+                },
+                {
+                    new: true,
+                },
+            ); //update the machine.
         });
 }
-// returns the attributes for a machine by its id only.
+
+/**
+ * Get the attributes of a machine by id
+ *
+ * @param {String} machineId - Object id of machine to search
+ * @returns {Promise} - Get attributes of a machine
+ */
 async function getAttributes(machineId: string)
 {
     return machineModel
@@ -144,6 +199,14 @@ async function getAttributes(machineId: string)
         });
 }
 
+/**
+ * Add attribute to a machine
+ *
+ * @param {String} machineId - Id to idenify the machine
+ * @param {String} name - Name of attribute
+ * @param {String} unit - Unit of measure for given measure
+ * @returns {Promise} - Attribute added to machine
+ */
 async function addAttribute(machineId: string, name: string, unit: string)
 {
     return machineModel
@@ -164,18 +227,28 @@ async function addAttribute(machineId: string, name: string, unit: string)
         });
 }
 
+/**
+ * Remove an attribute
+ *
+ * @param {String} machineId - Unique Id of the machine
+ * @param {String} attrName - Attribute to remove
+ * @returns {Promise} - Remove attribute
+ */
 async function deleteAttribute(machineId: string, attrName: string)
 {
     return machineModel
-        .findById(machineId)
+        .findByIdAndUpdate(
+            machineId,
+            {$pull: {attributes: {name: attrName}}},
+            {new: true},
+        )
         .then((machine) =>
         {
             if (!machine)
             {
                 throw new Error("Machine not found");
             }
-            machine.attributes.pull({name: attrName});
-            return machine.save();
+            return machine;
         })
         .catch((error) =>
         {

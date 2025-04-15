@@ -1,26 +1,44 @@
-import sessionModel, {sessionType} from "../data/session";
+import sessionModel, {SessionType} from "../data/session";
 
-// Returns all sessions
+/**
+ * Returns all sessions
+ *
+ * @returns {Promise} - All sessions
+ */
 function getAllSessions()
 {
     return sessionModel.find();
 }
 
-// Adds a session
-function addSession(session: sessionType)
+/**
+ * Adds a session
+ *
+ * @param {SessionType} session - Session to add
+ * @returns {Promise} - Session Added
+ */
+function addSession(session: SessionType)
 {
     const sessionToAdd = new sessionModel(session);
     return sessionToAdd.save();
 }
 
-// Get a session by _id
+/**
+ * Gets a session by id
+ *
+ * @param {String} id - Id of session object
+ * @returns {Promise} - Session object if found or Undefined
+ */
 function getSessionById(id: string)
 {
     return sessionModel.findById(id);
 }
 
-// Get most recent session with no time
-function getCurrentSession(): Promise<sessionType[]>
+/**
+ * Gets most recent session with no time
+ *
+ * @returns {Promise<SessionType[]>} - Gets the current session
+ */
+function getCurrentSession(): Promise<SessionType[]>
 {
     return sessionModel.aggregate([
         {
@@ -35,7 +53,12 @@ function getCurrentSession(): Promise<sessionType[]>
     ]);
 }
 
-// End a session
+/**
+ * Ends a session
+ *
+ * @param {String} id - Id of session to end
+ * @returns {Promise} - Updates Duration Of Session Object
+ */
 function endSession(id: string)
 {
     return sessionModel.findOneAndUpdate(
@@ -45,7 +68,12 @@ function endSession(id: string)
     );
 }
 
-// Delete a session by _id
+/**
+ * Delete a session by id
+ *
+ * @param {String} id - ID of session to delete
+ * @returns {Promise} - Removes Session Object
+ */
 function deleteSession(id: string)
 {
     return sessionModel.findByIdAndDelete(id);
