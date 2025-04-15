@@ -1,4 +1,3 @@
-
 export interface AttributeValue
 {
     name: string;

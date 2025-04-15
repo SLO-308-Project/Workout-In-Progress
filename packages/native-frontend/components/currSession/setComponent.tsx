@@ -1,22 +1,25 @@
-import { View, Text, Pressable } from 'react-native';
-import { useState } from 'react';
-import { AttributeValue } from '@/types/attributeValue';
-import { Set } from '@/types/set';
-import AttributeValueComponent from '@/components/currSession/attributeValue';
-
+import {View, Text, Pressable} from "react-native";
+import {useState} from "react";
+import {AttributeValue} from "@/types/attributeValue";
+import {Set} from "@/types/set";
+import AttributeValueComponent from "@/components/currSession/attributeValue";
 
 type Props = {
     set: Set;
     index: number;
-}
+};
 
-export default function SetComponent({ set, index }: Props) {
+export default function SetComponent({set, index}: Props)
+{
     const [showAV, setShowAV] = useState(false);
-
 
     const listAttributeValues = set.attributeValues.map(
         (attributeValue: AttributeValue, idx: number) => (
-            <AttributeValueComponent key={idx} name={attributeValue.name} value={attributeValue.value} />
+            <AttributeValueComponent
+                key={idx}
+                name={attributeValue.name}
+                value={attributeValue.value}
+            />
         ),
     );
 
@@ -30,12 +33,7 @@ export default function SetComponent({ set, index }: Props) {
                     Set {index}
                 </Text>
             </Pressable>
-            {showAV && (
-                <View className="mt-3">
-                    {listAttributeValues}
-                </View>
-            )}
+            {showAV && <View className="mt-3">{listAttributeValues}</View>}
         </View>
-    )
-
+    );
 }

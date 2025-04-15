@@ -1,16 +1,17 @@
-import { Text, View, TextInput, Pressable } from 'react-native';
-import { useState, useEffect } from 'react';
+import {Text, View, TextInput, Pressable} from "react-native";
+import {useState, useEffect} from "react";
 
-import { Attribute } from '@/types/attribute';
-import { AttributeValue } from '@/types/attributeValue';
-import { fetchGetAttributes } from '@/fetchers/machineFetchers';
+import {Attribute} from "@/types/attribute";
+import {AttributeValue} from "@/types/attributeValue";
+import {fetchGetAttributes} from "@/fetchers/machineFetchers";
 
 type Props = {
     machineId: string;
     handleSubmit: (attributeValues: AttributeValue[]) => void;
-}
+};
 
-export default function SetForm({ machineId, handleSubmit }: Props) {
+export default function SetForm({machineId, handleSubmit}: Props)
+{
     const [attributes, setAttributes] = useState<Attribute[]>([]);
     const [attributeValues, setAttributeValues] = useState<AttributeValue[]>(
         [],
@@ -70,12 +71,19 @@ export default function SetForm({ machineId, handleSubmit }: Props) {
         ]);
     }
 
-    const listAttributeValueBoxes = attributes.map((attribute: Attribute, idx: number) => (
-        <View key={idx}>
-            <TextInput placeholder={attribute.name} onChangeText={(value) => handleAttributeValueChange(attribute.name, value)}/>
-            <Text>{attribute.unit}</Text>
-        </View>
-    ));
+    const listAttributeValueBoxes = attributes.map(
+        (attribute: Attribute, idx: number) => (
+            <View key={idx}>
+                <TextInput
+                    placeholder={attribute.name}
+                    onChangeText={(value) =>
+                        handleAttributeValueChange(attribute.name, value)
+                    }
+                />
+                <Text>{attribute.unit}</Text>
+            </View>
+        ),
+    );
 
     return (
         <View>
@@ -86,4 +94,3 @@ export default function SetForm({ machineId, handleSubmit }: Props) {
         </View>
     );
 }
-

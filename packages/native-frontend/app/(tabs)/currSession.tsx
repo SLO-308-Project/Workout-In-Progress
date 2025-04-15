@@ -1,299 +1,369 @@
-import { View, Text, Pressable, ScrollView } from 'react-native';
-import { useState, useEffect } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useIsFocused } from '@react-navigation/native';
+import {View, Text, Pressable, ScrollView} from "react-native";
+import {useState, useEffect} from "react";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {useIsFocused} from "@react-navigation/native";
 
-import { Machine } from '@/types/machine';
-import { Session } from '@/types/session';
-import { Workout } from '@/types/workout';
+import {Machine} from "@/types/machine";
+import {Session} from "@/types/session";
+import {Workout} from "@/types/workout";
 
-import WorkoutComponent from '@/components/currSession/workoutComponent';
-import WorkoutForm from '@/components/currSession/workoutForm';
-
-import {
-  fetchGetWorkouts,
-  fetchPostWorkout,
-  fetchDeleteWorkout,
-} from '@/fetchers/workoutFetchers';
-
-import { fetchGetMachine } from '@/fetchers/machineFetchers';
+import WorkoutComponent from "@/components/currSession/workoutComponent";
+import WorkoutForm from "@/components/currSession/workoutForm";
 
 import {
-  fetchStartSessions,
-  fetchEndSession,
-  fetchCurrentSession,
-  fetchGetSessions,
+    fetchGetWorkouts,
+    fetchPostWorkout,
+    fetchDeleteWorkout,
+} from "@/fetchers/workoutFetchers";
+
+import {fetchGetMachine} from "@/fetchers/machineFetchers";
+
+import {
+    fetchStartSessions,
+    fetchEndSession,
+    fetchCurrentSession,
+    fetchGetSessions,
 } from "@/fetchers/currentSessionFetchers";
 
 const clockSpeed = 200;
 
-export default function CurrentSessionPage() {
-  const [sessions, setSessions] = useState<Session | null>(null);
-  const [sessionNum, setSessionNum] = useState<number | null>(null);
-  const [time, setTime] = useState(0);
-  const [workouts, setWorkouts] = useState<Workout[]>([]);
+export default function CurrentSessionPage()
+{
+    const [sessions, setSessions] = useState<Session | null>(null);
+    const [sessionNum, setSessionNum] = useState<number | null>(null);
+    const [time, setTime] = useState(0);
+    const [workouts, setWorkouts] = useState<Workout[]>([]);
 
+    const isFocused = useIsFocused();
+    // State for the users currently selected machine
 
-  const isFocused = useIsFocused();
-  // State for the users currently selected machine
+    const [machines, setMachines] = useState<Machine[]>([]);
+    useEffect(() =>
+    {
+        if (isFocused)
+        {
+            getMachines();
+            getCurrentSession();
+            getSessionNumber();
+        }
+    }, [isFocused]);
 
-  const [machines, setMachines] = useState<Machine[]>([]);
-  useEffect(() => {
-    if (isFocused) {
-      getMachines();
-      getCurrentSession();
-      getSessionNumber();
+    // Helper function for date formatting
+    function formatDate(dateString: string): string
+    {
+        return new Date(dateString).toLocaleDateString();
     }
-  }, [isFocused]);
 
-  // Helper function for date formatting
-  function formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString();
-  }
-
-  // Helper function for duration formatting
-  // Converts database time which is stored in seconds to hours and minutes
-  function formatDuration(milliseconds: number): string {
-    const hours = Math.floor(milliseconds / 3600 / 1000);
-    const minutes = Math.floor((milliseconds / 60 / 1000) % 60);
-    const second = Math.floor((milliseconds / 1000) % 60);
-    return `${hours}h ${minutes}m ${second}s`;
-  }
-
-  // Getting workouts is triggered whenever the current session is updated
-  useEffect(() => {
-    if (sessions !== null) {
-      getWorkouts(sessions);
-      const interval = setInterval(() => {
-        setTime((time) => time + clockSpeed / 1000);
-      }, clockSpeed);
-
-      return () => clearInterval(interval);
+    // Helper function for duration formatting
+    // Converts database time which is stored in seconds to hours and minutes
+    function formatDuration(milliseconds: number): string
+    {
+        const hours = Math.floor(milliseconds / 3600 / 1000);
+        const minutes = Math.floor((milliseconds / 60 / 1000) % 60);
+        const second = Math.floor((milliseconds / 1000) % 60);
+        return `${hours}h ${minutes}m ${second}s`;
     }
-  }, [sessions]);
 
-  function startSession(): void {
-    if (sessions !== null) {
-      return;
+    // Getting workouts is triggered whenever the current session is updated
+    useEffect(() =>
+    {
+        if (sessions !== null)
+        {
+            getWorkouts(sessions);
+            const interval = setInterval(() =>
+            {
+                setTime((time) => time + clockSpeed / 1000);
+            }, clockSpeed);
+
+            return () => clearInterval(interval);
+        }
+    }, [sessions]);
+
+    function startSession(): void
+    {
+        if (sessions !== null)
+        {
+            return;
+        }
+        fetchStartSessions()
+            .then((res) =>
+            {
+                if (res.status === 201)
+                {
+                    return res.json();
+                }
+                else
+                {
+                    console.log("Nothing Found");
+                }
+            })
+            .then((json: Session) =>
+            {
+                setSessions(json);
+                setSessionNum(sessionNum! + 1);
+            })
+            .catch((err: unknown) =>
+            {
+                console.log("Error starting session: ", err);
+            });
     }
-    fetchStartSessions()
-      .then((res) => {
-        if (res.status === 201) {
-          return res.json();
-        }
-        else {
-          console.log("Nothing Found");
-        }
-      })
-      .then((json: Session) => {
-        setSessions(json);
-        setSessionNum(sessionNum! + 1);
-      })
-      .catch((err: unknown) => {
-        console.log("Error starting session: ", err);
-      });
-  }
 
-  function endSession(): void {
-    if (sessions === null) {
-      return;
+    function endSession(): void
+    {
+        if (sessions === null)
+        {
+            return;
+        }
+        fetchEndSession(sessions._id)
+            .then((res) =>
+            {
+                if (res.status === 201)
+                {
+                    setSessions(null);
+                }
+                else
+                {
+                    console.log("No session found");
+                }
+            })
+            .catch((err: unknown) =>
+            {
+                console.log("Error ending session: ", err);
+            });
     }
-    fetchEndSession(sessions._id)
-      .then((res) => {
-        if (res.status === 201) {
-          setSessions(null);
-        }
-        else {
-          console.log("No session found");
-        }
-      })
-      .catch((err: unknown) => {
-        console.log("Error ending session: ", err);
-      });
-  }
 
-  function getMachines(): void {
-    fetchGetMachine()
-      .then((res: Response) => res.json())
-      .then((json) => {
-        setMachines(json);
-      })
-      .catch((error: unknown) => console.log(error));
-  }
-
-  /*
-   * Dispatches the request to get the current session, sets the current session.
-   * */
-  function getCurrentSession(): void {
-    fetchCurrentSession()
-      .then((res) => {
-        if (res.status === 200) {
-          console.log("200");
-          return res.json();
-        }
-        else if (res.status === 204) {
-          console.log("204");
-          return null;
-        }
-      })
-      .then((json: Session[]) => {
-        if (json === null) {
-          console.log("No session is started");
-          setSessions(null);
-        }
-        else {
-          setSessions(json[0]);
-        }
-      })
-      .catch((err: unknown) => {
-        console.log("Error getting current session: ", err);
-        throw new Error(`Error getting current session: ${err}`);
-      });
-  }
-
-  function getSessionNumber(): void {
-    fetchGetSessions()
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        }
-        else {
-          throw new Error("No sessions found");
-        }
-      })
-      .then((json: Session[]) => {
-        console.log(`session number: ${json.length}`);
-        setSessionNum(json.length);
-      })
-      .catch((err: unknown) => {
-        console.log("Error getting session number ", err);
-      });
-  }
-
-  function getWorkouts(session: Session): void {
-    fetchGetWorkouts(session._id)
-      .then((res) => {
-        if (res.status === 201) {
-          return res.json();
-        }
-        else {
-          throw new Error("Failed to get workouts");
-        }
-      })
-      .then((json) => {
-        setWorkouts(json);
-      });
-  }
-
-  function addWorkout(machineId: string): void {
-    if (sessions === null) {
-      throw new Error("Could not get session. Session does not exist.");
+    function getMachines(): void
+    {
+        fetchGetMachine()
+            .then((res: Response) => res.json())
+            .then((json) =>
+            {
+                setMachines(json);
+            })
+            .catch((error: unknown) => console.log(error));
     }
-    console.log(`trying to add a workout. sessions=${sessions} machineId=${machineId}`);
-    if (sessions && machineId) {
-      fetchPostWorkout(sessions._id, machineId)
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-          else {
-            throw new Error();
-          }
-        })
-        .then((res_data: Session) => {
-          console.log(`RES_DATA: ${res_data._id}`);
-          console.log(`MachineId: ${machineId}`);
-          console.log(`SessionId: ${sessions._id}`);
-          setWorkouts(res_data.workout);
-        })
-        .catch((error: unknown) => console.log(error));
+
+    /*
+     * Dispatches the request to get the current session, sets the current session.
+     * */
+    function getCurrentSession(): void
+    {
+        fetchCurrentSession()
+            .then((res) =>
+            {
+                if (res.status === 200)
+                {
+                    console.log("200");
+                    return res.json();
+                }
+                else if (res.status === 204)
+                {
+                    console.log("204");
+                    return null;
+                }
+            })
+            .then((json: Session[]) =>
+            {
+                if (json === null)
+                {
+                    console.log("No session is started");
+                    setSessions(null);
+                }
+                else
+                {
+                    setSessions(json[0]);
+                }
+            })
+            .catch((err: unknown) =>
+            {
+                console.log("Error getting current session: ", err);
+                throw new Error(`Error getting current session: ${err}`);
+            });
     }
-  }
 
-  function removeWorkout(workoutId: string): void {
-    if (sessions && workoutId) {
-      fetchDeleteWorkout(sessions._id, workoutId)
-        .then((res) => {
-          if (res.ok) {
-            const new_workouts = workouts.filter(
-              (workout) => workout._id !== workoutId,
-            );
-            setWorkouts(new_workouts);
-          }
-          else {
-            throw new Error();
-          }
-        })
-        .catch((error: unknown) => console.log(error));
+    function getSessionNumber(): void
+    {
+        fetchGetSessions()
+            .then((res) =>
+            {
+                if (res.status === 200)
+                {
+                    return res.json();
+                }
+                else
+                {
+                    throw new Error("No sessions found");
+                }
+            })
+            .then((json: Session[]) =>
+            {
+                console.log(`session number: ${json.length}`);
+                setSessionNum(json.length);
+            })
+            .catch((err: unknown) =>
+            {
+                console.log("Error getting session number ", err);
+            });
     }
-  }
 
-  const machineIdToName = (machineId: string) => {
-    if (machines) {
-      return machines.filter((machine) => machine._id === machineId)[0]
-        .name;
+    function getWorkouts(session: Session): void
+    {
+        fetchGetWorkouts(session._id)
+            .then((res) =>
+            {
+                if (res.status === 201)
+                {
+                    return res.json();
+                }
+                else
+                {
+                    throw new Error("Failed to get workouts");
+                }
+            })
+            .then((json) =>
+            {
+                setWorkouts(json);
+            });
     }
-  };
 
-  const listWorkouts = workouts.map((workout: Workout, idx: number) => (
-    <WorkoutComponent
-      key={idx}
-      workoutId={workout._id}
-      machineId={workout.machineId}
-      machineName={machineIdToName(workout.machineId)}
-      handleDelete={removeWorkout}
-    />
-  ));
+    function addWorkout(machineId: string): void
+    {
+        if (sessions === null)
+        {
+            throw new Error("Could not get session. Session does not exist.");
+        }
+        console.log(
+            `trying to add a workout. sessions=${sessions} machineId=${machineId}`,
+        );
+        if (sessions && machineId)
+        {
+            fetchPostWorkout(sessions._id, machineId)
+                .then((res) =>
+                {
+                    if (res.ok)
+                    {
+                        return res.json();
+                    }
+                    else
+                    {
+                        throw new Error();
+                    }
+                })
+                .then((res_data: Session) =>
+                {
+                    console.log(`RES_DATA: ${res_data._id}`);
+                    console.log(`MachineId: ${machineId}`);
+                    console.log(`SessionId: ${sessions._id}`);
+                    setWorkouts(res_data.workout);
+                })
+                .catch((error: unknown) => console.log(error));
+        }
+    }
 
-  function sessionData() {
+    function removeWorkout(workoutId: string): void
+    {
+        if (sessions && workoutId)
+        {
+            fetchDeleteWorkout(sessions._id, workoutId)
+                .then((res) =>
+                {
+                    if (res.ok)
+                    {
+                        const new_workouts = workouts.filter(
+                            (workout) => workout._id !== workoutId,
+                        );
+                        setWorkouts(new_workouts);
+                    }
+                    else
+                    {
+                        throw new Error();
+                    }
+                })
+                .catch((error: unknown) => console.log(error));
+        }
+    }
+
+    const machineIdToName = (machineId: string) =>
+    {
+        if (machines)
+        {
+            return machines.filter((machine) => machine._id === machineId)[0]
+                .name;
+        }
+    };
+
+    const listWorkouts = workouts.map((workout: Workout, idx: number) => (
+        <WorkoutComponent
+            key={idx}
+            workoutId={workout._id}
+            machineId={workout.machineId}
+            machineName={machineIdToName(workout.machineId)}
+            handleDelete={removeWorkout}
+        />
+    ));
+
+    function sessionData()
+    {
+        return (
+            <View className="bg-white rounded-2xl space-y-1 mt-4">
+                <Text className="text-base text-black font-semibold">
+                    Session: {sessionNum}
+                </Text>
+                <Text className="text-sm text-neutral-700">
+                    Start Date: {formatDate(sessions!.date)}
+                </Text>
+                <Text className="text-sm text-neutral-700">
+                    Duration:{" "}
+                    {formatDuration(
+                        Date.now() - new Date(sessions!.date).getTime(),
+                    )}
+                </Text>
+            </View>
+        );
+    }
+
     return (
-      <View className="bg-white rounded-2xl space-y-1 mt-4">
-        <Text className="text-base text-black font-semibold">
-          Session: {sessionNum}
-        </Text>
-        <Text className="text-sm text-neutral-700">
-          Start Date: {formatDate(sessions!.date)}
-        </Text>
-        <Text className="text-sm text-neutral-700">
-          Duration: {formatDuration(Date.now() - new Date(sessions!.date).getTime())}
-        </Text>
-      </View>
-
-    )
-  }
-
-  return (
-    <SafeAreaView edges={["top"]} className="flex-1 bg-white px-4 pt-4">
-      <Text className="text-3xl font-semibold text-black tracking-tight pt-4">Current Session</Text>
-      {!sessions && (
-        <View className="flex-1 justify-center items-center bg-white">
-          <Pressable
-            onPress={startSession}
-            className="w-60 h-60 bg-green-100 rounded-full justify-center items-center active:opacity-80 transition-all duration-200"
-          >
-            <Text className="text-green-600 text-xl font-semibold">Start</Text>
-          </Pressable>
-        </View>
-      )}
-      <ScrollView showsVerticalScrollIndicator={false} className="container">
-        {sessions && sessionData()}
-        {sessions && listWorkouts}
-        {sessions && (
-          <WorkoutForm handleSubmit={addWorkout} machineOptions={machines} />
-        )}
-        {sessions && (
-          <View className="items-center mt-8">
-            <Pressable
-              onPress={endSession}
-              className="bg-red-100 px-9 py-3 rounded-full active:opacity-80 transition-all duration-200"
+        <SafeAreaView edges={["top"]} className="flex-1 bg-white px-4 pt-4">
+            <Text className="text-3xl font-semibold text-black tracking-tight pt-4">
+                Current Session
+            </Text>
+            {!sessions && (
+                <View className="flex-1 justify-center items-center bg-white">
+                    <Pressable
+                        onPress={startSession}
+                        className="w-60 h-60 bg-green-100 rounded-full justify-center items-center active:opacity-80 transition-all duration-200"
+                    >
+                        <Text className="text-green-600 text-xl font-semibold">
+                            Start
+                        </Text>
+                    </Pressable>
+                </View>
+            )}
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                className="container"
             >
-              <Text className="text-red-600 text-base font-semibold text-center">
-                End
-              </Text>
-            </Pressable>
-          </View>
-        )}
-      </ScrollView>
-    </SafeAreaView>
-  )
+                {sessions && sessionData()}
+                {sessions && listWorkouts}
+                {sessions && (
+                    <WorkoutForm
+                        handleSubmit={addWorkout}
+                        machineOptions={machines}
+                    />
+                )}
+                {sessions && (
+                    <View className="items-center mt-8">
+                        <Pressable
+                            onPress={endSession}
+                            className="bg-red-100 px-9 py-3 rounded-full active:opacity-80 transition-all duration-200"
+                        >
+                            <Text className="text-red-600 text-base font-semibold text-center">
+                                End
+                            </Text>
+                        </Pressable>
+                    </View>
+                )}
+            </ScrollView>
+        </SafeAreaView>
+    );
 }

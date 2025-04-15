@@ -1,16 +1,17 @@
-import { useState } from "react";
+import {useState} from "react";
 import AttributeForm from "./attributeForm";
 import AttributeComponent from "./attributeComponent";
-import { Attribute } from "@/types/attribute";
-import { Machine } from "@/types/machine";
+import {Attribute} from "@/types/attribute";
+import {Machine} from "@/types/machine";
 
-import { Alert, Text, Pressable, TextInput, View } from "react-native";
+import {Alert, Text, Pressable, TextInput, View} from "react-native";
 
 type Props = {
     handleSubmit: (machine: Machine) => void;
-}
+};
 
-export default function MachineForm({ handleSubmit }: Props) {
+export default function MachineForm({handleSubmit}: Props)
+{
     const [machine, setMachine] = useState<Machine>({
         _id: "",
         name: "",
@@ -18,28 +19,32 @@ export default function MachineForm({ handleSubmit }: Props) {
         attributes: [],
     });
 
-    function handleNameChange(name: string) {
+    function handleNameChange(name: string)
+    {
         setMachine({
             ...machine,
             name: name,
         });
     }
 
-    function handleMuscleChange(muscle: string) {
+    function handleMuscleChange(muscle: string)
+    {
         setMachine({
             ...machine,
             muscle: muscle,
         });
     }
 
-    function addAttribute(attribute: Attribute) {
+    function addAttribute(attribute: Attribute)
+    {
         setMachine({
             ...machine,
             attributes: [...machine.attributes, attribute],
         });
     }
 
-    function deleteAttribute(attributeName: string) {
+    function deleteAttribute(attributeName: string)
+    {
         setMachine({
             ...machine,
             attributes: machine.attributes.filter(
@@ -48,19 +53,22 @@ export default function MachineForm({ handleSubmit }: Props) {
         });
     }
 
-    function submitForm() {
+    function submitForm()
+    {
         console.log(`IN SUBMITFORM: ${JSON.stringify(machine.attributes)}`);
         console.log(`name: ${machine.name} muscle: ${machine.muscle}`);
-        if (!machine.name || !machine.muscle) {
+        if (!machine.name || !machine.muscle)
+        {
             Alert.alert("unfilled machien vals");
         }
-        if (machine.attributes.length === 0) {
+        if (machine.attributes.length === 0)
+        {
             Alert.alert("machine needs at least 1 attribute");
         }
         else handleSubmit(machine);
     }
 
-    const listAttributes = machine.attributes ?
+    const listAttributes = machine.attributes ? (
         machine.attributes.map((attribute: Attribute, index) => (
             <AttributeComponent
                 key={index}
@@ -69,9 +77,9 @@ export default function MachineForm({ handleSubmit }: Props) {
                 handleDelete={deleteAttribute}
             />
         ))
-        : (<></>
-        );
-
+    ) : (
+        <></>
+    );
 
     return (
         <View>

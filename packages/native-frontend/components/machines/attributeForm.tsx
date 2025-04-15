@@ -1,14 +1,15 @@
-import { Unit } from "@/types/unit";
-import { Attribute } from "@/types/attribute";
-import { useState } from "react";
-import { View, TextInput, Pressable, Text } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import {Unit} from "@/types/unit";
+import {Attribute} from "@/types/attribute";
+import {useState} from "react";
+import {View, TextInput, Pressable, Text} from "react-native";
+import {Picker} from "@react-native-picker/picker";
 
 type Props = {
     handleAddAttribute: (attribute: Attribute) => void;
-}
+};
 
-function AttributeForm({ handleAddAttribute }: Props) {
+function AttributeForm({handleAddAttribute}: Props)
+{
     const [attribute, setAttribute] = useState<Attribute>({
         name: "",
         unit: Unit.LBS, // default is the first unit in the enum. which is lbs
@@ -18,14 +19,16 @@ function AttributeForm({ handleAddAttribute }: Props) {
         <Picker.Item key={opt} label={Unit[opt]} value={Unit[opt]} />
     ));
 
-    function handleUnitChange(unit: Unit) {
+    function handleUnitChange(unit: Unit)
+    {
         setAttribute({
             ...attribute,
             unit: unit,
         });
     }
 
-    function handleNameChange(name: string) {
+    function handleNameChange(name: string)
+    {
         setAttribute({
             ...attribute,
             name: name,

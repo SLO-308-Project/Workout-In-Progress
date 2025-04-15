@@ -1,5 +1,5 @@
-import { View, Text, Pressable } from "react-native";
-import { useState, useEffect, useCallback } from "react";
+import {View, Text, Pressable} from "react-native";
+import {useState, useEffect, useCallback} from "react";
 import AttributeForm from "./attributeForm";
 import AttributeComponent from "./attributeComponent";
 import {
@@ -7,50 +7,60 @@ import {
     fetchPostAttribute,
     fetchDeleteAttribute,
 } from "@/fetchers/machineFetchers";
-import { Attribute } from "@/types/attribute";
-import { Machine } from "@/types/machine";
+import {Attribute} from "@/types/attribute";
+import {Machine} from "@/types/machine";
 
 type Props = {
     machine: Machine;
     handleDelete: (name: string) => void;
-}
+};
 
-export default function MachineComponent({ machine, handleDelete }: Props) {
+export default function MachineComponent({machine, handleDelete}: Props)
+{
     const [attributes, setAttributes] = useState<Attribute[]>([]);
 
-
-    const getAttributes = useCallback(() => {
+    const getAttributes = useCallback(() =>
+    {
         console.log(`MACHINE._id = ${machine._id}`);
         fetchGetAttributes(machine._id)
-            .then((res) => {
-                if (res.ok) {
+            .then((res) =>
+            {
+                if (res.ok)
+                {
                     return res.json();
                 }
             })
-            .then((res_data) => {
+            .then((res_data) =>
+            {
                 console.log(`res_data.attributes = ${res_data.attributes}`);
 
                 console.log(`${JSON.stringify(res_data)}`);
                 setAttributes(res_data);
             })
-            .catch((err) => {
+            .catch((err) =>
+            {
                 console.log(err);
             });
     }, [machine]);
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         getAttributes();
     }, [getAttributes]);
 
-    function deleteMachine(): void {
+    function deleteMachine(): void
+    {
         handleDelete(machine.name);
     }
 
-    function addAttribute(attribute: Attribute) {
+    function addAttribute(attribute: Attribute)
+    {
         console.log(`NAME: ${attribute.name} UNIT: ${attribute.unit}`);
         fetchPostAttribute(machine._id, attribute)
-            .then((res) => {
-                if (res.ok) {
+            .then((res) =>
+            {
+                if (res.ok)
+                {
                     return res.json();
                 }
             })
@@ -58,11 +68,14 @@ export default function MachineComponent({ machine, handleDelete }: Props) {
             .catch((err) => console.log(err));
     }
 
-    function deleteAttribute(attrName: string) {
-        console.log(`DELETING ATTRIBUTE: ${attrName}`)
+    function deleteAttribute(attrName: string)
+    {
+        console.log(`DELETING ATTRIBUTE: ${attrName}`);
         fetchDeleteAttribute(machine._id, attrName)
-            .then((res) => {
-                if (res.ok) {
+            .then((res) =>
+            {
+                if (res.ok)
+                {
                     setAttributes(
                         attributes.filter(
                             (attribute) => attribute.name !== attrName,
@@ -109,9 +122,7 @@ export default function MachineComponent({ machine, handleDelete }: Props) {
             </Pressable>
 
             {/* Attribute list */}
-            <View className="mb-4">
-                {listAttributes}
-            </View>
+            <View className="mb-4">{listAttributes}</View>
 
             {/* Attribute form */}
             <View>
