@@ -86,7 +86,8 @@ export default function HomeScreen() {
 
   const listSessions = sessions.map((session: Session, idx: number) => (
     <SessionComponent 
-      key={idx + 1}
+      key={idx}
+      idx={idx + 1}
       date={formatDate(session.date)}
       duration={formatDuration(session.time)}
       deleteSession={deleteSession}
