@@ -129,13 +129,12 @@ export default function CurrentSessionPage() {
         else if (res.status === 204) {
           console.log("204");
           return null;
-          //throw new Error("Got a 204 from fetch");
         }
       })
       .then((json: Session[]) => {
         if (json === null) {
-          console.log("No values");
-          throw new Error("No current session?");
+          console.log("No session is started");
+          setSessions(null);
         }
         else {
           setSessions(json[0]);
@@ -250,10 +249,10 @@ export default function CurrentSessionPage() {
           Session: {sessionNum}
         </Text>
         <Text className="text-sm text-neutral-700">
-          Start Date: {formatDate(sessions.date)}
+          Start Date: {formatDate(sessions!.date)}
         </Text>
         <Text className="text-sm text-neutral-700">
-          Duration: {formatDuration(Date.now() - new Date(sessions.date).getTime())}
+          Duration: {formatDuration(Date.now() - new Date(sessions!.date).getTime())}
         </Text>
       </View>
 

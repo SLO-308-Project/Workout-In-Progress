@@ -35,7 +35,7 @@ export default function HomeScreen() {
           (sessionA, sessionB) =>
             new Date(sessionB.date).getTime() -
             new Date(sessionA.date).getTime(),
-        );
+        ).reverse();
         setSessions(sortedSessions);
       })
       .catch((error: unknown) => console.log(error));
@@ -62,7 +62,9 @@ export default function HomeScreen() {
     fetchDeleteSession(id)
       .then((res) => {
         if (res.status === 204) {
-          loadSessions();
+          setSessions(sessions.filter((session: Session) => {
+            return session._id !== id;
+          }))
         }
       })
       .catch((error: unknown) => {
