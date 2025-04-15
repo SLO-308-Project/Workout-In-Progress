@@ -24,10 +24,17 @@ Workout In Progress is a workout tracking application. It helps keep track of wh
 [UML Activity Diagram](https://drive.google.com/file/d/1RCC0hqDVSrnWCDgpppQ3kv7xycMe5lVk/view?usp=sharing)
 
 ## Test Coverage Report
-Date: 3/14/2025 3pm 
+Date: 4/15/2025 10pm 
 
-Backend Report:
-![image](https://github.com/user-attachments/assets/e515ebe7-0347-4ec8-aa81-2803a7cef5f1)
+Backend Report: <br />
+<img width="682" alt="Screenshot 2025-04-15 at 10 12 30 AM" src="https://github.com/user-attachments/assets/71fcea2f-f769-4e50-9cc7-728e69995fd4" />
+
+1. In memory-database tests <br />
+<img width="237" alt="Screenshot 2025-04-15 at 10 17 49 AM" src="https://github.com/user-attachments/assets/a8102b44-051b-403d-bf70-9b6e118166dc" />
+
+3. Mock test <br />
+<img width="263" alt="Screenshot 2025-04-15 at 10 16 28 AM" src="https://github.com/user-attachments/assets/2366c931-37ab-4a45-9115-0fa978047228" />
+
 
 
 ## Setup for dev
