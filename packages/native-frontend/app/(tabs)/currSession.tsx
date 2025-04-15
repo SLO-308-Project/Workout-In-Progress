@@ -1,6 +1,7 @@
 import { View, Text, Pressable, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useIsFocused } from '@react-navigation/native';
 
 import { Machine } from '@/types/machine';
 import { Session } from '@/types/session';
@@ -32,14 +33,18 @@ export default function CurrentSessionPage() {
   const [time, setTime] = useState(0);
   const [workouts, setWorkouts] = useState<Workout[]>([]);
 
+
+  const isFocused = useIsFocused();
   // State for the users currently selected machine
 
   const [machines, setMachines] = useState<Machine[]>([]);
   useEffect(() => {
-    getMachines();
-    getCurrentSession();
-    getSessionNumber();
-  }, []);
+    if (isFocused) {
+      getMachines();
+      getCurrentSession();
+      getSessionNumber();
+    }
+  }, [isFocused]);
 
   // Helper function for date formatting
   function formatDate(dateString: string): string {
@@ -231,15 +236,13 @@ export default function CurrentSessionPage() {
   };
 
   const listWorkouts = workouts.map((workout: Workout, idx: number) => (
-    <View>
-      <WorkoutComponent
-        key={idx}
-        workoutId={workout._id}
-        machineId={workout.machineId}
-        machineName={machineIdToName(workout.machineId)}
-        handleDelete={removeWorkout}
-      />
-    </View>
+    <WorkoutComponent
+      key={idx}
+      workoutId={workout._id}
+      machineId={workout.machineId}
+      machineName={machineIdToName(workout.machineId)}
+      handleDelete={removeWorkout}
+    />
   ));
 
   function sessionData() {

@@ -1,6 +1,7 @@
 import { Text, View, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useIsFocused } from '@react-navigation/native';
 
 import { fetchGetSessions, fetchDeleteSession, fetchStartSessions, fetchCurrentSession } from '@/fetchers/sessionFetchers';
 import { Session } from '@/types/session';
@@ -51,10 +52,14 @@ export default function HomeScreen() {
       });
   }
 
+  const isFocused = useIsFocused();
+
   useEffect(() => {
-    loadSessions();
-    loadCurrSession();
-  }, []);
+    if (isFocused) {
+      loadSessions();
+      loadCurrSession();
+    }
+  }, [isFocused]);
 
   // Function to delete a session
   // Will refresh session list if successful
@@ -88,14 +93,14 @@ export default function HomeScreen() {
   }
 
   const listSessions = sessions.map((session: Session, idx: number) => (
-      <SessionComponent
-        key={idx}
-        idx={idx + 1}
-        date={formatDate(session.date)}
-        duration={formatDuration(session.time)}
-        deleteSession={deleteSession}
-        session={session}
-      />
+    <SessionComponent
+      key={idx}
+      idx={idx + 1}
+      date={formatDate(session.date)}
+      duration={formatDuration(session.time)}
+      deleteSession={deleteSession}
+      session={session}
+    />
   ))
 
   return (
