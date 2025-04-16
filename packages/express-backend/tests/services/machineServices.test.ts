@@ -203,4 +203,124 @@ describe("Machine Services Tests", () =>
         // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
         expect(result!.attributes.length).toBe(0);
     });
+
+    // These tests exist to hit the catch blocks
+    test("Add machine --- failure save", async () =>
+    {
+        userModel.findOne = jest.fn().mockResolvedValue(null);
+        jest.spyOn(machineModel.prototype, "save").mockImplementation(
+            async () =>
+            {
+                await Promise.reject(new Error("boom"));
+            },
+        );
+        machineLogModel.findOneAndUpdate = jest.fn().mockResolvedValue(null);
+        try
+        {
+            const email = "pbuff@gmail.com";
+            const newMachine = new machineModel({
+                name: "Shoulder Press",
+                muscle: "Deltoids",
+                attributes: [
+                    {
+                        name: "weight",
+                        unit: "kgs",
+                    },
+                ],
+            });
+            await machineServices.addMachine(newMachine, email);
+            fail("Test Should Not Be Here");
+        }
+        catch (error)
+        {
+            expect(error).toBeTruthy();
+        }
+    });
+
+    // These tests exist to hit the catch blocks
+    test("Add machine --- failure save", async () =>
+    {
+        const email = "pbuff@gmail.com";
+        const newMachine = new machineModel({
+            name: "Shoulder Press",
+            muscle: "Deltoids",
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "kgs",
+                },
+            ],
+        });
+        userModel.findOne = jest.fn().mockResolvedValue(null);
+        jest.spyOn(machineModel.prototype, "save").mockResolvedValue(
+            newMachine,
+        );
+        machineLogModel.findOneAndUpdate = jest
+            .fn()
+            .mockImplementation(async () =>
+            {
+                await Promise.reject(new Error("boom"));
+            });
+        const result = await machineServices.addMachine(newMachine, email);
+        expect(result).toBeTruthy();
+    });
+
+    // These tests exist to hit the catch blocks
+    test("Add machine --- failure save", async () =>
+    {
+        const email = "pbuff@gmail.com";
+        const newMachine = new machineModel({
+            name: "Shoulder Press",
+            muscle: "Deltoids",
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "kgs",
+                },
+            ],
+        });
+        userModel.findOne = jest.fn().mockImplementation(async () =>
+        {
+            await Promise.reject(new Error("boom"));
+        });
+        jest.spyOn(machineModel.prototype, "save").mockResolvedValue(
+            newMachine,
+        );
+        const result = await machineServices.addMachine(newMachine, email);
+        expect(result).toBeTruthy();
+    });
+
+    test("Get attribute --- failure", async () =>
+    {
+        machineModel.findById = jest.fn().mockResolvedValue(null);
+        const machineId = "65f11142cf5b93ee8b0b87d4";
+        const result = await machineServices.getAttributes(machineId);
+        expect(result).toBeFalsy();
+    });
+
+    test("Add attribute --- failure", async () =>
+    {
+        machineModel.findById = jest.fn().mockResolvedValue(null);
+        const machineId = "65f11142cf5b93ee8b0b87d4";
+        const name = "calories";
+        const unit = "cal";
+        const result = await machineServices.addAttribute(
+            machineId,
+            name,
+            unit,
+        );
+        expect(result).toBeFalsy();
+    });
+
+    test("Delete attribute --- failure", async () =>
+    {
+        machineModel.findByIdAndUpdate = jest.fn().mockResolvedValue(null);
+        const machineId = "65f11142cf5b93ee8b0b87d4";
+        const attrName = "weight";
+        const result = await machineServices.deleteAttribute(
+            machineId,
+            attrName,
+        );
+        expect(result).toBeFalsy();
+    });
 });
