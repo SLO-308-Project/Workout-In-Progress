@@ -9,8 +9,7 @@
         "dev": "npx nodemon src/server.ts",
         "lint": "npx eslint .",
         "start": "node build/server.ts",
-        "coverage": "npx jest --coverage",
-        "specCoverage": "npx jest --coverage --testPathIgnorePatterns memoryServices"
+        "coverage": "npx jest --coverage --testPathIgnorePatterns memoryServices"
     },
     "author": "",
     "license": "ISC",
