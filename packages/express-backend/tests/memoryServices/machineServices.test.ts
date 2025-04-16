@@ -89,6 +89,7 @@ describe("Machine Services Tests", () =>
         const dummyUser = new userModel({
             name: "Philip Buff",
             email: "pbuff@gmail.com",
+            password: "pass123",
             units: "lbs",
             machineLogId: dummyMachineLog._id,
         });

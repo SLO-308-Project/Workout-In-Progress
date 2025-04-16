@@ -28,6 +28,7 @@ describe("User Services Tests", () =>
         const dummyUser = {
             name: "Person Guy",
             email: "pguy@gmail.com",
+            password: "pass123",
             units: "lbs" as const,
         };
         const user = new userModel(dummyUser);
@@ -57,6 +58,7 @@ describe("User Services Tests", () =>
         const dummyUser = {
             name: "Person Guy",
             email: "pguy@gmail.com",
+            password: "1234",
             units: "lbs" as const,
             sessionLogId: undefined,
             machineLogId: undefined,
