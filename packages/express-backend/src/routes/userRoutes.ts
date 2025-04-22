@@ -59,6 +59,7 @@ router.post(
         res: Response,
     ) =>
     {
+        console.log("we hit the route");
         const userEmail = req.body.email;
         const password = req.body.password;
         userServices
