@@ -1,7 +1,7 @@
-import {useState} from "react";
-import {View, Text, Pressable} from "react-native";
-import {Set} from "@/types/set";
-import {AttributeValue} from "@/types/attributeValue";
+import { useState } from "react";
+import { View, Text, Pressable } from "react-native";
+import { Set } from "@/types/set";
+import { AttributeValue } from "@/types/attributeValue";
 import SetComponent from "@/components/currSession/setComponent";
 import SetForm from "@/components/currSession/setForm";
 
@@ -17,13 +17,11 @@ export default function Workout({
     machineId,
     workoutId,
     handleDelete,
-}: Props)
-{
+}: Props) {
     const [showSets, setShowSets] = useState(false);
     const [sets, setSets] = useState<Set[]>([]);
 
-    function addSet(attributeValues: AttributeValue[])
-    {
+    function addSet(attributeValues: AttributeValue[]) {
         const newSet: Set = {
             _id: sets.length.toString(),
             attributeValues: attributeValues,
@@ -31,9 +29,16 @@ export default function Workout({
         setSets([...sets, newSet]);
     }
 
+    function deleteSet(_id: string) {
+        console.log(`deleteSet: _id=${_id} set._id=`)
+        sets.map((set) => console.log(set._id));
+        setSets(sets.filter((set) => set._id !== _id));
+    }
+
+
     const setList = () =>
         sets.map((set: Set, index) => (
-            <SetComponent key={index} set={set} index={index + 1} />
+            <SetComponent key={index} set={set} index={index + 1} handleDelete={deleteSet} />
         ));
 
     return (
@@ -46,8 +51,7 @@ export default function Workout({
                     {machineName}
                 </Text>
                 <Pressable
-                    onPress={(event) =>
-                    {
+                    onPress={(event) => {
                         event.stopPropagation();
                         handleDelete(workoutId);
                     }}

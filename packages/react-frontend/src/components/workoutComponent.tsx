@@ -21,8 +21,12 @@ export default function Workout(props)
         setSets([...sets, newSet]);
     }
 
+    function deleteSet(_id: string) {
+        sets.filter((set) => set._id !== _id);
+    }
+
     const setList = () =>
-        sets.map((set: Set, index) => <SetComponent set={set} index={index} />);
+        sets.map((set: Set, index) => <SetComponent set={set} handleDelete={deleteSet} index={index} />);
 
     return (
         <div className="workout">
