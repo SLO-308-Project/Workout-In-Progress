@@ -22,6 +22,12 @@ export default function Workout({
     const [sets, setSets] = useState<Set[]>([]);
 
     function addSet(attributeValues: AttributeValue[]) {
+        for (const attributeValue of attributeValues) {
+            if (attributeValue.value === -1) {
+                console.log("Attempted to add set with missing value(s)");
+                return;
+            }
+        }
         const newSet: Set = {
             _id: sets.length.toString(),
             attributeValues: attributeValues,
