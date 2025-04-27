@@ -129,7 +129,17 @@ async function deleteMachine(userEmail: string, machineName: string)
         {
             console.log(machineList);
             const machine = machineList[0] as MachineType;
-            return machineModel.findByIdAndDelete(machine._id); //remove the machine with the found Id
+            return machineModel.findByIdAndDelete(machine._id) //remove the machine with the found Id
+                .then(deletedMachine => {
+                    return userModel.findOne({email: userEmail})
+                        .then(user => {
+                            return machineLogModel.findOneAndUpdate(
+                                { _id: user!.machineLogId },
+                                { $pull: { machineIds: machine._id}}
+                            )
+                                .then(() => deletedMachine);
+                        });
+                });
         });
 }
 
