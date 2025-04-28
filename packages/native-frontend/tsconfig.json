@@ -1,9 +1,15 @@
 {
     "extends": "expo/tsconfig.base",
     "compilerOptions": {
+        "jsx": "react-native",
         "strict": true,
         "paths": {
             "@/*": ["./*"]
+        }
+    },
+    "import/resolver": {
+        "typescript": {
+            "project": "./tsconfig.json"
         }
     },
     "include": [
