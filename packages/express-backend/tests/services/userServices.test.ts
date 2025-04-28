@@ -2,6 +2,7 @@ import userModel from "../../src/data/user";
 import machineLogModel from "../../src/data/machineLog";
 import sessionLogModel from "../../src/data/sessionLog";
 import userServices from "../../src/services/userServices";
+import templateListModel from "../../src/data/templateList";
 
 describe("User Services Tests", () =>
 {
@@ -42,6 +43,9 @@ describe("User Services Tests", () =>
         jest.spyOn(sessionLogModel.prototype, "save").mockResolvedValue(
             stubLog,
         );
+        jest.spyOn(templateListModel.prototype, "save").mockResolvedValue(
+            stubLog,
+        );
         const result = await userServices.addUser(dummyUser);
         expect(result).toBeTruthy();
         expect(result.name).toBe(user.name);
@@ -69,6 +73,9 @@ describe("User Services Tests", () =>
             undefined,
         );
         jest.spyOn(sessionLogModel.prototype, "save").mockResolvedValue(
+            undefined,
+        );
+        jest.spyOn(templateListModel.prototype, "save").mockResolvedValue(
             undefined,
         );
         try
