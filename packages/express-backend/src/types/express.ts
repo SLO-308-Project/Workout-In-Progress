@@ -12,6 +12,15 @@ interface MachineAttributes
     unit: string;
 }
 
+interface Set
+{
+    attributeValues: 
+    {
+        name: string;
+        value: number;
+    }[];
+}
+
 // Request Types
 export type WorkoutRequest = Request<
     ParamsDictionary,
@@ -23,4 +32,10 @@ export type MachineRequest = Request<
     ParamsDictionary,
     unknown,
     MachineAttributes
+>;
+
+export type SetRequest = Request<
+    ParamsDictionary,
+    unknown,
+    Set
 >;
