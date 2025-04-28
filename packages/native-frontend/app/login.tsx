@@ -16,9 +16,13 @@ export default function Login()
 {
     const [loginFailed, setLoginFailed] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
+<<<<<<< HEAD
     function handleLogin(email: string, password: string): void
     {
         console.log(`called handle login: email=${email} password=${password}`);
+=======
+    function handleLogin(email: string, password: string): void {
+>>>>>>> 0bfcf1ae2be35b8abe698bc27f37402a5d541ccd
         fetchLogin(email, password)
             .then((res: Response) =>
             {
