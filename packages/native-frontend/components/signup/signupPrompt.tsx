@@ -38,6 +38,7 @@ export default function signupPrompt({handleSignUp, emailExists}: Props) {
                 placeholderTextColor="7A7674"
                 textAlignVertical="center"
                 style={{ lineHeight: 16}}
+                secureTextEntry
                 autoCapitalize="none"
             />
             <Text
