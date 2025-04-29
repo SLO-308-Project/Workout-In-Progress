@@ -1,4 +1,4 @@
-import {View, Text, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard} from "react-native";
+import {View, Text, KeyboardAvoidingView, TouchableWithoutFeedback, Platform} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import SignupPrompt from "@/components/signup/signupPrompt";
 import { fetchRegister } from "@/fetchers/userFetchers";
@@ -6,7 +6,7 @@ import { useState } from "react";
 import { login } from "@/util/loginHelper";
 import { useRouter } from "expo-router";
 
-export default function signup()
+export default function Signup()
 {
     const [emailExists, setEmailExists] = useState(false);
     const router = useRouter()
@@ -23,10 +23,9 @@ export default function signup()
             .then((res: Response) => {
                 if (res.ok)
                     {
-                        
                         login(email, password)
                             .then((loggedIn) => {
-                                if (loggedIn) router.navigate("./(tabs)");
+                                if (loggedIn) router.replace("./(tabs)");
                             })
                     }
                 else if (res.status == 409) //User already exists. Checks by unique email.
@@ -58,7 +57,7 @@ export default function signup()
                         className="flex-1"
                     >
                         <View className="flex-1 justify-center items-center">
-                            <SignupPrompt handleSignUp={handleSignUp} emailExists={emailExists} />
+                            <SignupPrompt handleSignUp={handleSignUp} emailExists={emailExists} router={router} />
                         </View>
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>

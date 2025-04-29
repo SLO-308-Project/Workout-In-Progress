@@ -1,12 +1,15 @@
+
+import { Router } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, TextInput, View } from "react-native";
 
 type Props = {
     handleSignUp: (userName: string, email: string, password: string) => void;
     emailExists: boolean;
+    router: Router;
 }
 
-export default function signupPrompt({handleSignUp, emailExists}: Props) {
+export default function SignupPrompt({handleSignUp, emailExists, router}: Props) {
     const [userName, setUserName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -43,7 +46,7 @@ export default function signupPrompt({handleSignUp, emailExists}: Props) {
             />
             <Text
                 className="w-full text-gray-500 py-3 rounded-lg text-center mb-4"
-            >Password must be at least 11 characters</Text>
+            >Password must contain at least 8 characters, 1 lowercase, 1 uppercase, and 1 number</Text>
             {
                 emailExists && 
                 <Text
@@ -58,6 +61,19 @@ export default function signupPrompt({handleSignUp, emailExists}: Props) {
                     className="text-white text-base font-semibold"    
                 >Sign Up</Text>
             </Pressable>
+            <View>
+                <Text
+                    className="text-gray-500 text-center mb-2"
+                >
+                    Already have an account?
+                </Text>
+                <Pressable
+                    className="items-center"
+                    onPress={() => router.navigate("./login")}
+                >
+                    <Text className="text-black font-semibold">Sign In</Text>
+                </Pressable>
+            </View>
         </View>
     )
 }
