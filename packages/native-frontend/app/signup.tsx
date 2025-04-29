@@ -3,10 +3,13 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import SignupPrompt from "@/components/signup/signupPrompt";
 import { fetchRegister } from "@/fetchers/userFetchers";
 import { useState } from "react";
+import { login } from "@/util/loginHelper";
+import { useRouter } from "expo-router";
 
 export default function signup()
 {
     const [emailExists, setEmailExists] = useState(false);
+    const router = useRouter()
 
     /**
      * Registers a user.
@@ -20,7 +23,11 @@ export default function signup()
             .then((res: Response) => {
                 if (res.ok)
                     {
-                       //Implement Login and authorization externally.
+                        
+                        login(email, password)
+                            .then((loggedIn) => {
+                                if (loggedIn) router.navigate("./(tabs)");
+                            })
                     }
                 else if (res.status == 409) //User already exists. Checks by unique email.
                     {
@@ -42,7 +49,7 @@ export default function signup()
                 style={{ marginTop: "20%" }}
             >
                 <Text
-                    className="text-4x1 font-semibold text-black tracking-tight"
+                    className="text-4xl font-semibold text-black tracking-tight"
                 >Sign Up</Text>
             </View>
                <TouchableWithoutFeedback>
@@ -50,7 +57,9 @@ export default function signup()
                         behavior={Platform.OS === "ios" ? "padding" : "height"}
                         className="flex-1"
                     >
-                        <SignupPrompt handleSignUp={handleSignUp} emailExists={emailExists} />
+                        <View className="flex-1 justify-center items-center">
+                            <SignupPrompt handleSignUp={handleSignUp} emailExists={emailExists} />
+                        </View>
                     </KeyboardAvoidingView>
                 </TouchableWithoutFeedback>
         </SafeAreaView>

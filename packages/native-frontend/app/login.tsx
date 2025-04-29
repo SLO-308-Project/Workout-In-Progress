@@ -8,46 +8,22 @@ import {
 } from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import LoginPrompt from "@/components/login/loginPrompt";
-import {fetchLogin} from "@/fetchers/authFetchers";
-import {useState} from "react";
-import {Redirect} from "expo-router";
+// import { fetchLogin } from "@/fetchers/authFetchers";
+import { useState } from "react";
+import { Redirect } from "expo-router";
+import { login } from '@/util/loginHelper';
 
-export default function Login()
-{
-    const [loginFailed, setLoginFailed] = useState(false);
-    const [loggedIn, setLoggedIn] = useState(false);
-<<<<<<< HEAD
-    function handleLogin(email: string, password: string): void
-    {
-        console.log(`called handle login: email=${email} password=${password}`);
-=======
+export default function Login() {
+    // const [loginFailed, setLoginFailed] = useState(false);
+    const [loggedIn, setLoggedIn] = useState<boolean>();
     function handleLogin(email: string, password: string): void {
->>>>>>> 0bfcf1ae2be35b8abe698bc27f37402a5d541ccd
-        fetchLogin(email, password)
-            .then((res: Response) =>
-            {
-                if (res.ok)
-                {
-                    console.log(`Authorized.`);
-                    return res.text();
-                }
-                else
-                {
-                    setLoginFailed(true);
-                    throw new Error("Login failed.");
-                }
+        login(email, password)
+            .then((result: boolean) => {
+                setLoggedIn(result);
             })
-            .then((res_data) =>
-            {
-                // NOTE: login token is being retrieved, but not being stored anywhere yet for protected routing
-                console.log(`auth token: ${res_data}`);
-                setLoggedIn(true);
-            })
-            .catch((error: Error) =>
-            {
-                console.log(`fetchLogin err: ${error.message}`);
-            });
+            
     }
+
     if (loggedIn)
     {
         return <Redirect href="/(tabs)" />;
@@ -60,16 +36,13 @@ export default function Login()
                     Workout In Progress
                 </Text>
             </View>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <TouchableWithoutFeedback>
                 <KeyboardAvoidingView
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
                     className="flex-1"
                 >
                     <View className="flex-1 justify-center items-center">
-                        <LoginPrompt
-                            handleSubmit={handleLogin}
-                            loginFailed={loginFailed}
-                        />
+                        <LoginPrompt handleSubmit={handleLogin} loggedIn={loggedIn} />
                     </View>
                 </KeyboardAvoidingView>
             </TouchableWithoutFeedback>

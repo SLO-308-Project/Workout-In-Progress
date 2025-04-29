@@ -3,18 +3,18 @@ import {useState} from "react";
 import {useRouter} from "expo-router";
 
 type Props = {
-    handleSubmit: (email: string, password: string) => void;
-    loginFailed: boolean;
-};
+	handleSubmit: (email: string, password: string) => void;
+	loggedIn: boolean | undefined;
+}
 
-export default function LoginPrompt({handleSubmit, loginFailed}: Props)
+export default function LoginPrompt({handleSubmit, loggedIn}: Props)
 {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const router = useRouter();
 
     return (
-        <View className="w-full">
+        <View className="w-11/12">
             <TextInput
                 className="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"
                 onChangeText={(text) => setEmail(text.trim())}
@@ -44,21 +44,26 @@ export default function LoginPrompt({handleSubmit, loginFailed}: Props)
                 </Text>
             </Pressable>
 
-            {loginFailed && (
-                <Text className="text-red-500 text-sm text-center mb-4">
-                    Invalid email or password.
-                </Text>
-            )}
 
-            <Text className="text-gray-500 text-center mb-2">
-                Haven't signed up?
-            </Text>
-            <Pressable
-                className="items-center"
-                onPress={() => router.navigate("./signup")}
+			{//loggedIn = undefined when first on the page and false when login fails.
+			(loggedIn != undefined && !loggedIn) && (
+				<Text className="text-red-500 text-sm text-center mb-4">
+					Invalid email or password.
+				</Text>
+			)}
+            <View
+                className=""
             >
-                <Text className="text-black font-semibold">Sign up</Text>
-            </Pressable>
+                <Text className="text-gray-500 text-center mb-2">
+                    Haven't signed up?
+                </Text>
+                <Pressable
+                    className="items-center"
+                    onPress={() => router.navigate("./signup")}
+                >
+                    <Text className="text-black font-semibold">Sign up</Text>
+                </Pressable>
+            </View>
         </View>
     );
 }

@@ -3,8 +3,8 @@ module.exports = {
     extends: "expo",
     ignorePatterns: ["/app-example/**/"],
     "import/resolver": {
-        typescript: {
-            project: "./tsconfig.json",
-        },
+        "typescript": {
+            "project": "./tsconfig.json"
+        }
     },
 };

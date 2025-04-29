@@ -7,11 +7,6 @@
             "@/*": ["./*"]
         }
     },
-    "import/resolver": {
-        "typescript": {
-            "project": "./tsconfig.json"
-        }
-    },
     "include": [
         "**/*.ts",
         "**/*.tsx",
