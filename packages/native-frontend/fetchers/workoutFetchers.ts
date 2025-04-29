@@ -39,12 +39,13 @@ function fetchPostSet(
     workout_id: string,
     attributeValues: AttributeValue[],
 ): Promise<Response> {
+    console.log(`in workoutFetchers: ${JSON.stringify(attributeValues)}`)
     return fetch(`${BACKEND_URL}/workouts/${session_id}/${workout_id}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(attributeValues),
+        body: JSON.stringify({attributeValues}),
     });
 }
 

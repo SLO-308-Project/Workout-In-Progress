@@ -25,10 +25,13 @@ async function getSets(sessionId: string, workoutId: string) {
 async function addSet(sessionId: string, workoutId: string, attributeValues: AttributeValue[]) {
 
     if (!sessionId) {
+        console.log(`sessionId=${sessionId} workoutId=${workoutId}, attributeValues=${JSON.stringify(attributeValues)}`);
         throw new Error("No sessionId provided");
     } else if (!workoutId) {
+        console.log(`sessionId=${sessionId} workoutId=${workoutId}, attributeValues=${JSON.stringify(attributeValues)}`);
         throw new Error("No workoutId provided");
     } else if (!attributeValues || attributeValues.length === 0) {
+        console.log(`sessionId=${sessionId} workoutId=${workoutId}, attributeValues=${JSON.stringify(attributeValues)}`);
         throw new Error("No attribute values for the set provided");
     }
 

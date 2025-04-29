@@ -71,6 +71,7 @@ router.get("/:sessionId:/:workoutId", (req: Request, res: Response) => {
 
 // Create a set under given workoutId
 router.post("/:sessionId/:workoutId", (req: SetRequest, res: Response) => {
+    console.log(`${JSON.stringify(req.body.attributeValues)}`);
 
     setServices
         .addSet(req.params.sessionId, req.params.workoutId, req.body.attributeValues)

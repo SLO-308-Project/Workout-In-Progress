@@ -4,12 +4,15 @@ import { Set } from "@/types/set";
 import { AttributeValue } from "@/types/attributeValue";
 import SetComponent from "@/components/currSession/setComponent";
 import SetForm from "@/components/currSession/setForm";
+import { fetchDeleteSet, fetchPostSet } from "@/fetchers/workoutFetchers";
 
 type Props = {
     machineName: string | undefined;
     machineId: string;
     workoutId: string;
     handleDelete: (workoutId: string) => void;
+    sets: Set[];
+    sessionId: string | undefined;
 };
 
 export default function Workout({
@@ -17,34 +20,68 @@ export default function Workout({
     machineId,
     workoutId,
     handleDelete,
+    sets,
+    sessionId,
 }: Props) {
     const [showSets, setShowSets] = useState(false);
-    const [sets, setSets] = useState<Set[]>([]);
+    const [allSets, setSets] = useState<Set[]>(sets);
 
     function addSet(attributeValues: AttributeValue[]) {
+        if (!sessionId) {
+            throw new Error("Can't find a session to add set to.");
+        }
+
         for (const attributeValue of attributeValues) {
             if (attributeValue.value === -1) {
                 console.log("Attempted to add set with missing value(s)");
                 return;
             }
         }
-        const newSet: Set = {
-            _id: sets.length.toString(),
-            attributeValues: attributeValues,
-        };
-        setSets([...sets, newSet]);
+        console.log(`attributeValues=${attributeValues}`)
+        fetchPostSet(sessionId, workoutId, attributeValues)
+            .then((res) => {
+                if (res.ok) {
+                    return res.text();
+                }
+            })
+            .then((dbSetId) => {
+                if (!dbSetId) {
+                    throw new Error("Database successfully updated but didnt return set id.");
+                }
+                const newSet: Set = {
+                    _id: dbSetId,
+                    attributeValues: attributeValues,
+                };
+                setSets([...allSets, newSet]);
+            })
+            .catch((error: unknown) => {
+                console.log(error);
+            })
     }
 
     function deleteSet(_id: string) {
-        console.log(`deleteSet: _id=${_id} set._id=`)
-        sets.map((set) => console.log(set._id));
-        setSets(sets.filter((set) => set._id !== _id));
+        if (!sessionId) {
+            throw new Error("Can't find a session to delete set.");
+        }
+
+        fetchDeleteSet(sessionId, workoutId, _id)
+            .then((res) => {
+                if (res.ok) {
+                    setSets(allSets.filter((set) => set._id !== _id));
+
+                }
+            })
+            .catch((error: unknown) => {
+                console.log(error);
+            })
+        // console.log(`deleteSet: _id=${_id} set._id=`)
+        // allSets.map((set) => console.log(set._id));
     }
 
 
     const setList = () =>
-        sets.map((set: Set, index) => (
-            <SetComponent key={index} set={set} index={index + 1} handleDelete={deleteSet} />
+        allSets.map((set: Set, index) => (
+            <SetComponent key={set._id} set={set} index={index + 1} handleDelete={deleteSet} />
         ));
 
     return (

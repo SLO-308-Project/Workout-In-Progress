@@ -299,6 +299,8 @@ export default function CurrentSessionPage()
             machineId={workout.machineId}
             machineName={machineIdToName(workout.machineId)}
             handleDelete={removeWorkout}
+            sessionId={sessions?._id}
+            sets={workout.sets}
         />
     ));
 
