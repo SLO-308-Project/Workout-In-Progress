@@ -3,10 +3,10 @@ import { useState } from 'react';
 
 type Props = {
 	handleSubmit: (email: string, password: string) => void;
-	loginFailed: boolean;
+	loggedIn: boolean | undefined;
 }
 
-export default function LoginPrompt({ handleSubmit, loginFailed }: Props) {
+export default function LoginPrompt({ handleSubmit, loggedIn }: Props) {
 	const [email, setEmail] = useState<string>("");
 	const [password, setPassword] = useState<string>("");
 
@@ -39,7 +39,9 @@ export default function LoginPrompt({ handleSubmit, loginFailed }: Props) {
 				<Text className="text-white text-base font-semibold">Login</Text>
 			</Pressable>
 
-			{loginFailed && (
+
+			{//loggedIn = undefined when first on the page and false when login fails.
+			(loggedIn != undefined && !loggedIn) && (
 				<Text className="text-red-500 text-sm text-center mb-4">
 					Invalid email or password.
 				</Text>
