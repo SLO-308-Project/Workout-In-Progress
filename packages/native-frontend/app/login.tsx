@@ -1,5 +1,12 @@
-import { Text, View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+    Text,
+    View,
+    KeyboardAvoidingView,
+    Platform,
+    TouchableWithoutFeedback,
+    Keyboard,
+} from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
 import LoginPrompt from "@/components/login/loginPrompt";
 // import { fetchLogin } from "@/fetchers/authFetchers";
 import { useState } from "react";
@@ -16,18 +23,20 @@ export default function Login() {
             })
             
     }
-    if (loggedIn) {
-        return (<Redirect href="/(tabs)" />)
+
+    if (loggedIn)
+    {
+        return <Redirect href="/(tabs)" />;
     }
 
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white px-4 pt-4">
-            <View className="items-center" style={{ marginTop: '20%' }}>
+            <View className="items-center" style={{marginTop: "20%"}}>
                 <Text className="text-4xl font-semibold text-black tracking-tight">
                     Workout In Progress
                 </Text>
             </View>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <TouchableWithoutFeedback>
                 <KeyboardAvoidingView
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
                     className="flex-1"
@@ -38,6 +47,5 @@ export default function Login() {
                 </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
         </SafeAreaView>
-    )
-
+    );
 }

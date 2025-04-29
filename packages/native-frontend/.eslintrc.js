@@ -2,9 +2,12 @@
 module.exports = {
     extends: "expo",
     ignorePatterns: ["/app-example/**/"],
-    "import/resolver": {
-        "typescript": {
-            "project": "./tsconfig.json"
-        }
+    settings: {
+      "import/resolver": {
+        typescript: {
+          project: "./packages/native-frontend/tsconfig.json",
+        },
+      },
     },
-};
+  };
+  
