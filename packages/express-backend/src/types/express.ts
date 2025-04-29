@@ -14,8 +14,7 @@ interface MachineAttributes
 
 interface Set
 {
-    attributeValues: 
-    {
+    attributeValues: {
         name: string;
         value: number;
     }[];
@@ -34,8 +33,4 @@ export type MachineRequest = Request<
     MachineAttributes
 >;
 
-export type SetRequest = Request<
-    ParamsDictionary,
-    unknown,
-    Set
->;
+export type SetRequest = Request<ParamsDictionary, unknown, Set>;

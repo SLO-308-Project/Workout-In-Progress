@@ -1,7 +1,7 @@
-import { View, Text, Pressable } from "react-native";
-import { useState } from "react";
-import { AttributeValue } from "@/types/attributeValue";
-import { Set } from "@/types/set";
+import {View, Text, Pressable} from "react-native";
+import {useState} from "react";
+import {AttributeValue} from "@/types/attributeValue";
+import {Set} from "@/types/set";
 import AttributeValueComponent from "@/components/currSession/attributeValue";
 
 type Props = {
@@ -10,7 +10,8 @@ type Props = {
     handleDelete: (_id: string) => void;
 };
 
-export default function SetComponent({ set, index, handleDelete }: Props) {
+export default function SetComponent({set, index, handleDelete}: Props)
+{
     const [showAV, setShowAV] = useState(false);
 
     const listAttributeValues = set.attributeValues.map(
@@ -25,15 +26,14 @@ export default function SetComponent({ set, index, handleDelete }: Props) {
 
     return (
         <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 m-2">
-            <Pressable
-                onPress={() => setShowAV(!showAV)}
-            >
+            <Pressable onPress={() => setShowAV(!showAV)}>
                 <View className="flex-row justify-between">
                     <Text className="text-lg font-medium text-gray-900">
                         Set {index}
                     </Text>
                     <Pressable
-                        onPress={(event) => {
+                        onPress={(event) =>
+                        {
                             event.stopPropagation();
                             handleDelete(set._id);
                         }}

@@ -1,16 +1,17 @@
-import { Text, View, TextInput, Pressable } from "react-native";
-import { useState, useEffect, useCallback } from "react";
+import {Text, View, TextInput, Pressable} from "react-native";
+import {useState, useEffect, useCallback} from "react";
 
-import { Attribute } from "@/types/attribute";
-import { AttributeValue } from "@/types/attributeValue";
-import { fetchGetAttributes } from "@/fetchers/machineFetchers";
+import {Attribute} from "@/types/attribute";
+import {AttributeValue} from "@/types/attributeValue";
+import {fetchGetAttributes} from "@/fetchers/machineFetchers";
 
 type Props = {
     machineId: string;
     handleSubmit: (attributeValues: AttributeValue[]) => void;
 };
 
-export default function SetForm({ machineId, handleSubmit }: Props) {
+export default function SetForm({machineId, handleSubmit}: Props)
+{
     const [attributes, setAttributes] = useState<Attribute[]>([]);
     const [attributeValues, setAttributeValues] = useState<AttributeValue[]>(
         [],
@@ -55,10 +56,11 @@ export default function SetForm({ machineId, handleSubmit }: Props) {
         populateAttributeValues();
     }, [populateAttributeValues]);
 
-    function handleAttributeValueChange(name: string, value: string) {
-
+    function handleAttributeValueChange(name: string, value: string)
+    {
         const nvalue = Number(value);
-        if (isNaN(nvalue)) {
+        if (isNaN(nvalue))
+        {
             console.log("Not a number attribute values attempted.");
             return;
         }
@@ -81,7 +83,7 @@ export default function SetForm({ machineId, handleSubmit }: Props) {
                     maxLength={5}
                     placeholder={attribute.name}
                     keyboardType="numeric"
-                    onChangeText={(value) => 
+                    onChangeText={(value) =>
                         handleAttributeValueChange(attribute.name, value)
                     }
                 />
@@ -94,7 +96,10 @@ export default function SetForm({ machineId, handleSubmit }: Props) {
         <View>
             {listAttributeValueBoxes}
             <View className="items-center">
-                <Pressable className="bg-green-50 rounded-full px-4 py-2" onPress={() => handleSubmit(attributeValues)}>
+                <Pressable
+                    className="bg-green-50 rounded-full px-4 py-2"
+                    onPress={() => handleSubmit(attributeValues)}
+                >
                     <Text className="text-lg text-green-600">+</Text>
                 </Pressable>
             </View>

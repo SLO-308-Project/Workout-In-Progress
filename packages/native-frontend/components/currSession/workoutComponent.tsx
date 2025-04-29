@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { View, Text, Pressable } from "react-native";
-import { Set } from "@/types/set";
-import { AttributeValue } from "@/types/attributeValue";
+import {useState} from "react";
+import {View, Text, Pressable} from "react-native";
+import {Set} from "@/types/set";
+import {AttributeValue} from "@/types/attributeValue";
 import SetComponent from "@/components/currSession/setComponent";
 import SetForm from "@/components/currSession/setForm";
-import { fetchDeleteSet, fetchPostSet } from "@/fetchers/workoutFetchers";
+import {fetchDeleteSet, fetchPostSet} from "@/fetchers/workoutFetchers";
 
 type Props = {
     machineName: string | undefined;
@@ -22,31 +22,42 @@ export default function Workout({
     handleDelete,
     sets,
     sessionId,
-}: Props) {
+}: Props)
+{
     const [showSets, setShowSets] = useState(false);
     const [allSets, setSets] = useState<Set[]>(sets);
 
-    function addSet(attributeValues: AttributeValue[]) {
-        if (!sessionId) {
+    function addSet(attributeValues: AttributeValue[])
+    {
+        if (!sessionId)
+        {
             throw new Error("Can't find a session to add set to.");
         }
 
-        for (const attributeValue of attributeValues) {
-            if (attributeValue.value === -1) {
+        for (const attributeValue of attributeValues)
+        {
+            if (attributeValue.value === -1)
+            {
                 console.log("Attempted to add set with missing value(s)");
                 return;
             }
         }
-        console.log(`attributeValues=${attributeValues}`)
+        console.log(`attributeValues=${attributeValues}`);
         fetchPostSet(sessionId, workoutId, attributeValues)
-            .then((res) => {
-                if (res.ok) {
+            .then((res) =>
+            {
+                if (res.ok)
+                {
                     return res.text();
                 }
             })
-            .then((dbSetId) => {
-                if (!dbSetId) {
-                    throw new Error("Database successfully updated but didnt return set id.");
+            .then((dbSetId) =>
+            {
+                if (!dbSetId)
+                {
+                    throw new Error(
+                        "Database successfully updated but didnt return set id.",
+                    );
                 }
                 const newSet: Set = {
                     _id: dbSetId,
@@ -54,34 +65,43 @@ export default function Workout({
                 };
                 setSets([...allSets, newSet]);
             })
-            .catch((error: unknown) => {
+            .catch((error: unknown) =>
+            {
                 console.log(error);
-            })
+            });
     }
 
-    function deleteSet(_id: string) {
-        if (!sessionId) {
+    function deleteSet(_id: string)
+    {
+        if (!sessionId)
+        {
             throw new Error("Can't find a session to delete set.");
         }
 
         fetchDeleteSet(sessionId, workoutId, _id)
-            .then((res) => {
-                if (res.ok) {
+            .then((res) =>
+            {
+                if (res.ok)
+                {
                     setSets(allSets.filter((set) => set._id !== _id));
-
                 }
             })
-            .catch((error: unknown) => {
+            .catch((error: unknown) =>
+            {
                 console.log(error);
-            })
+            });
         // console.log(`deleteSet: _id=${_id} set._id=`)
         // allSets.map((set) => console.log(set._id));
     }
 
-
     const setList = () =>
         allSets.map((set: Set, index) => (
-            <SetComponent key={set._id} set={set} index={index + 1} handleDelete={deleteSet} />
+            <SetComponent
+                key={set._id}
+                set={set}
+                index={index + 1}
+                handleDelete={deleteSet}
+            />
         ));
 
     return (
@@ -94,7 +114,8 @@ export default function Workout({
                     {machineName}
                 </Text>
                 <Pressable
-                    onPress={(event) => {
+                    onPress={(event) =>
+                    {
                         event.stopPropagation();
                         handleDelete(workoutId);
                     }}
