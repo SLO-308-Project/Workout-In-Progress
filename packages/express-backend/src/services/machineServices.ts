@@ -80,18 +80,17 @@ async function addMachine(machine: MachineType, email: string)
 /**
  * Add machine to template
  *
- * @param {MahcineType} machine - Machine to add
- * @param {string} template_id - ID to template object
+ * @param {string} machineId - Machine object id
+ * @param {string} templateId - ID to template object
  *
  * @returns {Promise} - Machine saved
  */
-function saveMachine(machine: MachineType, id: string)
+function saveMachine(machineId: string, templateId: string)
 {
-    const machineToAdd = new machineModel(machine);
     return sessionTemplateModel.findByIdAndUpdate(
-        id,
+        templateId,
         {
-            $push: {machineIds: machineToAdd},
+            $push: {machineIds: machineId},
         },
         {new: true},
     );
@@ -143,13 +142,14 @@ async function getSavedMachines(templateId: string)
         {
             if (template == null)
             {
-                return null;
+                throw new Error("No template found");
             }
             return template.machineIds;
         })
         .catch((error) =>
         {
             console.log(error);
+            return null;
         });
 }
 

@@ -71,9 +71,11 @@ describe("Machine Services Tests", () =>
                 ],
             }),
         ];
-        machineServices.getSavedMachines = jest
-            .fn()
-            .mockResolvedValue(expected);
+        const template = new sessionTemplateModel({
+            machineIds: expected,
+            workout: [],
+        });
+        sessionTemplateModel.findById = jest.fn().mockResolvedValue(template);
         const result = await machineServices.getSavedMachines(stubId);
         expect(result).toBeTruthy();
         expect(result?.length).toBe(2);
@@ -185,17 +187,21 @@ describe("Machine Services Tests", () =>
                 },
             ],
         });
+        const newMachineId = newMachine._id?.toString() || "";
         const template = new sessionTemplateModel({
             workout: [],
-            machineIds: [newMachine],
+            machineIds: [newMachineId],
         });
-        const id = template._id?.toString() || "";
+        const templateId = template._id?.toString() || "";
         sessionTemplateModel.findByIdAndUpdate = jest
             .fn()
             .mockResolvedValue(template);
-        const result = await machineServices.saveMachine(newMachine, id);
+        const result = await machineServices.saveMachine(
+            newMachineId,
+            templateId,
+        );
         expect(result).toBeTruthy();
-        expect(result?.machineIds[0]).toBe(newMachine);
+        expect(result?.machineIds[0].toString()).toBe(newMachineId);
     });
 
     test("Remove machine --- successful", async () =>
@@ -395,11 +401,12 @@ describe("Machine Services Tests", () =>
                 },
             ],
         });
-        const id = "1";
+        const machineId = newMachine?._id?.toString() || "";
+        const stubId = "1";
         sessionTemplateModel.findByIdAndUpdate = jest
             .fn()
             .mockResolvedValue(null);
-        const result = await machineServices.saveMachine(newMachine, id);
+        const result = await machineServices.saveMachine(machineId, stubId);
         expect(result).toBeFalsy();
     });
 
@@ -466,6 +473,14 @@ describe("Machine Services Tests", () =>
             machineId,
             attrName,
         );
+        expect(result).toBeFalsy();
+    });
+
+    test("Fetch saved machines --- failure", async () =>
+    {
+        const stubId = "";
+        sessionTemplateModel.findById = jest.fn().mockResolvedValue(null);
+        const result = await machineServices.getSavedMachines(stubId);
         expect(result).toBeFalsy();
     });
 });

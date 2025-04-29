@@ -54,6 +54,21 @@ describe("User Services Tests", () =>
         expect(result).toHaveProperty("_id");
     });
 
+    test("Get User", async () =>
+    {
+        const email = "pguy@gmail.com";
+        const dummyUser = {
+            name: "Person Guy",
+            email: email,
+            password: "pass123",
+            units: "lbs" as const,
+        };
+        const user = new userModel(dummyUser);
+        userModel.findOne = jest.fn().mockResolvedValue(user);
+        const result = await userServices.getUser(email);
+        expect(result).toBeTruthy();
+    });
+
     // Add user - test to hit the catch blocks
     // Closes the connection to database to force an error to hit the catch blocks
     // Reconnects after test finishes
