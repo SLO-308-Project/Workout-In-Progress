@@ -20,8 +20,10 @@ describe("Machine Services Tests", () =>
     });
 
     // Clean up database entries for tests
-    afterEach(async () =>
-    {});
+    afterEach(() =>
+    {
+        jest.restoreAllMocks();
+    });
 
     // machineServices tests
 
@@ -131,21 +133,48 @@ describe("Machine Services Tests", () =>
     {
         const email = "pbuff@gmail.com";
         const name = "Pull Down";
-        const expected = {
+        const machineId = "mock-machine-id";
+        const machineLogId = "mock-log-id";
+        const machineToDelete = {
+            _id: machineId,
             name: "Pull Down",
         };
-        const list = [
-            {
-                name: "Pull Down",
-            },
-        ];
-        userModel.aggregate = jest.fn().mockResolvedValue(list);
-        machineModel.findByIdAndDelete = jest.fn().mockResolvedValue(expected);
+        const list = [machineToDelete];
+        const aggregateMethod = jest.spyOn(userModel, 'aggregate');
+        const findByIdAndDeleteMethod = jest.spyOn(machineModel, 'findByIdAndDelete');
+        const findOneMethod = jest.spyOn(userModel, 'findOne');
+        const findOneAndUpdateMethod = jest.spyOn(machineLogModel, 'findOneAndUpdate');
+
+        aggregateMethod.mockResolvedValue(list);
+        findByIdAndDeleteMethod.mockResolvedValue(machineToDelete);
+        findOneMethod.mockResolvedValue({
+            email: email,
+            machineLogId: machineLogId
+        });
+        findOneAndUpdateMethod.mockResolvedValue({
+            _id: machineLogId,
+            machineIds: []
+        });
         const result = await machineServices.deleteMachine(email, name);
         expect(result).toBeTruthy();
         // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
         expect(result!.name).toBe(name);
+        expect(aggregateMethod).toHaveBeenCalled();
+        expect(findByIdAndDeleteMethod).toHaveBeenCalledWith(machineId);
+
+        // Tests for deletion from machineLog
+        expect(findOneMethod).toHaveBeenCalledWith({email: email});
+        expect(findOneAndUpdateMethod).toHaveBeenCalledWith({
+            _id: machineLogId },
+            { $pull: { machineIds: machineId }
+        });
+        const machineLogResult = await findOneAndUpdateMethod.mock.results[0].value as {
+            _id: string;
+            machineIds: string[];
+        };
+        expect(machineLogResult.machineIds).toEqual([]);
     });
+
 
     // Add machine
     test("Add machine --- successful", async () =>

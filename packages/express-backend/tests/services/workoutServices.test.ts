@@ -338,7 +338,6 @@ describe("Workout Services Tests", () =>
         const result = await workoutServices.addWorkout(machineId, sessionId);
         expect(result).toBeNull();
     });
-
     test("Save workout --- failure (session id not found)", async () =>
     {
         const sessionId = "";
@@ -352,6 +351,7 @@ describe("Workout Services Tests", () =>
         );
         expect(result).toBeFalsy();
     });
+  
     test("Save workout --- failure (index not in range)", async () =>
     {
         const sessionId = "65f18f3ac6dc7f8d5a1234ab";

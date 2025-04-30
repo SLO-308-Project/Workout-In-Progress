@@ -1,9 +1,7 @@
 const BACKEND_URL = process.env.EXPO_PUBLIC_API_URL;
 
-export function fetchLogin(
-    email: string,
-    password: string,
-): Promise<Response> {
+export function fetchLogin(email: string, password: string): Promise<Response>
+{
     return fetch(`${BACKEND_URL}/users/login`, {
         method: "POST",
         headers: {
@@ -11,7 +9,7 @@ export function fetchLogin(
         },
         body: JSON.stringify({
             email,
-            password
+            password,
         }),
     });
 }

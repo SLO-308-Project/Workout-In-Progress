@@ -6,7 +6,7 @@
     "scripts": {
         "test": "npm run -w react-frontend test & npm run -w express-backend test",
         "format": "npx prettier . --write",
-        "lint": "npm run lint --prefix packages/react-frontend & npm run lint --prefix packages/express-backend",
+        "lint": "npm run lint --prefix packages/native-frontend & npm run lint --prefix packages/express-backend",
         "frontdev": "npm run -w native-frontend start",
         "backdev": "npm run -w express-backend dev",
         "coverage": "npm run -w express-backend coverage & npm run -w react-frontend coverage"
@@ -30,6 +30,7 @@
         "cross-env": "^7.0.3",
         "eslint": "^9.17.0",
         "eslint-config-prettier": "^10.0.1",
+        "eslint-import-resolver-typescript": "^4.3.4",
         "eslint-plugin-jest": "^28.11.0",
         "eslint-plugin-prettier": "^5.2.3",
         "eslint-plugin-react-hooks": "^5.0.0",
