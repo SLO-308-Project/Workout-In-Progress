@@ -103,4 +103,19 @@ describe("User Services Tests", () =>
             expect(error).toBeTruthy();
         }
     });
+
+    test("Get User Include", async () =>
+    {
+        const email = "pguy@gmail.com";
+        const dummyUser = {
+            name: "Person Guy",
+            email: email,
+            password: "pass123",
+            units: "lbs" as const,
+        };
+        const user = new userModel(dummyUser);
+        userModel.findOne = jest.fn().mockResolvedValue(user);
+        const result = await userServices.getUser(email, true);
+        expect(result).toBeTruthy();
+    });
 });

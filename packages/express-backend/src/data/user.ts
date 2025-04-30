@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema(
             //erference to a templateList
             type: mongoose.Schema.Types.ObjectId,
             ref: "templateList",
-            require: false,
+            require: true,
         },
     },
     {
