@@ -30,6 +30,7 @@
         "@types/jsonwebtoken": "^9.0.9",
         "@types/mockingoose": "^2.11.0",
         "@types/mongoose": "^5.11.96",
+        "cross-env": "^7.0.3",
         "eslint": "^9.20.0",
         "mockingoose": "^2.16.2",
         "mongodb-memory-server": "^10.1.4",
