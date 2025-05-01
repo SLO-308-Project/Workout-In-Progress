@@ -30,7 +30,6 @@ describe("User Services Tests", () =>
             name: "Person Guy",
             email: "pguy@gmail.com",
             password: "pass123",
-            units: "lbs" as const,
         };
         const user = new userModel(dummyUser);
         const stubLog = {
@@ -50,7 +49,6 @@ describe("User Services Tests", () =>
         expect(result).toBeTruthy();
         expect(result.name).toBe(user.name);
         expect(result.email).toBe(user.email);
-        expect(result.units).toBe(user.units);
         expect(result).toHaveProperty("_id");
     });
 
@@ -61,7 +59,6 @@ describe("User Services Tests", () =>
             name: "Person Guy",
             email: email,
             password: "pass123",
-            units: "lbs" as const,
         };
         const user = new userModel(dummyUser);
         userModel.findOne = jest.fn().mockResolvedValue(user);
@@ -78,7 +75,6 @@ describe("User Services Tests", () =>
             name: "Person Guy",
             email: "pguy@gmail.com",
             password: "1234",
-            units: "lbs" as const,
             sessionLogId: undefined,
             machineLogId: undefined,
         };
@@ -111,11 +107,14 @@ describe("User Services Tests", () =>
             name: "Person Guy",
             email: email,
             password: "pass123",
-            units: "lbs" as const,
         };
         const user = new userModel(dummyUser);
-        userModel.findOne = jest.fn().mockResolvedValue(user);
+        const mockSelect = jest.fn().mockReturnValue(user.password);
+        userModel.findOne = jest
+            .fn()
+            .mockReturnValue({user, select: mockSelect});
         const result = await userServices.getUser(email, true);
         expect(result).toBeTruthy();
+        expect(result).toBe(dummyUser.password);
     });
 });
