@@ -33,10 +33,9 @@ function setupAPP(PORT: number)
     app.use("/workouts", workoutRoutes);
     app.use("/templates", templateRoutes);
 
-    app.listen(PORT, () =>
-    {
-        console.log(`Server is running on port ${PORT}`);
-    });
+    app.listen(process.env.PORT || PORT, () => {
+        console.log("REST API is listening.");
+      });
     return app;
 }
 
