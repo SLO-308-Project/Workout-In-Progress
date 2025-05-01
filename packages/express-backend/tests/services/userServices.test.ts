@@ -2,6 +2,7 @@ import userModel from "../../src/data/user";
 import machineLogModel from "../../src/data/machineLog";
 import sessionLogModel from "../../src/data/sessionLog";
 import userServices from "../../src/services/userServices";
+import templateListModel from "../../src/data/templateList";
 
 describe("User Services Tests", () =>
 {
@@ -42,12 +43,30 @@ describe("User Services Tests", () =>
         jest.spyOn(sessionLogModel.prototype, "save").mockResolvedValue(
             stubLog,
         );
+        jest.spyOn(templateListModel.prototype, "save").mockResolvedValue(
+            stubLog,
+        );
         const result = await userServices.addUser(dummyUser);
         expect(result).toBeTruthy();
         expect(result.name).toBe(user.name);
         expect(result.email).toBe(user.email);
         expect(result.units).toBe(user.units);
         expect(result).toHaveProperty("_id");
+    });
+
+    test("Get User", async () =>
+    {
+        const email = "pguy@gmail.com";
+        const dummyUser = {
+            name: "Person Guy",
+            email: email,
+            password: "pass123",
+            units: "lbs" as const,
+        };
+        const user = new userModel(dummyUser);
+        userModel.findOne = jest.fn().mockResolvedValue(user);
+        const result = await userServices.getUser(email);
+        expect(result).toBeTruthy();
     });
 
     // Add user - test to hit the catch blocks
@@ -71,6 +90,9 @@ describe("User Services Tests", () =>
         jest.spyOn(sessionLogModel.prototype, "save").mockResolvedValue(
             undefined,
         );
+        jest.spyOn(templateListModel.prototype, "save").mockResolvedValue(
+            undefined,
+        );
         try
         {
             await userServices.addUser(dummyUser);
@@ -80,5 +102,20 @@ describe("User Services Tests", () =>
         {
             expect(error).toBeTruthy();
         }
+    });
+
+    test("Get User Include", async () =>
+    {
+        const email = "pguy@gmail.com";
+        const dummyUser = {
+            name: "Person Guy",
+            email: email,
+            password: "pass123",
+            units: "lbs" as const,
+        };
+        const user = new userModel(dummyUser);
+        userModel.findOne = jest.fn().mockResolvedValue(user);
+        const result = await userServices.getUser(email, true);
+        expect(result).toBeTruthy();
     });
 });

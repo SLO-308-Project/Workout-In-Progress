@@ -2,6 +2,7 @@ import {PipelineStage} from "mongoose";
 import machineModel, {MachineType} from "../data/machine";
 import machineLogModel from "../data/machineLog";
 import userModel from "../data/user";
+import sessionTemplateModel from "../data/sessionTemplate";
 
 /**
  * Gets list of all machines associated with a user
@@ -77,6 +78,25 @@ async function addMachine(machine: MachineType, email: string)
 }
 
 /**
+ * Add machine to template
+ *
+ * @param {string} machineId - Machine object id
+ * @param {string} templateId - ID to template object
+ *
+ * @returns {Promise} - Machine saved
+ */
+function saveMachine(machineId: string, templateId: string)
+{
+    return sessionTemplateModel.findByIdAndUpdate(
+        templateId,
+        {
+            $push: {machineIds: machineId},
+        },
+        {new: true},
+    );
+}
+
+/**
  * Get all machines that match the critera
  *
  * @param {String} name - Name of machine to find
@@ -105,6 +125,51 @@ async function getMachines(
         listOfMachines.push({$match: {muscle: muscle}});
     }
     return userModel.aggregate(listOfMachines);
+}
+
+/**
+ * Get all saved machines from a template
+ *
+ * @param {string} templateId - Template object id
+ *
+ * @returns {Promise} - List of machines in template
+ */
+async function getSavedMachines(templateId: string)
+{
+    return sessionTemplateModel
+        .findById(templateId)
+        .then((template) =>
+        {
+            if (template == null)
+            {
+                throw new Error("No template found");
+            }
+            return template.machineIds;
+        })
+        .catch((error) =>
+        {
+            console.log(error);
+            return null;
+        });
+}
+
+/**
+ * Removes a machine from a template
+ *
+ * @param {string} machineId - Name of Machine
+ * @param {string} templateId - Template object id
+ *
+ * @returns {Promise} - Remove machine from template
+ */
+async function removeMachine(machineId: string, templateId: string)
+{
+    return sessionTemplateModel.findByIdAndUpdate(
+        templateId,
+        {
+            $pull: {machineIds: machineId},
+        },
+        {new: true},
+    );
 }
 
 // TODO: Fix this function to also delete a machine from the machine_log document.
@@ -275,6 +340,9 @@ async function deleteAttribute(machineId: string, attrName: string)
 export default {
     addMachine,
     getMachines,
+    getSavedMachines,
+    saveMachine,
+    removeMachine,
     deleteMachine,
     updateMachine,
     getAttributes,
