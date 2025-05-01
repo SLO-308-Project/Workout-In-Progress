@@ -47,6 +47,12 @@ const userSchema = new mongoose.Schema(
             ref: "machineLog",
             require: true,
         },
+        templateListId: {
+            //erference to a templateList
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "templateList",
+            require: true,
+        },
     },
     {
         collection: "users",

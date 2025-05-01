@@ -1,4 +1,5 @@
 import sessionModel from "../data/session";
+import sessionTemplateModel from "../data/sessionTemplate";
 
 /**
  * Gets all workouts for a session
@@ -44,6 +45,116 @@ async function addWorkout(machineId: string, sessionId: string)
             console.log("adding to the workout");
             session.workout.push({machineId: machineId, sets: []});
             return session.save();
+        })
+        .catch((error) =>
+        {
+            console.log(error);
+            return null;
+        });
+}
+
+/**
+ * Save a workout to a template
+ *
+ * @param {string} templateId - Template Object id
+ * @param {string} sessionId - Machine Object id
+ * @param {number} index - Index of workout to add
+ *
+ * @return {Promise} - Workout saved to template
+ */
+async function saveWorkout(
+    templateId: string,
+    sessionId: string,
+    index: number,
+)
+{
+    const workoutToSave = await sessionModel
+        .findById(sessionId)
+        .then((session) =>
+        {
+            if (session == null)
+            {
+                throw new Error("Session not found");
+            }
+            if (index >= session.workout.length || index < 0)
+            {
+                throw new Error("Index not in list");
+            }
+            return session.workout[index].toObject();
+        })
+        .catch((error) =>
+        {
+            console.log(error);
+            return null;
+        });
+    if (workoutToSave == null)
+    {
+        return null;
+    }
+    return sessionTemplateModel
+        .findByIdAndUpdate(
+            templateId,
+            {
+                $push: {workout: workoutToSave},
+            },
+            {new: true},
+        )
+        .then((template) =>
+        {
+            if (template == null)
+            {
+                throw new Error("Template not found");
+            }
+            return template.workout[template.workout.length - 1];
+        })
+        .catch((error) =>
+        {
+            console.log(error);
+            return null;
+        });
+}
+
+/**
+ * Remove a saved workout from a template
+ *
+ * @param {string} templateId - Template Object Id
+ * @param {number} index - Index of workout to delete
+ *
+ * @return {Promise} - Remove workout from tempalte
+ */
+async function removeSavedWorkout(templateId: string, index: number)
+{
+    const template = await sessionTemplateModel.findById(templateId);
+    if (template == null)
+    {
+        return null;
+    }
+    if (index >= template.workout.length || index < 0)
+    {
+        return null;
+    }
+    template.workout.splice(index, 1);
+    return template.save();
+}
+
+/**
+ * Get saved workouts from a template
+ *
+ * @param {string} templateId - Temp;ate object id
+ *
+ * @returns {Promise} - List of all workouts in a template
+ */
+async function getSavedWorkout(templateId: string)
+{
+    return sessionTemplateModel
+        .findById(templateId)
+        .then((template) =>
+        {
+            if (template == null)
+            {
+                throw new Error("No template found");
+            }
+            return template.workout;
         })
         .catch((error) =>
         {
@@ -104,5 +215,8 @@ async function removeWorkout(sessionId: string, workoutId: string)
 export default {
     getWorkout,
     addWorkout,
+    saveWorkout,
+    getSavedWorkout,
     removeWorkout,
+    removeSavedWorkout,
 };
