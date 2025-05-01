@@ -2,7 +2,7 @@ name: ci-testing
 
 on:
     push: 
-        branches: [SettingUpCI/CD]
+        branches: [main]
 
 jobs:
     build:
