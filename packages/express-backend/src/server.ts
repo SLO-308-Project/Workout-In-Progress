@@ -6,6 +6,7 @@ import sessionRoutes from "./routes/sessionRoutes";
 import workoutRoutes from "./routes/workoutRoutes";
 import templateRoutes from "./routes/templateRoutes";
 import {getEnv} from "./util/env";
+import {authToken} from "./util/jwt";
 
 import mongoose from "mongoose";
 
@@ -25,13 +26,14 @@ function setupAPP(PORT: number)
     //parser.
     app.use(express.json());
 
-    //add Routes
-    app.use("/machines", machineRoutes);
+
+    //add Routes, authToken for protected route
+    app.use("/machines", authToken, machineRoutes);
     app.use("/users", userRoutes);
-    app.use("/sessions", sessionRoutes);
-    app.use("/current", workoutRoutes);
-    app.use("/workouts", workoutRoutes);
-    app.use("/templates", templateRoutes);
+    app.use("/sessions", authToken, sessionRoutes);
+    app.use("/current", authToken, workoutRoutes);
+    app.use("/workouts", authToken, workoutRoutes);
+    app.use("/templates", authToken, templateRoutes);
 
     app.listen(process.env.PORT || PORT, () => {
         console.log("REST API is listening.");
