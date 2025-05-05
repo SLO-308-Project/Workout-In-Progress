@@ -6,6 +6,7 @@ name: Build and deploy Node.js app to Azure Web App - WorkoutInProgressAPI
 on:
   push:
     branches:
+      # Branch to deploy
       - SettingUpCI/CD
   workflow_dispatch:
 
