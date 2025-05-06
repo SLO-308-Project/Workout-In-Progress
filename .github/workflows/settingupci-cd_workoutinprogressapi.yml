@@ -7,7 +7,7 @@ on:
     push:
         branches:
             # Branch to deploy
-            - SettingUpCI/CD
+            - CI/CD-attempt2
     workflow_dispatch:
 
 jobs:

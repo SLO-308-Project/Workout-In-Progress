@@ -2,7 +2,7 @@ name: ci-testing
 
 on:
     push:
-        branches: [main]
+        branches: [CI/CD-attempt2]
 
 jobs:
     build:
