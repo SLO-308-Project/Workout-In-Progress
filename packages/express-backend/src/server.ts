@@ -5,6 +5,7 @@ import userRoutes from "./routes/userRoutes";
 import sessionRoutes from "./routes/sessionRoutes";
 import workoutRoutes from "./routes/workoutRoutes";
 import templateRoutes from "./routes/templateRoutes";
+import defaultRoute from "./routes/default";
 import {getEnv} from "./util/env";
 
 import mongoose from "mongoose";
@@ -21,10 +22,17 @@ function setupAPP(PORT: number)
     //Also add all endpoints from other files.
     const app = express();
 
-    app.use(cors());
+    //Remove localhost later.
+    app.use(cors(
+        {
+            origin: ["https://orange-bush-0991c211e.6.azurestaticapps.net", "http://localhost:8081"]
+        }
+    ));
     //parser.
     app.use(express.json());
 
+    //Test Route
+    app.use("/", defaultRoute);
     //add Routes
     app.use("/machines", machineRoutes);
     app.use("/users", userRoutes);
