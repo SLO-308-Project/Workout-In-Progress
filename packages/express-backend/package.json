@@ -8,7 +8,7 @@
         "tsc": "tsc",
         "dev": "npx nodemon src/server.ts",
         "lint": "npx eslint .",
-        "start": "node build/server.ts",
+        "start": "npx tsc && node build/src/server.js",
         "coverage": "npx jest --coverage --testPathIgnorePatterns memoryServices"
     },
     "author": "",
