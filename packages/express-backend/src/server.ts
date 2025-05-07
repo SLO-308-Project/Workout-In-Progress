@@ -25,7 +25,8 @@ function setupAPP(PORT: number)
     //Remove localhost later.
     app.use(cors(
         {
-            origin: ["https://orange-bush-0991c211e.6.azurestaticapps.net", "http://localhost:8081"]
+            origin: ["https://orange-bush-0991c211e.6.azurestaticapps.net", "http://localhost:8081"],
+            credentials: true,
         }
     ));
     //parser.
