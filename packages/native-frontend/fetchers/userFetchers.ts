@@ -1,5 +1,5 @@
-// import Constants from "expo-constants";
-// const BACKEND_URL = Constants.manifest2?.extra?.BACKEND_URL;
+import Constants from "expo-constants";
+const BACKEND_URL = Constants.expoConfig?.extra?.BACKEND_URL;
 
 /**
  * Calls POST to users. Creating a user in the DB. 
@@ -11,8 +11,8 @@ function fetchRegister(
     password: string | undefined,
 ): Promise<Response>
 {
-    return fetch(`/users/register`, {
-    // return fetch(`${BACKEND_URL}/users/register`, {
+    // return fetch(`/users/register`, {
+    return fetch(`${BACKEND_URL}/users/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
