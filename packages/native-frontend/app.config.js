@@ -41,6 +41,7 @@ export default {
     experiments: {
       typedRoutes: true,
     },
+    // ALL enviroment variables must be added here.
     extra: {
       BACKEND_URL: process.env.EXPO_PUBLIC_API_URL,
     }

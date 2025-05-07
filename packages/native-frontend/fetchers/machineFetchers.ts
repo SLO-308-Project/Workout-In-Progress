@@ -1,7 +1,8 @@
 import {Attribute} from "@/types/attribute";
 import {Machine} from "@/types/machine";
 
-const BACKEND_URL = process.env.EXPO_PUBLIC_API_URL;
+import Constants from "expo-constants";
+const BACKEND_URL = Constants.manifest2?.extra?.BACKEND_URL;
 
 // TEMPORARY USER FOR MAKING BACKEND CALLS WORK
 // CURRENT ROUTING PATHS RELY ON EMAIL
