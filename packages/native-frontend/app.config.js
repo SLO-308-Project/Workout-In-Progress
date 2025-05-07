@@ -41,8 +41,8 @@ export default {
     experiments: {
       typedRoutes: true,
     },
+    extra: {
+      BACKEND_URL: process.env.EXPO_PUBLIC_API_URL,
+    }
   },
-  extra: {
-    BACKEND_URL: process.env.EXPO_PUBLIC_API_URL,
-  }
 };
