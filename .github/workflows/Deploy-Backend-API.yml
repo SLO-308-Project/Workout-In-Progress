@@ -27,11 +27,10 @@ jobs:
 
             - name: root install
               run: |
-                  npm install
+                  npm ci
 
             - name: npm install, build, and test
               run: |
-                  npm install --workspaces=false
                   npm run -w . build --if-present
                   npm run -w . test --if-present
               working-directory: packages/express-backend
