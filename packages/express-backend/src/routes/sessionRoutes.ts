@@ -6,10 +6,10 @@ import {SessionType} from "../data/session";
 const router = Router();
 
 // Get all sessions
-router.get("/", (_req: Request, res: Response) =>
+router.get("/:userId/", (req: Request, res: Response) =>
 {
     sessionServices
-        .getAllSessions()
+        .getAllSessions(req.params.userId)
         .then((result) =>
         {
             return res.status(200).send(result);
@@ -22,10 +22,10 @@ router.get("/", (_req: Request, res: Response) =>
 });
 
 // Get most recent session with no time (0 default)
-router.get("/recent", (_req: Request, res: Response) =>
+router.get("/:userId/recent", (req: Request, res: Response) =>
 {
     sessionServices
-        .getCurrentSession()
+        .getCurrentSession(req.params.userId)
         .then((result) =>
         {
             if (result.length === 1)
@@ -45,10 +45,10 @@ router.get("/recent", (_req: Request, res: Response) =>
 });
 
 // Get a session by id
-router.get("/:id", (req: Request, res: Response) =>
+router.get("/:userId/:id", (req: Request, res: Response) =>
 {
     sessionServices
-        .getSessionById(req.params.id)
+        .getSessionById(req.params.id, req.params.userId)
         .then((result) =>
         {
             return res.status(200).send(result);
@@ -61,10 +61,10 @@ router.get("/:id", (req: Request, res: Response) =>
 });
 
 // Create a session
-router.post("/", (req: Request, res: Response) =>
+router.post("/:userId/", (req: Request, res: Response) =>
 {
     sessionServices
-        .addSession(req.body as SessionType)
+        .addSession(req.body as SessionType, req.params.userId)
         .then((result) =>
         {
             return res.status(201).send(result);
@@ -76,10 +76,10 @@ router.post("/", (req: Request, res: Response) =>
 });
 
 // Updates a session with end time
-router.put("/:id", (req: Request, res: Response) =>
+router.put("/:userId/:id", (req: Request, res: Response) =>
 {
     sessionServices
-        .endSession(req.params.id)
+        .endSession(req.params.id, req.params.userId)
         .then((result) =>
         {
             if (result == null)
@@ -99,10 +99,10 @@ router.put("/:id", (req: Request, res: Response) =>
 });
 
 // Delete a session with unique _id
-router.delete("/:id", (req: Request, res: Response) =>
+router.delete("/:userId/:id", (req: Request, res: Response) =>
 {
     sessionServices
-        .deleteSession(req.params.id)
+        .deleteSession(req.params.id, req.params.userId)
         .then((result) =>
         {
             if (result == null)

@@ -8,10 +8,10 @@ import {WorkoutRequest} from "../types/express";
 const router = Router();
 
 // Get all workouts for a session and passes it along to the client
-router.get("/:sessionId", (req: Request, res: Response) =>
+router.get("/:userId/:sessionId", (req: Request, res: Response) =>
 {
     workoutServices
-        .getWorkout(req.params.sessionId)
+        .getWorkout(req.params.sessionId, req.params.userId)
         .then((result) =>
         {
             return res.status(201).send(result);
@@ -24,10 +24,10 @@ router.get("/:sessionId", (req: Request, res: Response) =>
 });
 
 // Adds a workout with a machineid to a sessionid and passes it along to the client
-router.post("/:sessionId", (req: WorkoutRequest, res: Response) =>
+router.post("/:userId/:sessionId", (req: WorkoutRequest, res: Response) =>
 {
     workoutServices
-        .addWorkout(req.body.machineId, req.params.sessionId)
+        .addWorkout(req.body.machineId, req.params.sessionId, req.params.userId)
         .then((result) =>
         {
             return res.status(201).send(result);
@@ -39,20 +39,27 @@ router.post("/:sessionId", (req: WorkoutRequest, res: Response) =>
         });
 });
 
-router.delete("/:sessionId/:workoutId", (req: Request, res: Response) =>
-{
-    workoutServices
-        .removeWorkout(req.params.sessionId, req.params.workoutId)
-        .then((result) =>
-        {
-            return res.status(204).send(result);
-        })
-        .catch((err) =>
-        {
-            console.log(err);
-            return res.send(err);
-        });
-});
+router.delete(
+    "/:userId/:sessionId/:workoutId",
+    (req: Request, res: Response) =>
+    {
+        workoutServices
+            .removeWorkout(
+                req.params.sessionId,
+                req.params.workoutId,
+                req.params.userId,
+            )
+            .then((result) =>
+            {
+                return res.status(204).send(result);
+            })
+            .catch((err) =>
+            {
+                console.log(err);
+                return res.send(err);
+            });
+    },
+);
 
 // router.post("/:workoutId/sets", (req: Request, res: Response) => {
 //     workoutServices
