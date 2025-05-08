@@ -1,7 +1,9 @@
-import { Text, FlatList } from "react-native";
+import { Text, FlatList, Pressable } from "react-native";
 import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useIsFocused } from "@react-navigation/native";
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { useRouter } from 'expo-router';
 
 import {
     fetchGetSessions,
@@ -133,14 +135,18 @@ export default function HomeScreen() {
             });
     }
 
+    const router = useRouter();
     function startSession(): void {
         if (currSession) {
+            router.navigate("/(tabs)/currSession")
             return;
         }
         fetchStartSessions()
             .then((res) => {
                 if (res.status !== 201) {
                     throw new Error("No content added");
+                } else {
+                    router.navigate("/(tabs)/currSession")
                 }
             })
             .catch((err: unknown) => {
@@ -169,6 +175,12 @@ export default function HomeScreen() {
                 showsVerticalScrollIndicator={false}
                 className="container"
             />
+            <Pressable
+                className="absolute bottom-8 right-8 bg-yellow-400 p-4 rounded-full shadow-sm"
+                onPress={() => startSession()}
+            >
+                <AntDesign name="plus" size={32} color="white" />
+            </Pressable>
         </SafeAreaView>
     );
 }

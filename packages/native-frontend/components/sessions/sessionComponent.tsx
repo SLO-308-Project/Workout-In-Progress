@@ -1,7 +1,6 @@
 import { View, Text, Pressable } from "react-native";
 import { Session } from "@/types/session";
 import EvilIcons from '@expo/vector-icons/EvilIcons';
-// import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import Reanimated, {
@@ -17,7 +16,6 @@ type Props = {
     session: Session;
 };
 
-
 export default function SessionComponent({
     name,
     date,
@@ -26,6 +24,7 @@ export default function SessionComponent({
     session,
 }: Props) {
 
+    // Displays a delete button when swiping right on a session
     function RightSwipeDelete(
         prog: SharedValue<number>,
         drag: SharedValue<number>,
@@ -54,13 +53,6 @@ export default function SessionComponent({
             </Reanimated.View>
         );
     }
-
-    // TODO: Display the 2 most worked out muscles in each session card
-    // Requires some way of decoding machineId's into machine names.
-    // Backend calls are expensive. Perhaps each workout just stores the machines instead of id's?
-    // function getMuscles(): string {
-    //     const muscles = [];
-    // }
 
     const getSetCount = session.workout.reduce((sum, workout) => {
         return sum + workout.sets.length
