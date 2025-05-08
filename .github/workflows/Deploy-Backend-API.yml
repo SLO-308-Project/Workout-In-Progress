@@ -27,6 +27,7 @@ jobs:
             - name: npm install, build, and test
               run: |
                   npm install --workspaces=false
+                  npm install typescript
                   npm run -w . build --if-present
                   npm run -w . backend test --if-present
               working-directory: packages/express-backend
