@@ -10,7 +10,7 @@
         "test": "npx cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testPathIgnorePatterns memoryServices",
         "memTest": "npx cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testPathIgnorePatterns services",
         "coverage": "npx jest --coverage --testPathIgnorePatterns memoryServices",
-        "lint": "npx eslint .",
+        "lint": "eslint .",
 
         "tsc": "tsc"
     },
