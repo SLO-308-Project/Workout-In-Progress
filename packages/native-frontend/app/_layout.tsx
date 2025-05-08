@@ -1,18 +1,20 @@
+import { Stack } from "expo-router";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '@/util/authHeader';
-import {Stack} from "expo-router";
 
-export default function RootLayout()
-{
+export default function RootLayout() {
     return (
-        <Stack>
-            <Stack.Screen name="login" options={{headerShown: false}} />
-            <Stack.Screen name="signup" options={{headerShown: false}} />
-            <Stack.Screen name="(tabs)" options={{headerShown: false}} />
-            <Stack.Screen name="settings" options={{
-                title: "Settings", 
-                headerBackTitle: "Close" 
+        <GestureHandlerRootView>
+            <Stack>
+                <Stack.Screen name="login" options={{ headerShown: false }} />
+                <Stack.Screen name="signup" options={{ headerShown: false }} />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="settings" options={{
+                    title: "Settings",
+                    headerBackTitle: "Close"
                 }}
                 />
-        </Stack>
+            </Stack>
+        </GestureHandlerRootView>
     );
 }
