@@ -30,7 +30,7 @@ jobs:
                   npm install typescript@^5.7.3
                   npm install dotenv@^16.4.7
                   npm run -w . build --if-present
-                  npm run -w . backend test --if-present
+                  npm run -w . test --if-present
               working-directory: packages/express-backend
 
             - name: Zip artifact for deployment
