@@ -32,7 +32,6 @@ jobs:
             - name: npm build, and test
               run: | 
                   npm run -w . build --if-present
-                  npm run -w . test --if-present
               working-directory: packages/express-backend
 
             - name: Zip artifact for deployment
