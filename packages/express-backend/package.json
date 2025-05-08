@@ -7,8 +7,8 @@
         "start": "node build/src/server.js",
         "dev": "npx nodemon src/server.ts",
 
-        "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testPathIgnorePatterns memoryServices",
-        "memTest": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testPathIgnorePatterns services",
+        "test": "npx cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testPathIgnorePatterns memoryServices",
+        "memTest": "npx cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testPathIgnorePatterns services",
         "coverage": "npx jest --coverage --testPathIgnorePatterns memoryServices",
         "lint": "npx eslint .",
 
@@ -36,7 +36,8 @@
         "mongoose": "^8.10.0",
         "dotenv": "^16.4.7",
         "typescript": "^5.7.3",
-        "globals": "^15.14.0"
+        "globals": "^15.14.0",
+        "cross-env": "^7.0.3"
     },
     "devDependencies": {
         "@eslint/js": "^9.20.0",
@@ -45,7 +46,6 @@
         "mockingoose": "^2.16.2",
         "typescript-eslint": "^8.23.0",
         "autoprefixer": "^10.4.21",
-        "cross-env": "^7.0.3",
         "eslint-config-prettier": "^10.0.1",
         "eslint-import-resolver-typescript": "^4.3.4",
         "eslint-plugin-jest": "^28.11.0",
