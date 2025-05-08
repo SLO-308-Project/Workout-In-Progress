@@ -30,6 +30,54 @@ export default function HomeScreen() {
         return `${hours}h ${minutes}m ${second}s`;
     }
 
+    // Helper function to convert a date to a reasonable name
+    function dateToName(dateString: string): string {
+        const date = new Date(dateString);
+        const hour = date.getHours();
+        const day = date.getDay();
+        let name: string = "";
+
+        if (day === 0) {
+            name += "Sunday ";
+        }
+        else if (day === 1) {
+            name += "Monday ";
+        }
+        else if (day === 2) {
+            name += "Tuesday ";
+        }
+        else if (day === 3) {
+            name += "Wednesday ";
+        }
+        else if (day === 4) {
+            name += "Thursday ";
+        }
+        else if (day === 5) {
+            name += "Friday ";
+        }
+        else if (day === 6) {
+            name += "Saturday ";
+        }
+
+        if (hour < 6) {
+            name += "Late Night Session";
+        }
+        else if (hour >= 6 && hour < 12) {
+            name += "Morning Session";
+        }
+        else if (hour >= 12 && hour < 17) {
+            name += "Afternoon Session";
+        }
+        else if (hour >= 17 && hour < 21) {
+            name += "Evening Session";
+        }
+        else if (hour >= 21) {
+            name += "Night Session";
+        }
+
+        return name;
+    }
+
     // Function to fetch sessions
     // Sorts data by date so that most recent is first
     function loadSessions(): void {
@@ -106,11 +154,11 @@ export default function HomeScreen() {
                 Your Sessions
             </Text>
             <FlatList
-                data={sessions}
+                data={sessions.reverse()}
                 renderItem={({ item, index }) =>
                     <SessionComponent
                         key={index}
-                        name={index + 1}
+                        name={dateToName(item.date)}
                         date={formatDate(item.date)}
                         duration={formatDuration(item.time)}
                         deleteSession={deleteSession}
