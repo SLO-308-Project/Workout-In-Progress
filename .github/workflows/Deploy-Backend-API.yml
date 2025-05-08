@@ -24,11 +24,13 @@ jobs:
               with:
                   node-version: "22.x"
 
+            - name: root install
+              run: |
+                  npm install
+
             - name: npm install, build, and test
               run: |
                   npm install --workspaces=false
-                  npm install typescript@^5.7.3
-                  npm install dotenv@^16.4.7
                   npm run -w . build --if-present
                   npm run -w . test --if-present
               working-directory: packages/express-backend
