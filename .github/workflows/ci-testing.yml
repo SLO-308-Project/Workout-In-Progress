@@ -1,8 +1,10 @@
-name: ci-testing
+name: "ci: format, lint, and test"
 
 on:
     push:
-        branches: [CI/CD-attempt2]
+        branches: 
+            - CI/CD-attempt2
+            - main
 
 jobs:
     build:

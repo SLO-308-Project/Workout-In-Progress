@@ -1,13 +1,14 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - WorkoutInProgressAPI
+name: Build and Deploy WorkoutInProgressAPI
 
 on:
     push:
         branches:
             # Branch to deploy
             - CI/CD-attempt2
+            - main
     workflow_dispatch:
 
 jobs:
