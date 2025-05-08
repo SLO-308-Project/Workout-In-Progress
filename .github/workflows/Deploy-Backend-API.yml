@@ -26,9 +26,9 @@ jobs:
 
             - name: npm install, build, and test
               run: |
-                  npm ci --workspaces=false
-                  npm run -w express-backend build --if-present
-                  npm run -w express-backend test --if-present
+                  npm install --workspaces=false
+                  npm run -w . build --if-present
+                  npm run -w . backend test --if-present
               working-directory: packages/express-backend
 
             - name: Zip artifact for deployment
