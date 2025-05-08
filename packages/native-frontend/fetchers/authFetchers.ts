@@ -1,7 +1,7 @@
 import Constants from "expo-constants";
 const BACKEND_URL = Constants.manifest2?.extra?.BACKEND_URL;
 
-export function fetchLogin(email: string, password: string): Promise<Response>
+function fetchLogin(email: string, password: string): Promise<Response>
 {
     return fetch(`${BACKEND_URL}/users/login`, {
         method: "POST",
@@ -13,4 +13,8 @@ export function fetchLogin(email: string, password: string): Promise<Response>
             password,
         }),
     });
+}
+
+export{
+    fetchLogin,
 }
