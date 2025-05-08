@@ -1,4 +1,5 @@
 import { fetchLogin } from "@/fetchers/authFetchers";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /**
  * returns a promise that is either true for logged in or false for not logged in.
@@ -11,9 +12,8 @@ function login(email: string, password: string): Promise<boolean>
             if (res.ok) { // 200s status
                 console.log(`Authorized.`);
                 return res.text() // get the authorization token.
-                    .then((res_data) => {
-                        // NOTE: login token is being retrieved, but not being stored anywhere yet for protected routing
-                        console.log((`auth token: ${res_data}`));
+                    .then(async (res_data) => {
+                        await AsyncStorage.setItem('jwtToken', res_data)
                         return true; // sucessful loggin.
                     });
             } else { // non 200s status.
