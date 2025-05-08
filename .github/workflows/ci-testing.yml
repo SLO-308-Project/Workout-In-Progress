@@ -1,4 +1,4 @@
-name: "ci: format, lint, and test"
+name: "CI: Format, Lint, and Test"
 
 on:
     push:

@@ -29,8 +29,8 @@ jobs:
               run: |
                   npm ci
 
-            - name: npm install, build, and test
-              run: |
+            - name: npm build, and test
+              run: | 
                   npm run -w . build --if-present
                   npm run -w . test --if-present
               working-directory: packages/express-backend
