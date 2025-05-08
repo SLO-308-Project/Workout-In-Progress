@@ -28,6 +28,7 @@ jobs:
               run: |
                   npm install --workspaces=false
                   npm install typescript
+                  npm install dotenv
                   npm run -w . build --if-present
                   npm run -w . backend test --if-present
               working-directory: packages/express-backend
