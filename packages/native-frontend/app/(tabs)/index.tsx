@@ -1,10 +1,11 @@
-import { Text, FlatList, Pressable } from "react-native";
+import { Text, FlatList, Pressable, View } from "react-native";
 import { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useIsFocused } from "@react-navigation/native";
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { useRouter } from 'expo-router';
 
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Feather from '@expo/vector-icons/Feather';
 import {
     fetchGetSessions,
     fetchDeleteSession,
@@ -17,6 +18,7 @@ import SessionComponent, { Empty } from "@/components/sessions/sessionComponent"
 export default function HomeScreen() {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [currSession, setCurrSession] = useState<boolean>();
+    const router = useRouter();
 
     // Helper function for date formatting
     function formatDate(dateString: string): string {
@@ -79,7 +81,6 @@ export default function HomeScreen() {
 
         return name;
     }
-
     // Function to fetch sessions
     // Sorts data by date so that most recent is first
     function loadSessions(): void {
@@ -135,7 +136,6 @@ export default function HomeScreen() {
             });
     }
 
-    const router = useRouter();
     function startSession(): void {
         if (currSession) {
             router.navigate("/(tabs)/currSession")
@@ -154,11 +154,20 @@ export default function HomeScreen() {
             });
     }
 
+    const openSettingsStack = () => {
+        router.push("../settings")
+    }
+
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
-            <Text className="text-3xl font-semibold text-black tracking-tight px-4 pt-4 pb-2">
-                Your Sessions
-            </Text>
+            <View className="flex-row justify-between">
+                <Text className="text-3xl font-semibold text-black tracking-tight px-4 pt-4 pb-2">
+                    Your Sessions
+                </Text>
+                <Pressable className="pr-4" onPress={openSettingsStack}>
+                    <Feather name="settings" size={24} color="black" />
+                </Pressable>
+            </View>
             <FlatList
                 data={sessions.reverse()}
                 renderItem={({ item, index }) =>
