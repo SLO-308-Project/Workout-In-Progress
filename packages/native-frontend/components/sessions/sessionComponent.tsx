@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Flatlist } from "react-native";
 import { Session } from "@/types/session";
 
 type Props = {
@@ -44,6 +44,15 @@ export default function SessionComponent({
             <Text className="text-sm text-neutral-700">{getSetCount} Sets</Text>
         </View>
     );
+}
+
+// Component to be rendered when session list is empty
+export function Empty() {
+    return (
+        <Text className="text-3xl font-semibold text-black tracking-tight justify-center items-center">
+            No Sessions
+        </Text>
+    )
 }
 // <Pressable
 //     className="bg-red-100 px-4 py-2 rounded-full active:opacity-90 transition-all duration-200"
