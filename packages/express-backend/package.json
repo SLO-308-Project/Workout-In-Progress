@@ -3,9 +3,9 @@
     "version": "1.0.0",
     "main": "server.ts",
     "scripts": {
-        "build": "npx tsc",
+        "build": "tsc",
         "start": "node build/src/server.js",
-        "dev": "npx nodemon src/server.ts",
+        "dev": "nodemon src/server.ts",
 
         "test": "npx cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testPathIgnorePatterns memoryServices",
         "memTest": "npx cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testPathIgnorePatterns services",
