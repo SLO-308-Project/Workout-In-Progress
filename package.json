@@ -4,12 +4,13 @@
     "description": "## Workout In Progress ### Product Vision: A workout logger for tracking workouts and viewing past workouts.",
     "main": "index.js",
     "scripts": {
-        "test": "npm run -w express-backend test",
-        "format": "npx prettier . --write",
+        "test": "npm run -w express-backend test && npm run -w express-backend memTest",
+        "coverage": "npm run -w express-backend coverage",
         "lint": "npm run lint --prefix packages/native-frontend & npm run lint --prefix packages/express-backend",
+        "format": "npx prettier . --write",
+        
         "frontdev": "npm run -w native-frontend start",
-        "backdev": "npm run -w express-backend dev",
-        "coverage": "npm run -w express-backend coverage & npm run -w react-frontend coverage"
+        "backdev": "npm run -w express-backend dev"
     },
     "repository": {
         "type": "git",
