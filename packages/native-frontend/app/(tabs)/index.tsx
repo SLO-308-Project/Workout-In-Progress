@@ -123,7 +123,7 @@ export default function HomeScreen()
     const listSessions = sessions.map((session: Session, idx: number) => (
         <SessionComponent
             key={idx}
-            idx={idx + 1}
+            name={idx + 1}
             date={formatDate(session.date)}
             duration={formatDuration(session.time)}
             deleteSession={deleteSession}
@@ -132,12 +132,12 @@ export default function HomeScreen()
     ));
 
     return (
-        <SafeAreaView edges={["top"]} className="flex-1 bg-white px-4 pt-4">
+        <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 className="container"
             >
-                <Text className="text-3xl font-semibold text-black tracking-tight pt-4">
+                <Text className="text-3xl font-semibold text-black tracking-tight px-4 pt-4">
                     Your Sessions
                 </Text>
                 {listSessions}
