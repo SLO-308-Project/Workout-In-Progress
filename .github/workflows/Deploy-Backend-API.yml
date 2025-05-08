@@ -26,7 +26,7 @@ jobs:
 
             - name: npm install, build, and test
               run: |
-                  npm install --workspaces=false
+                  npm ci --workspaces=false
                   npm run -w express-backend build --if-present
                   npm run -w express-backend test --if-present
               working-directory: packages/express-backend
