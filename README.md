@@ -8,6 +8,11 @@
 # Workout In Progress
 Workout In Progress is a workout tracking application. It helps keep track of when and what workouts you have completed, provides statistics on what has been completed, and provides tools for easily inputting workouts. Our goal is to create an app that eliminates a lot of the extra and unnecessary features that most workout apps provide. Trim down these elements into the core functionality that is easy and efficient to use.
 
+## Deployment
+[Frontend Link](https://orange-bush-0991c211e.6.azurestaticapps.net)
+
+[Backend Test URL: "Hello World"](https://workoutinprogressapi-fhdwaeeafkayegcw.westus-01.azurewebsites.net/)
+
 ## Tech Spec Document
 [Tech Spec Doc](https://docs.google.com/document/d/1pv5Od8G1ek-ETLHgJwQMxAxre_nD8fRDjutjLOnxXK0/edit?usp=sharing)
 
@@ -23,7 +28,7 @@ Workout In Progress is a workout tracking application. It helps keep track of wh
 
 [UML Activity Diagram](https://drive.google.com/file/d/1RCC0hqDVSrnWCDgpppQ3kv7xycMe5lVk/view?usp=sharing)
 
-## Test Coverage Report
+## Test Coverage Reports
 Date: 4/15/2025 6pm 
 
 Backend Report: <br />
@@ -34,9 +39,6 @@ Backend Report: <br />
 
 3. Mock test <br />
 <img width="240" alt="Screenshot 2025-04-15 at 6 07 36 PM" src="https://github.com/user-attachments/assets/e6578ddd-4b49-461c-8230-762f3b4afcaf" />
-
-
-
 
 ## Setup for dev
 1. Clone entire repo.
