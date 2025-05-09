@@ -7,7 +7,7 @@ const router = Router();
 router.get("/", (req: Request, res: Response) =>
 {
     console.log(req);
-     res.status(201).send("Helo world");    
+     res.status(200).send("Hello World");    
 });
 
 export default router;
