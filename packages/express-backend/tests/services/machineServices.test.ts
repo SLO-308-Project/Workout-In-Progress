@@ -140,20 +140,26 @@ describe("Machine Services Tests", () =>
             name: "Pull Down",
         };
         const list = [machineToDelete];
-        const aggregateMethod = jest.spyOn(userModel, 'aggregate');
-        const findByIdAndDeleteMethod = jest.spyOn(machineModel, 'findByIdAndDelete');
-        const findOneMethod = jest.spyOn(userModel, 'findOne');
-        const findOneAndUpdateMethod = jest.spyOn(machineLogModel, 'findOneAndUpdate');
+        const aggregateMethod = jest.spyOn(userModel, "aggregate");
+        const findByIdAndDeleteMethod = jest.spyOn(
+            machineModel,
+            "findByIdAndDelete",
+        );
+        const findOneMethod = jest.spyOn(userModel, "findOne");
+        const findOneAndUpdateMethod = jest.spyOn(
+            machineLogModel,
+            "findOneAndUpdate",
+        );
 
         aggregateMethod.mockResolvedValue(list);
         findByIdAndDeleteMethod.mockResolvedValue(machineToDelete);
         findOneMethod.mockResolvedValue({
             email: email,
-            machineLogId: machineLogId
+            machineLogId: machineLogId,
         });
         findOneAndUpdateMethod.mockResolvedValue({
             _id: machineLogId,
-            machineIds: []
+            machineIds: [],
         });
         const result = await machineServices.deleteMachine(email, name);
         expect(result).toBeTruthy();
@@ -164,17 +170,19 @@ describe("Machine Services Tests", () =>
 
         // Tests for deletion from machineLog
         expect(findOneMethod).toHaveBeenCalledWith({email: email});
-        expect(findOneAndUpdateMethod).toHaveBeenCalledWith({
-            _id: machineLogId },
-            { $pull: { machineIds: machineId }
-        });
-        const machineLogResult = await findOneAndUpdateMethod.mock.results[0].value as {
+        expect(findOneAndUpdateMethod).toHaveBeenCalledWith(
+            {
+                _id: machineLogId,
+            },
+            {$pull: {machineIds: machineId}},
+        );
+        const machineLogResult = (await findOneAndUpdateMethod.mock.results[0]
+            .value) as {
             _id: string;
             machineIds: string[];
         };
         expect(machineLogResult.machineIds).toEqual([]);
     });
-
 
     // Add machine
     test("Add machine --- successful", async () =>

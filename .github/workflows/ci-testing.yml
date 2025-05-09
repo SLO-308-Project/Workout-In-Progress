@@ -2,7 +2,7 @@ name: "CI: Format, Lint, and Test"
 
 on:
     push:
-        branches: 
+        branches:
             - CI/CD-attempt2
             - main
 

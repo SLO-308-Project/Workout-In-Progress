@@ -8,6 +8,4 @@ function getEnv(name: string)
     return value;
 }
 
-export {
-    getEnv,
-}
+export {getEnv};

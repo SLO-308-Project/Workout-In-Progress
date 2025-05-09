@@ -30,7 +30,7 @@ jobs:
                   npm ci
 
             - name: npm build, and test
-              run: | 
+              run: |
                   npm run -w . build --if-present
               working-directory: packages/express-backend
 

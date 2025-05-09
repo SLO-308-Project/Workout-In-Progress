@@ -23,12 +23,15 @@ function setupAPP(PORT: number)
     const app = express();
 
     //Remove localhost later.
-    app.use(cors(
-        {
-            origin: ["https://orange-bush-0991c211e.6.azurestaticapps.net", "http://localhost:8081"],
+    app.use(
+        cors({
+            origin: [
+                "https://orange-bush-0991c211e.6.azurestaticapps.net",
+                "http://localhost:8081",
+            ],
             credentials: true,
-        }
-    ));
+        }),
+    );
     //parser.
     app.use(express.json());
 
@@ -42,9 +45,10 @@ function setupAPP(PORT: number)
     app.use("/workouts", workoutRoutes);
     app.use("/templates", templateRoutes);
 
-    app.listen(process.env.PORT || PORT, () => {
+    app.listen(process.env.PORT || PORT, () =>
+    {
         console.log("REST API is listening.");
-      });
+    });
     return app;
 }
 

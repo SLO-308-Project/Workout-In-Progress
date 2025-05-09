@@ -6,7 +6,6 @@
         "build": "tsc",
         "start": "node build/src/server.js",
         "dev": "nodemon src/server.ts",
-
         "test": "npx cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testPathIgnorePatterns memoryServices",
         "memTest": "npx cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testPathIgnorePatterns services",
         "coverage": "npx jest --coverage --testPathIgnorePatterns memoryServices",
@@ -30,22 +29,22 @@
         "typescript": "^5.7.3"
     },
     "devDependencies": {
-         "@eslint/js": "^9.20.0",
-         "@stylistic/eslint-plugin": "^3.1.0",
-         "@types/cors": "^2.8.17",
-         "@types/express": "^5.0.0",
-         "@types/jsonwebtoken": "^9.0.9",
-         "@types/mongoose": "^5.11.96",
-         "eslint": "^9.20.0",
-         "eslint-config-prettier": "^10.0.1",
-         "eslint-import-resolver-typescript": "^4.3.4",
-         "eslint-plugin-jest": "^28.11.0",
-         "eslint-plugin-prettier": "^5.2.3",
-         "jest": "^29.7.0",
-         "mockingoose": "^2.16.2",
-         "nodemon": "^3.1.9",
-         "prettier": "^3.5.1",
-         "prettier-plugin-brace-style": "^0.7.2",
-         "typescript-eslint": "^8.23.0"
+        "@eslint/js": "^9.20.0",
+        "@stylistic/eslint-plugin": "^3.1.0",
+        "@types/cors": "^2.8.17",
+        "@types/express": "^5.0.0",
+        "@types/jsonwebtoken": "^9.0.9",
+        "@types/mongoose": "^5.11.96",
+        "eslint": "^9.20.0",
+        "eslint-config-prettier": "^10.0.1",
+        "eslint-import-resolver-typescript": "^4.3.4",
+        "eslint-plugin-jest": "^28.11.0",
+        "eslint-plugin-prettier": "^5.2.3",
+        "jest": "^29.7.0",
+        "mockingoose": "^2.16.2",
+        "nodemon": "^3.1.9",
+        "prettier": "^3.5.1",
+        "prettier-plugin-brace-style": "^0.7.2",
+        "typescript-eslint": "^8.23.0"
     }
 }

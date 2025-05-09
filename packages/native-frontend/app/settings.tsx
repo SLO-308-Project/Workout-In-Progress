@@ -1,9 +1,10 @@
-import { View, Text, Pressable, ScrollView, Switch } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
+import {View, Text, Pressable, ScrollView, Switch} from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {useState} from "react";
 
 // NOTE: If you want to add more settings, make sure they are reflected in the database. You will have to add the CRUD to store and retrieve settings.
-export default function SettingsScreen() {
+export default function SettingsScreen()
+{
     const [darkMode, setDarkMode] = useState(false);
     // dark mode toggle
     return (
@@ -13,5 +14,5 @@ export default function SettingsScreen() {
                 <Switch value={darkMode} onValueChange={setDarkMode} />
             </View>
         </SafeAreaView>
-    )
+    );
 }

@@ -15,6 +15,4 @@ function fetchLogin(email: string, password: string): Promise<Response>
     });
 }
 
-export{
-    fetchLogin,
-}
+export {fetchLogin};

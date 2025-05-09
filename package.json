@@ -1,31 +1,31 @@
 {
-  "name": "workout-in-progress",
-  "version": "1.0.0",
-  "description": "## Workout In Progress ### Product Vision: A workout logger for tracking workouts and viewing past workouts.",
-  "main": "index.js",
-  "scripts": {
-    "test": "npm run -w express-backend test && npm run -w express-backend memTest",
-    "coverage": "npm run -w express-backend coverage",
-    "lint": "npm run lint --prefix packages/native-frontend & npm run lint --prefix packages/express-backend",
-    "format": "npx prettier . --write",
-    "frontdev": "npm run -w native-frontend start",
-    "backdev": "npm run -w express-backend dev",
-    "prepare": "husky"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SLO-308-Project/Workout-In-Progress.git"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/SLO-308-Project/Workout-In-Progress/issues"
-  },
-  "homepage": "https://github.com/SLO-308-Project/Workout-In-Progress#readme",
-  "devDependencies": {
-    "husky": "^9.1.7"
-  }
+    "name": "workout-in-progress",
+    "version": "1.0.0",
+    "description": "## Workout In Progress ### Product Vision: A workout logger for tracking workouts and viewing past workouts.",
+    "main": "index.js",
+    "scripts": {
+        "test": "npm run -w express-backend test && npm run -w express-backend memTest",
+        "coverage": "npm run -w express-backend coverage",
+        "lint": "npm run lint --prefix packages/native-frontend & npm run lint --prefix packages/express-backend",
+        "format": "npx prettier . --write",
+        "frontdev": "npm run -w native-frontend start",
+        "backdev": "npm run -w express-backend dev",
+        "prepare": "husky"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SLO-308-Project/Workout-In-Progress.git"
+    },
+    "workspaces": [
+        "packages/*"
+    ],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/SLO-308-Project/Workout-In-Progress/issues"
+    },
+    "homepage": "https://github.com/SLO-308-Project/Workout-In-Progress#readme",
+    "devDependencies": {
+        "husky": "^9.1.7"
+    }
 }

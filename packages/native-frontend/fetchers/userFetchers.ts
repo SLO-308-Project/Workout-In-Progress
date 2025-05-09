@@ -2,7 +2,7 @@ import Constants from "expo-constants";
 const BACKEND_URL = Constants.expoConfig?.extra?.BACKEND_URL;
 
 /**
- * Calls POST to users. Creating a user in the DB. 
+ * Calls POST to users. Creating a user in the DB.
  */
 
 function fetchRegister(
@@ -20,11 +20,9 @@ function fetchRegister(
         body: JSON.stringify({
             name: `${userName}`,
             email: `${email}`,
-            password: `${password}`
-        }),}
-    )
+            password: `${password}`,
+        }),
+    });
 }
 
-export {
-    fetchRegister,
-}
+export {fetchRegister};

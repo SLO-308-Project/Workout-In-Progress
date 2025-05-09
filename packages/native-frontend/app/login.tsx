@@ -9,19 +9,20 @@ import {
 import {SafeAreaView} from "react-native-safe-area-context";
 import LoginPrompt from "@/components/login/loginPrompt";
 // import { fetchLogin } from "@/fetchers/authFetchers";
-import { useState } from "react";
-import { Redirect } from "expo-router";
-import { login } from '@/util/loginHelper';
+import {useState} from "react";
+import {Redirect} from "expo-router";
+import {login} from "@/util/loginHelper";
 
-export default function Login() {
+export default function Login()
+{
     // const [loginFailed, setLoginFailed] = useState(false);
     const [loggedIn, setLoggedIn] = useState<boolean>();
-    function handleLogin(email: string, password: string): void {
-        login(email, password)
-            .then((result: boolean) => {
-                setLoggedIn(result);
-            })
-            
+    function handleLogin(email: string, password: string): void
+    {
+        login(email, password).then((result: boolean) =>
+        {
+            setLoggedIn(result);
+        });
     }
 
     if (loggedIn)
@@ -42,7 +43,10 @@ export default function Login() {
                     className="flex-1"
                 >
                     <View className="flex-1 justify-center items-center">
-                        <LoginPrompt handleSubmit={handleLogin} loggedIn={loggedIn} />
+                        <LoginPrompt
+                            handleSubmit={handleLogin}
+                            loggedIn={loggedIn}
+                        />
                     </View>
                 </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
