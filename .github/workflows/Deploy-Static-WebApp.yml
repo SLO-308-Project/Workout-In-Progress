@@ -1,4 +1,4 @@
-name: Build and Deploy Static WorkoutInPRogress Webapp
+name: Build and Deploy Static WorkoutInProgress Webapp
 
 on:
     push:
