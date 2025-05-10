@@ -2,9 +2,6 @@ name: "CI: Lint and Test"
 
 on:
     push:
-        branches:
-            - main
-            - CI/CD-attempt2
 
 jobs:
     build:

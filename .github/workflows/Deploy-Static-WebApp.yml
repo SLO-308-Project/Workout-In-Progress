@@ -4,12 +4,10 @@ on:
     push:
         branches:
             - main
-            - CI/CD-attempt2
     pull_request:
         types: [opened, synchronize, reopened, closed]
         branches:
             - main
-            - CI/CD-attempt2
 
 jobs:
     build_and_deploy_job:
