@@ -3,7 +3,6 @@ name: "CI: Format, Lint, and Test"
 on:
     push:
         branches:
-            - CI/CD-attempt2
             - main
 
 jobs:
@@ -15,6 +14,5 @@ jobs:
               with:
                   node-version: 23.5.0
             - run: npm ci
-            - run: npm run format
             - run: npm run lint
             - run: npm run test

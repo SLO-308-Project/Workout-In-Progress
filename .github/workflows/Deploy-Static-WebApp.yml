@@ -3,12 +3,10 @@ name: Build and Deploy Static WorkoutInPRogress Webapp
 on:
     push:
         branches:
-            - CI/CD-attempt2
             - main
     pull_request:
         types: [opened, synchronize, reopened, closed]
         branches:
-            - CI/CD-attempt2
             - main
 
 jobs:

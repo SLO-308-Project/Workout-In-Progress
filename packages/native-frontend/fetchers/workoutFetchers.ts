@@ -1,7 +1,7 @@
 import {AttributeValue} from "../types/attributeValue";
 
 import Constants from "expo-constants";
-const BACKEND_URL = Constants.manifest2?.extra?.BACKEND_URL;
+const BACKEND_URL = Constants.expoConfig?.extra?.BACKEND_URL;
 
 /**
  * Executes a GET request to get the workouts for a given session id
