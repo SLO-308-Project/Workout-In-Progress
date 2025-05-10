@@ -8,10 +8,10 @@ on:
         branches:
             # Branch to deploy
             - main
-    pull_request:
-        types: [opened, synchronize, reopened, closed]
-        branches:
-            - main
+    # pull_request:
+    #     types: [opened, synchronize, reopened, closed]
+    #     branches:
+    #         - main
     workflow_dispatch:
 
 jobs:
