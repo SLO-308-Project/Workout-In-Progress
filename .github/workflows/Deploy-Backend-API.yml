@@ -8,10 +8,12 @@ on:
         branches:
             # Branch to deploy
             - main
+            - CI/CD-attempt2
     pull_request:
         types: [opened, synchronize, reopened, closed]
         branches:
             - main
+            - CI/CD-attempt2
     workflow_dispatch:
 
 jobs:
