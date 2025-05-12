@@ -70,7 +70,6 @@ describe("User Services Tests", () =>
         expect(result).toBeTruthy();
         expect(result.name).toBe(dummyUser.name);
         expect(result.email).toBe(dummyUser.email);
-        expect(result.units).toBe(dummyUser.units);
         expect(result).toHaveProperty("_id");
     });
 

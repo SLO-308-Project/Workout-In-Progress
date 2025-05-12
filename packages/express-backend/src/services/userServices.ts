@@ -1,14 +1,15 @@
 import machineLogModel from "../data/machineLog";
 import userModel, {UserType} from "../data/user";
 import sessionLogModel from "../data/sessionLog";
+import templateListModel from "../data/templateList";
 
 /**
- * Create logs for machine and sessions for a user
+ * Create logs for machines, sessions, and templates for a user
  *
  * @param {UserType} user - User logs are being added to
- * @returns {Promise} - Create session and machine log
+ * @returns {Promise} - Create session, machine, and template logs
  */
-function createMachineLogAndSessionLog(user: UserType)
+function createUserLogs(user: UserType)
 {
     const createdSessionLog = new sessionLogModel()
         .save()
@@ -35,12 +36,24 @@ function createMachineLogAndSessionLog(user: UserType)
             throw error;
         });
 
+    const createdTemplateLog = new templateListModel()
+        .save()
+        .then((result) =>
+        {
+            user.templateListId = result._id;
+        })
+        .catch((error) =>
+        {
+            console.log("create empty templateLog erorr: " + error);
+            throw error;
+        });
     return Promise.all(
-        //returns a promise where both promises are complete.
+        //returns a promise where all promises are complete.
         [
             //create sessionLog and update user.
             createdSessionLog,
             createdMachineLog,
+            createdTemplateLog,
         ],
     );
 }
@@ -53,7 +66,7 @@ function createMachineLogAndSessionLog(user: UserType)
  */
 async function addUser(user: UserType)
 {
-    return createMachineLogAndSessionLog(user).then(() =>
+    return createUserLogs(user).then(() =>
     {
         //both the machine and session logs have been created.
         const userToAdd = new userModel(user);

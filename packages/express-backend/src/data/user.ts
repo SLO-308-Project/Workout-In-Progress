@@ -24,10 +24,10 @@ const userSchema = new mongoose.Schema(
             trim: true,
             select: false,
         },
-        units: {
-            type: String,
-            enum: ["lbs", "kilos"],
-            default: "lbs",
+        settingId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "settings",
+            require: true,
         },
         sessionLogId: {
             //reference to a sessionLog.
@@ -45,6 +45,12 @@ const userSchema = new mongoose.Schema(
             //reference to a machineLog.
             type: mongoose.Schema.Types.ObjectId,
             ref: "machineLog",
+            require: true,
+        },
+        templateListId: {
+            //erference to a templateList
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "templateList",
             require: true,
         },
     },

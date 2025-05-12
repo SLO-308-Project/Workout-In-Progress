@@ -1,8 +1,9 @@
-import {Text, ScrollView} from "react-native";
+import {Text, ScrollView, Pressable, View} from "react-native";
 import {useState, useEffect} from "react";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useIsFocused} from "@react-navigation/native";
-
+import {useRouter} from "expo-router";
+import Feather from "@expo/vector-icons/Feather";
 import {
     fetchGetSessions,
     fetchDeleteSession,
@@ -16,6 +17,7 @@ export default function HomeScreen()
 {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [currSession, setCurrSession] = useState<boolean>();
+    const router = useRouter();
 
     // Helper function for date formatting
     function formatDate(dateString: string): string
@@ -131,15 +133,25 @@ export default function HomeScreen()
         />
     ));
 
+    const openSettingsStack = () =>
+    {
+        router.push("../settings");
+    };
+
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white px-4 pt-4">
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 className="container"
             >
-                <Text className="text-3xl font-semibold text-black tracking-tight pt-4">
-                    Your Sessions
-                </Text>
+                <View className="flex-row justify-between">
+                    <Text className="text-3xl font-semibold text-black tracking-tight pt-4">
+                        Your Sessions
+                    </Text>
+                    <Pressable onPress={openSettingsStack}>
+                        <Feather name="settings" size={24} color="black" />
+                    </Pressable>
+                </View>
                 {listSessions}
             </ScrollView>
         </SafeAreaView>

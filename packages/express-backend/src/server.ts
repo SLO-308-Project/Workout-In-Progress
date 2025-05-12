@@ -4,8 +4,10 @@ import machineRoutes from "./routes/machineRoutes";
 import userRoutes from "./routes/userRoutes";
 import sessionRoutes from "./routes/sessionRoutes";
 import workoutRoutes from "./routes/workoutRoutes";
-
+import templateRoutes from "./routes/templateRoutes";
+import defaultRoute from "./routes/default";
 import {getEnv} from "./util/env";
+import {authToken} from "./util/jwt";
 
 import mongoose from "mongoose";
 
@@ -21,20 +23,33 @@ function setupAPP(PORT: number)
     //Also add all endpoints from other files.
     const app = express();
 
-    app.use(cors());
+    //Remove localhost later.
+    app.use(
+        cors({
+            origin: [
+                "https://orange-bush-0991c211e.6.azurestaticapps.net",
+                "http://localhost:8081",
+            ],
+            credentials: true,
+        }),
+    );
     //parser.
     app.use(express.json());
 
-    //add Routes
-    app.use("/machines", machineRoutes);
-    app.use("/users", userRoutes);
-    app.use("/sessions", sessionRoutes);
-    app.use("/current", workoutRoutes);
-    app.use("/workouts", workoutRoutes);
+    //Test Route
+    app.use("/", defaultRoute);
 
-    app.listen(PORT, () =>
+    //add Routes, authToken for protected route
+    app.use("/machines", authToken, machineRoutes);
+    app.use("/users", userRoutes);
+    app.use("/sessions", authToken, sessionRoutes);
+    app.use("/current", authToken, workoutRoutes);
+    app.use("/workouts", authToken, workoutRoutes);
+    app.use("/templates", authToken, templateRoutes);
+
+    app.listen(process.env.PORT || PORT, () =>
     {
-        console.log(`Server is running on port ${PORT}`);
+        console.log("REST API is listening.");
     });
     return app;
 }

@@ -1,4 +1,4 @@
-export function getEnv(name: string)
+function getEnv(name: string)
 {
     const value = import.meta.env[name];
     if (!value)
@@ -7,3 +7,5 @@ export function getEnv(name: string)
     }
     return value;
 }
+
+export {getEnv};

@@ -11,7 +11,6 @@ const machineSchema = new mongoose.Schema(
             type: String,
             required: true,
             trim: true,
-            unique: true,
         },
         muscle: {
             type: String,

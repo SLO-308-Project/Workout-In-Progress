@@ -1,6 +1,7 @@
 import {AttributeValue} from "../types/attributeValue";
 
-const BACKEND_URL = process.env.EXPO_PUBLIC_API_URL;
+import Constants from "expo-constants";
+const BACKEND_URL = Constants.expoConfig?.extra?.BACKEND_URL;
 
 /**
  * Executes a GET request to get the workouts for a given session id
