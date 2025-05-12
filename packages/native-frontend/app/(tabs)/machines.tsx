@@ -1,8 +1,9 @@
 import "@/global.css";
-import { Text, FlatList, Pressable, View } from "react-native";
+import { Text, FlatList, Pressable, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { SearchBar } from '@rneui/themed';
 
 import MachineForm from "@/components/machines/machineForm";
 import MachineComponent, { Empty } from "@/components/machines/machineComponent";
@@ -15,7 +16,12 @@ import {
 import { Machine } from "@/types/machine";
 
 function MachinePage() {
-    const [machines, setMachine] = useState<Machine[]>([]);
+    const [machines, setMachine] = useState<Machine[]>([]); 
+    const [search, setSearch] = useState<string>("");
+
+    const updateSearch = (search: string) => {
+        setSearch(search);
+    }
 
     useEffect(() => {
         getMachines();
@@ -69,9 +75,18 @@ function MachinePage() {
     //         handleDelete={removeOneMachine}
     //     />
     // ));
+    //
+    function filterMachines() {
+        if (search === "") {
+            return machines;
+        }
+        return machines.filter((machine: Machine) => {
+            return machine.name.toLowerCase().includes(search.toLowerCase());
+        })
+    }
 
     return (
-        <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
+        <SafeAreaView className="flex-1 bg-white pt-4">
             <View className="flex-row justify-between">
                 <Text className="text-3xl font-semibold text-black tracking-tight px-4 pt-4 pb-2">
                     Machines
@@ -80,8 +95,18 @@ function MachinePage() {
                     <AntDesign name="plus" size={32} color="black" />
                 </Pressable>
             </View>
+            <SearchBar
+                containerStyle={styles.containerStyle}
+                inputStyle={styles.inputStyle}
+                inputContainerStyle={styles.inputContainerStyle}
+                placeholder="Search"
+                onChangeText={updateSearch}
+                value={search}
+                lightTheme
+                round
+            />
             <FlatList
-                data={machines}
+                data={filterMachines()}
                 renderItem={({ item, index }) =>
                     <MachineComponent
                         key={index}
@@ -97,4 +122,18 @@ function MachinePage() {
     );
 }
 export default MachinePage;
+
+// SearchBar component wants a Stylesheet type passed to its props (so I can't use tailwind)
+const styles = StyleSheet.create({
+    containerStyle: {
+        backgroundColor: "#FFF",
+    },
+    inputContainerStyle: {
+        height: 35,
+    },
+    inputStyle: {
+        color: "#000",
+        fontSize: 16
+    }
+});
 // <MachineForm handleSubmit={addOneMachine} />

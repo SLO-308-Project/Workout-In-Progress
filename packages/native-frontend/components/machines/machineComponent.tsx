@@ -163,7 +163,7 @@ export function Empty() {
     return (
         <View className="flex-1 items-center bg-white">
             <Text className="text-2xl text-gray-300 font-semibold">
-                No Machines Yet
+                No Machines Found
             </Text>
         </View>
     )
