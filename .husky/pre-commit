@@ -1,9 +1,4 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+npm test
 
-VARIABLE = "Here is some Text"
-cat $VARIABLE
-
-
-# npm run format
-# git add .
+prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g') --write --ignore-unknown
+git update-index --again
