@@ -12,7 +12,7 @@ const router = Router();
 router.get("/:sessionId", (req: Request, res: Response) =>
 {
     workoutServices
-        .getWorkout(req.params.sessionId)
+        .getWorkout(req.params.sessionId, req.sub?.toString() as string)
         .then((result) =>
         {
             return res.status(201).send(result);
@@ -28,7 +28,11 @@ router.get("/:sessionId", (req: Request, res: Response) =>
 router.post("/:sessionId", (req: WorkoutRequest, res: Response) =>
 {
     workoutServices
-        .addWorkout(req.body.machineId, req.params.sessionId)
+        .addWorkout(
+            req.body.machineId,
+            req.params.sessionId,
+            req.sub?.toString() as string,
+        )
         .then((result) =>
         {
             return res.status(201).send(result);
@@ -43,7 +47,11 @@ router.post("/:sessionId", (req: WorkoutRequest, res: Response) =>
 router.delete("/:sessionId/:workoutId", (req: Request, res: Response) =>
 {
     workoutServices
-        .removeWorkout(req.params.sessionId, req.params.workoutId)
+        .removeWorkout(
+            req.params.sessionId,
+            req.params.workoutId,
+            req.sub?.toString() as string,
+        )
         .then((result) =>
         {
             return res.status(204).send(result);

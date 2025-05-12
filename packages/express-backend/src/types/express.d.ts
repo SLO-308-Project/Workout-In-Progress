@@ -33,4 +33,15 @@ export type MachineRequest = Request<
     MachineAttributes
 >;
 
+declare global
+{
+    namespace Express
+    {
+        export interface Request
+        {
+            sub?: string | (() => string);
+        }
+    }
+}
+
 export type SetRequest = Request<ParamsDictionary, unknown, Set>;

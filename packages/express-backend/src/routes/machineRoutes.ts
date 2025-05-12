@@ -15,10 +15,10 @@ const router = Router();
  * muscle: String
  * }
  * */
-router.post("/:userEmail/", (req: Request, res: Response) =>
+router.post("/:userId/", (req: Request, res: Response) =>
 {
     machineServices
-        .addMachine(req.body as MachineType, req.params.userEmail)
+        .addMachine(req.body as MachineType, req.params.userId)
         .then((result) =>
         {
             return res.status(201).send(result);
@@ -34,13 +34,13 @@ router.post("/:userEmail/", (req: Request, res: Response) =>
 //  name: string
 //  muscle: string
 //returns a list of machines.
-router.get("/:userEmail/", (req: Request, res: Response) =>
+router.get("/:userId/", (req: Request, res: Response) =>
 {
     machineServices
         .getMachines(
             req.query.name as string,
             req.query.muscle as string,
-            req.params.userEmail,
+            req.params.userId,
         )
         .then((result) =>
         {
@@ -56,10 +56,10 @@ router.get("/:userEmail/", (req: Request, res: Response) =>
 //delete machine by it's unique name.
 //path variable.
 //  name: string
-router.delete("/:userEmail/:name", (req: Request, res: Response) =>
+router.delete("/:userId/:name", (req: Request, res: Response) =>
 {
     machineServices
-        .deleteMachine(req.params.userEmail, req.params.name)
+        .deleteMachine(req.params.userId, req.params.name)
         .then((result) =>
         {
             if (result == null)
@@ -81,11 +81,11 @@ router.delete("/:userEmail/:name", (req: Request, res: Response) =>
 //Body can have any attribute of machineType.
 //Cannot accept null or undefined attributes.
 //result is the machine's previous values before update.
-router.patch("/:userEmail/:name", (req: Request, res: Response) =>
+router.patch("/:userId/:name", (req: Request, res: Response) =>
 {
     machineServices
         .updateMachine(
-            req.params.userEmail,
+            req.params.userId,
             req.params.name,
             req.body as MachineType,
         )
