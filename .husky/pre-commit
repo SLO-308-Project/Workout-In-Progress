@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm run format
-git add .
+VARIABLE = "Here is some Text"
+cat $VARIABLE
+
+
+# npm run format
+# git add .
