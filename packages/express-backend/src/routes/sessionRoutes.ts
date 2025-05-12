@@ -6,10 +6,10 @@ import {SessionType} from "../data/session";
 const router = Router();
 
 // Get all sessions
-router.get("/", (_req: Request, res: Response) =>
+router.get("/", (req: Request, res: Response) =>
 {
     sessionServices
-        .getAllSessions()
+        .getAllSessions(req.sub?.toString() as string)
         .then((result) =>
         {
             return res.status(200).send(result);
@@ -22,10 +22,10 @@ router.get("/", (_req: Request, res: Response) =>
 });
 
 // Get most recent session with no time (0 default)
-router.get("/recent", (_req: Request, res: Response) =>
+router.get("/recent", (req: Request, res: Response) =>
 {
     sessionServices
-        .getCurrentSession()
+        .getCurrentSession(req.sub?.toString() as string)
         .then((result) =>
         {
             if (result.length === 1)
@@ -48,7 +48,7 @@ router.get("/recent", (_req: Request, res: Response) =>
 router.get("/:id", (req: Request, res: Response) =>
 {
     sessionServices
-        .getSessionById(req.params.id)
+        .getSessionById(req.sub?.toString() as string, req.params.userId)
         .then((result) =>
         {
             return res.status(200).send(result);
@@ -64,7 +64,7 @@ router.get("/:id", (req: Request, res: Response) =>
 router.post("/", (req: Request, res: Response) =>
 {
     sessionServices
-        .addSession(req.body as SessionType)
+        .addSession(req.body as SessionType, req.sub?.toString() as string)
         .then((result) =>
         {
             return res.status(201).send(result);
@@ -79,7 +79,7 @@ router.post("/", (req: Request, res: Response) =>
 router.put("/:id", (req: Request, res: Response) =>
 {
     sessionServices
-        .endSession(req.params.id)
+        .endSession(req.params.id, req.sub?.toString() as string)
         .then((result) =>
         {
             if (result == null)
@@ -102,7 +102,7 @@ router.put("/:id", (req: Request, res: Response) =>
 router.delete("/:id", (req: Request, res: Response) =>
 {
     sessionServices
-        .deleteSession(req.params.id)
+        .deleteSession(req.params.id, req.sub?.toString() as string)
         .then((result) =>
         {
             if (result == null)

@@ -1,8 +1,10 @@
-import {Text, ScrollView, Pressable, View} from "react-native";
+import {Text, FlatList, Pressable, View} from "react-native";
 import {useState, useEffect} from "react";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useIsFocused} from "@react-navigation/native";
 import {useRouter} from "expo-router";
+
+import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import {
     fetchGetSessions,
@@ -11,7 +13,7 @@ import {
     fetchCurrentSession,
 } from "@/fetchers/sessionFetchers";
 import {Session} from "@/types/session";
-import SessionComponent from "@/components/sessions/sessionComponent";
+import SessionComponent, {Empty} from "@/components/sessions/sessionComponent";
 
 export default function HomeScreen()
 {
@@ -35,6 +37,66 @@ export default function HomeScreen()
         return `${hours}h ${minutes}m ${second}s`;
     }
 
+    // Helper function to convert a date to a reasonable name
+    function dateToName(dateString: string): string
+    {
+        const date = new Date(dateString);
+        const hour = date.getHours();
+        const day = date.getDay();
+        let name: string = "";
+
+        if (day === 0)
+        {
+            name += "Sunday ";
+        }
+        else if (day === 1)
+        {
+            name += "Monday ";
+        }
+        else if (day === 2)
+        {
+            name += "Tuesday ";
+        }
+        else if (day === 3)
+        {
+            name += "Wednesday ";
+        }
+        else if (day === 4)
+        {
+            name += "Thursday ";
+        }
+        else if (day === 5)
+        {
+            name += "Friday ";
+        }
+        else if (day === 6)
+        {
+            name += "Saturday ";
+        }
+
+        if (hour < 6)
+        {
+            name += "Late Night Session";
+        }
+        else if (hour >= 6 && hour < 12)
+        {
+            name += "Morning Session";
+        }
+        else if (hour >= 12 && hour < 17)
+        {
+            name += "Afternoon Session";
+        }
+        else if (hour >= 17 && hour < 21)
+        {
+            name += "Evening Session";
+        }
+        else if (hour >= 21)
+        {
+            name += "Night Session";
+        }
+
+        return name;
+    }
     // Function to fetch sessions
     // Sorts data by date so that most recent is first
     function loadSessions(): void
@@ -106,6 +168,7 @@ export default function HomeScreen()
     {
         if (currSession)
         {
+            router.navigate("/(tabs)/currSession");
             return;
         }
         fetchStartSessions()
@@ -115,6 +178,10 @@ export default function HomeScreen()
                 {
                     throw new Error("No content added");
                 }
+                else
+                {
+                    router.navigate("/(tabs)/currSession");
+                }
             })
             .catch((err: unknown) =>
             {
@@ -122,38 +189,43 @@ export default function HomeScreen()
             });
     }
 
-    const listSessions = sessions.map((session: Session, idx: number) => (
-        <SessionComponent
-            key={idx}
-            idx={idx + 1}
-            date={formatDate(session.date)}
-            duration={formatDuration(session.time)}
-            deleteSession={deleteSession}
-            session={session}
-        />
-    ));
-
     const openSettingsStack = () =>
     {
         router.push("../settings");
     };
 
     return (
-        <SafeAreaView edges={["top"]} className="flex-1 bg-white px-4 pt-4">
-            <ScrollView
+        <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
+            <View className="flex-row justify-between">
+                <Text className="text-3xl font-semibold text-black tracking-tight px-4 pt-4 pb-2">
+                    Your Sessions
+                </Text>
+                <Pressable className="pr-4" onPress={openSettingsStack}>
+                    <Feather name="settings" size={24} color="black" />
+                </Pressable>
+            </View>
+            <FlatList
+                data={sessions.reverse()}
+                renderItem={({item, index}) => (
+                    <SessionComponent
+                        key={index}
+                        name={dateToName(item.date)}
+                        date={formatDate(item.date)}
+                        duration={formatDuration(item.time)}
+                        deleteSession={deleteSession}
+                        session={item}
+                    />
+                )}
+                ListEmptyComponent={<Empty />}
                 showsVerticalScrollIndicator={false}
                 className="container"
+            />
+            <Pressable
+                className="absolute bottom-8 right-8 bg-yellow-400 p-4 rounded-full shadow-sm"
+                onPress={() => startSession()}
             >
-                <View className="flex-row justify-between">
-                    <Text className="text-3xl font-semibold text-black tracking-tight pt-4">
-                        Your Sessions
-                    </Text>
-                    <Pressable onPress={openSettingsStack}>
-                        <Feather name="settings" size={24} color="black" />
-                    </Pressable>
-                </View>
-                {listSessions}
-            </ScrollView>
+                <AntDesign name="plus" size={32} color="white" />
+            </Pressable>
         </SafeAreaView>
     );
 }
