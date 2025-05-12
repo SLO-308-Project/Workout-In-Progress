@@ -1,5 +1,12 @@
 import { View, Text, Pressable } from "react-native";
 import { useState, useEffect, useCallback } from "react";
+import EvilIcons from '@expo/vector-icons/EvilIcons';
+import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+import Reanimated, {
+    SharedValue,
+    useAnimatedStyle,
+} from 'react-native-reanimated';
+
 import AttributeForm from "./attributeForm";
 import AttributeComponent from "./attributeComponent";
 import {
@@ -85,17 +92,54 @@ export default function MachineComponent({ machine, handleDelete }: Props) {
         <></>
     );
 
+    // Displays a delete button when swiping right on a session
+    function RightSwipeDelete(
+        prog: SharedValue<number>,
+        drag: SharedValue<number>,
+        swipeableMethods: {
+            openLeft: () => void;
+            openRight: () => void;
+            close: () => void;
+        }) {
+        const styleAnimation = useAnimatedStyle(() => {
+            return {
+                transform: [{ translateX: drag.value + 140 }],
+            };
+        });
+
+        return (
+            <Reanimated.View style={styleAnimation}>
+                <Pressable
+                    onPress={() => {
+                        swipeableMethods.close();
+                        deleteMachine();
+                    }}
+                    className="bg-red-500 w-40 h-full flex items-center justify-center"
+                >
+                    <EvilIcons name="trash" size={36} color="white" />
+                </Pressable>
+            </Reanimated.View>
+        );
+    }
+
     return (
-        <View className="p-4 bg-white shadow-sm border border-neutral-200">
-            <View className="mb-1">
-                <Text className="text-2xl font-bold text-gray-900">
-                    {machine.name}
-                </Text>
-                <Text className="text-base text-gray-600">
-                    {machine.muscle}
-                </Text>
+        <ReanimatedSwipeable
+            friction={2}
+            rightThreshold={20}
+            renderRightActions={RightSwipeDelete}
+            overshootFriction={8}
+        >
+            <View className="p-4 bg-white shadow-sm border border-neutral-200">
+                <View className="mb-1">
+                    <Text className="text-2xl font-bold text-gray-900">
+                        {machine.name}
+                    </Text>
+                    <Text className="text-base text-gray-600">
+                        {machine.muscle}
+                    </Text>
+                </View>
             </View>
-        </View>
+        </ReanimatedSwipeable>
     );
 }
 // <Pressable

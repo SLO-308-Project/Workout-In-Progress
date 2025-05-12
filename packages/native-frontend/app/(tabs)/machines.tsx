@@ -2,6 +2,8 @@ import "@/global.css";
 import { Text, FlatList, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
+import AntDesign from '@expo/vector-icons/AntDesign';
+
 import MachineForm from "@/components/machines/machineForm";
 import MachineComponent, { Empty } from "@/components/machines/machineComponent";
 import {
@@ -70,9 +72,14 @@ function MachinePage() {
 
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
-            <Text className="text-3xl font-semibold text-black tracking-tight px-4 pt-4 pb-2">
-                Machines
-            </Text>
+            <View className="flex-row justify-between">
+                <Text className="text-3xl font-semibold text-black tracking-tight px-4 pt-4 pb-2">
+                    Machines
+                </Text>
+                <Pressable className="pr-4">
+                    <AntDesign name="plus" size={32} color="black" />
+                </Pressable>
+            </View>
             <FlatList
                 data={machines}
                 renderItem={({ item, index }) =>
