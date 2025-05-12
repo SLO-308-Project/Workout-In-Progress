@@ -34,6 +34,7 @@ export function authToken(
         {
             const decoded = jwt.verify(token, getEnv("JWT_SECRET"));
             console.log("Decoded token: ", decoded);
+            req.sub = decoded.sub;
             next();
         }
         catch (err)

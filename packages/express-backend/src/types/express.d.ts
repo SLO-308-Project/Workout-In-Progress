@@ -24,3 +24,14 @@ export type MachineRequest = Request<
     unknown,
     MachineAttributes
 >;
+
+declare global
+{
+    namespace Express
+    {
+        export interface Request
+        {
+            sub?: string | (() => string);
+        }
+    }
+}

@@ -36,12 +36,12 @@ describe("Machine Services Tests", () =>
                 muscle: "Pectoralis major",
             },
         ];
-        const email = "pbuff@gmail.com";
+        const stubId = "a3f7d2e1b9c8d0a1e4b5f9c3";
         const name = "Bench Press";
         const muscle = "Pectoralis major";
         userModel.aggregate = jest.fn().mockResolvedValue(expected);
 
-        const result = await machineServices.getMachines(name, muscle, email);
+        const result = await machineServices.getMachines(name, muscle, stubId);
         expect(result).toBeTruthy();
         expect(result.length).toBe(1);
         expect(result[0].name).toBe(name);
@@ -86,7 +86,7 @@ describe("Machine Services Tests", () =>
     // Update machine
     test("Update machine --- successful", async () =>
     {
-        const email = "pbuff@gmail.com";
+        const stubId = "a3f7d2e1b9c8d0a1e4b5f9c3";
         const currentName = "Leg Press";
         const machines = [
             new machineModel({
@@ -118,7 +118,7 @@ describe("Machine Services Tests", () =>
         userModel.aggregate = jest.fn().mockResolvedValue(machines);
         machineModel.findByIdAndUpdate = jest.fn().mockResolvedValue(expected);
         const result = await machineServices.updateMachine(
-            email,
+            stubId,
             currentName,
             updatedMachine,
         );
@@ -131,7 +131,7 @@ describe("Machine Services Tests", () =>
     // Delete machine
     test("Delete machine --- successful", async () =>
     {
-        const email = "pbuff@gmail.com";
+        const stubId = "a3f7d2e1b9c8d0a1e4b5f9c3";
         const name = "Pull Down";
         const machineId = "mock-machine-id";
         const machineLogId = "mock-log-id";
@@ -154,14 +154,14 @@ describe("Machine Services Tests", () =>
         aggregateMethod.mockResolvedValue(list);
         findByIdAndDeleteMethod.mockResolvedValue(machineToDelete);
         findOneMethod.mockResolvedValue({
-            email: email,
+            _id: stubId,
             machineLogId: machineLogId,
         });
         findOneAndUpdateMethod.mockResolvedValue({
             _id: machineLogId,
             machineIds: [],
         });
-        const result = await machineServices.deleteMachine(email, name);
+        const result = await machineServices.deleteMachine(stubId, name);
         expect(result).toBeTruthy();
         // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
         expect(result!.name).toBe(name);
@@ -169,7 +169,7 @@ describe("Machine Services Tests", () =>
         expect(findByIdAndDeleteMethod).toHaveBeenCalledWith(machineId);
 
         // Tests for deletion from machineLog
-        expect(findOneMethod).toHaveBeenCalledWith({email: email});
+        expect(findOneMethod).toHaveBeenCalledWith({_id: stubId});
         expect(findOneAndUpdateMethod).toHaveBeenCalledWith(
             {
                 _id: machineLogId,
@@ -187,7 +187,7 @@ describe("Machine Services Tests", () =>
     // Add machine
     test("Add machine --- successful", async () =>
     {
-        const email = "pbuff@gmail.com";
+        const stubId = "";
         const machineList: (typeof machineModel)[] = [];
         const newMachine = new machineModel({
             name: "Shoulder Press",
@@ -206,7 +206,7 @@ describe("Machine Services Tests", () =>
         jest.spyOn(machineModel.prototype, "save").mockResolvedValue(
             newMachine,
         );
-        const result = await machineServices.addMachine(newMachine, email);
+        const result = await machineServices.addMachine(newMachine, stubId);
         expect(result).toBeTruthy();
         expect(result.name).toBe(newMachine.name);
         expect(result.muscle).toBe(newMachine.muscle);
@@ -353,7 +353,7 @@ describe("Machine Services Tests", () =>
         machineLogModel.findOneAndUpdate = jest.fn().mockResolvedValue(null);
         try
         {
-            const email = "pbuff@gmail.com";
+            const stubId = "";
             const newMachine = new machineModel({
                 name: "Shoulder Press",
                 muscle: "Deltoids",
@@ -364,7 +364,7 @@ describe("Machine Services Tests", () =>
                     },
                 ],
             });
-            await machineServices.addMachine(newMachine, email);
+            await machineServices.addMachine(newMachine, stubId);
             fail("Test Should Not Be Here");
         }
         catch (error)
@@ -376,7 +376,7 @@ describe("Machine Services Tests", () =>
     // These tests exist to hit the catch blocks
     test("Add machine --- failure save", async () =>
     {
-        const email = "pbuff@gmail.com";
+        const stubId = "";
         const newMachine = new machineModel({
             name: "Shoulder Press",
             muscle: "Deltoids",
@@ -397,14 +397,14 @@ describe("Machine Services Tests", () =>
             {
                 await Promise.reject(new Error("boom"));
             });
-        const result = await machineServices.addMachine(newMachine, email);
+        const result = await machineServices.addMachine(newMachine, stubId);
         expect(result).toBeTruthy();
     });
 
     // These tests exist to hit the catch blocks
     test("Add machine --- failure save", async () =>
     {
-        const email = "pbuff@gmail.com";
+        const stubId = "";
         const newMachine = new machineModel({
             name: "Shoulder Press",
             muscle: "Deltoids",
@@ -422,7 +422,7 @@ describe("Machine Services Tests", () =>
         jest.spyOn(machineModel.prototype, "save").mockResolvedValue(
             newMachine,
         );
-        const result = await machineServices.addMachine(newMachine, email);
+        const result = await machineServices.addMachine(newMachine, stubId);
         expect(result).toBeTruthy();
     });
 
