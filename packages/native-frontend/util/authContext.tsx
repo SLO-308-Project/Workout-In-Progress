@@ -20,26 +20,8 @@ export const AuthProvider: React.FC<{children: React.ReactNode}> = ({
 
     useEffect(() =>
     {
-        checkAuthStatus();
+        setIsLoading(false);
     }, []);
-
-    const checkAuthStatus = async () =>
-    {
-        try
-        {
-            const token = await AsyncStorage.getItem("jwtToken");
-            setIsAuthenticated(!!token);
-        }
-        catch (error)
-        {
-            console.error("Error checking auth status:", error);
-            setIsAuthenticated(false);
-        }
-        finally
-        {
-            setIsLoading(false);
-        }
-    };
 
     const loginUser = async (email: string, password: string) =>
     {
