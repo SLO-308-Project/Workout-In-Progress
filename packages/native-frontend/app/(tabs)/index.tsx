@@ -1,19 +1,19 @@
-import { Text, FlatList, Pressable, View } from "react-native";
-import { useState, useEffect } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useIsFocused } from "@react-navigation/native";
-import { useRouter } from 'expo-router';
+import {Text, FlatList, Pressable, View} from "react-native";
+import {useState, useEffect} from "react";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {useIsFocused} from "@react-navigation/native";
+import {useRouter} from "expo-router";
 
-import AntDesign from '@expo/vector-icons/AntDesign';
-import Feather from '@expo/vector-icons/Feather';
+import AntDesign from "@expo/vector-icons/AntDesign";
+import Feather from "@expo/vector-icons/Feather";
 import {
     fetchGetSessions,
     fetchDeleteSession,
     fetchStartSessions,
     fetchCurrentSession,
 } from "@/fetchers/sessionFetchers";
-import { Session } from "@/types/session";
-import SessionComponent, { Empty } from "@/components/sessions/sessionComponent";
+import {Session} from "@/types/session";
+import SessionComponent, {Empty} from "@/components/sessions/sessionComponent";
 
 export default function HomeScreen()
 {
@@ -38,47 +38,60 @@ export default function HomeScreen()
     }
 
     // Helper function to convert a date to a reasonable name
-    function dateToName(dateString: string): string {
+    function dateToName(dateString: string): string
+    {
         const date = new Date(dateString);
         const hour = date.getHours();
         const day = date.getDay();
         let name: string = "";
 
-        if (day === 0) {
+        if (day === 0)
+        {
             name += "Sunday ";
         }
-        else if (day === 1) {
+        else if (day === 1)
+        {
             name += "Monday ";
         }
-        else if (day === 2) {
+        else if (day === 2)
+        {
             name += "Tuesday ";
         }
-        else if (day === 3) {
+        else if (day === 3)
+        {
             name += "Wednesday ";
         }
-        else if (day === 4) {
+        else if (day === 4)
+        {
             name += "Thursday ";
         }
-        else if (day === 5) {
+        else if (day === 5)
+        {
             name += "Friday ";
         }
-        else if (day === 6) {
+        else if (day === 6)
+        {
             name += "Saturday ";
         }
 
-        if (hour < 6) {
+        if (hour < 6)
+        {
             name += "Late Night Session";
         }
-        else if (hour >= 6 && hour < 12) {
+        else if (hour >= 6 && hour < 12)
+        {
             name += "Morning Session";
         }
-        else if (hour >= 12 && hour < 17) {
+        else if (hour >= 12 && hour < 17)
+        {
             name += "Afternoon Session";
         }
-        else if (hour >= 17 && hour < 21) {
+        else if (hour >= 17 && hour < 21)
+        {
             name += "Evening Session";
         }
-        else if (hour >= 21) {
+        else if (hour >= 21)
+        {
             name += "Night Session";
         }
 
@@ -151,9 +164,11 @@ export default function HomeScreen()
             });
     }
 
-    function startSession(): void {
-        if (currSession) {
-            router.navigate("/(tabs)/currSession")
+    function startSession(): void
+    {
+        if (currSession)
+        {
+            router.navigate("/(tabs)/currSession");
             return;
         }
         fetchStartSessions()
@@ -162,8 +177,10 @@ export default function HomeScreen()
                 if (res.status !== 201)
                 {
                     throw new Error("No content added");
-                } else {
-                    router.navigate("/(tabs)/currSession")
+                }
+                else
+                {
+                    router.navigate("/(tabs)/currSession");
                 }
             })
             .catch((err: unknown) =>
@@ -172,9 +189,10 @@ export default function HomeScreen()
             });
     }
 
-    const openSettingsStack = () => {
-        router.push("../settings")
-    }
+    const openSettingsStack = () =>
+    {
+        router.push("../settings");
+    };
 
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
@@ -188,7 +206,7 @@ export default function HomeScreen()
             </View>
             <FlatList
                 data={sessions.reverse()}
-                renderItem={({ item, index }) =>
+                renderItem={({item, index}) => (
                     <SessionComponent
                         key={index}
                         name={dateToName(item.date)}
@@ -197,8 +215,8 @@ export default function HomeScreen()
                         deleteSession={deleteSession}
                         session={item}
                     />
-                }
-                ListEmptyComponent={(<Empty />)}
+                )}
+                ListEmptyComponent={<Empty />}
                 showsVerticalScrollIndicator={false}
                 className="container"
             />
