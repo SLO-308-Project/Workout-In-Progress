@@ -1,5 +1,5 @@
 import {Text, View, TextInput, Pressable} from "react-native";
-import {useState, useEffect} from "react";
+import {useState, useEffect, useCallback} from "react";
 
 import {Attribute} from "@/types/attribute";
 import {AttributeValue} from "@/types/attributeValue";
@@ -17,17 +17,7 @@ export default function SetForm({machineId, handleSubmit}: Props)
         [],
     );
 
-    useEffect(() =>
-    {
-        getAttributes();
-    }, [machineId]);
-
-    useEffect(() =>
-    {
-        populateAttributeValues();
-    }, [attributes]);
-
-    function getAttributes(): void
+    const getAttributes = useCallback(() =>
     {
         fetchGetAttributes(machineId)
             .then((res) =>
@@ -45,20 +35,35 @@ export default function SetForm({machineId, handleSubmit}: Props)
             {
                 console.log(err);
             });
-    }
+    }, [machineId]);
 
     // HACK: populating attribute values with placeholders on render. so that handleAttributeValueChange can find an attributeValue in its filter.
-    function populateAttributeValues(): void
+    const populateAttributeValues = useCallback(() =>
     {
         setAttributeValues(() =>
         {
             return attributes.map((attr) => ({name: attr.name, value: -1}));
         });
-    }
+    }, [attributes]);
+
+    useEffect(() =>
+    {
+        getAttributes();
+    }, [getAttributes]);
+
+    useEffect(() =>
+    {
+        populateAttributeValues();
+    }, [populateAttributeValues]);
 
     function handleAttributeValueChange(name: string, value: string)
     {
         const nvalue = Number(value);
+        if (isNaN(nvalue))
+        {
+            console.log("Not a number attribute values attempted.");
+            return;
+        }
         // finding what attribute we're modifying
         const releventAttr = attributeValues.filter(
             (av) => av.name === name,
@@ -73,14 +78,16 @@ export default function SetForm({machineId, handleSubmit}: Props)
 
     const listAttributeValueBoxes = attributes.map(
         (attribute: Attribute, idx: number) => (
-            <View key={idx}>
+            <View key={idx} className="flex-row">
                 <TextInput
+                    maxLength={5}
                     placeholder={attribute.name}
+                    keyboardType="numeric"
                     onChangeText={(value) =>
                         handleAttributeValueChange(attribute.name, value)
                     }
                 />
-                <Text>{attribute.unit}</Text>
+                <Text className="px-4">{attribute.unit}</Text>
             </View>
         ),
     );
@@ -88,9 +95,14 @@ export default function SetForm({machineId, handleSubmit}: Props)
     return (
         <View>
             {listAttributeValueBoxes}
-            <Pressable onPress={() => handleSubmit(attributeValues)}>
-                <Text>✓</Text>
-            </Pressable>
+            <View className="items-center">
+                <Pressable
+                    className="bg-green-50 rounded-full px-4 py-2"
+                    onPress={() => handleSubmit(attributeValues)}
+                >
+                    <Text className="text-lg text-green-600">+</Text>
+                </Pressable>
+            </View>
         </View>
     );
 }

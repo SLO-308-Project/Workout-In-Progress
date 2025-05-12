@@ -99,7 +99,6 @@ describe("User Services Tests", () =>
             expect(error).toBeTruthy();
         }
     });
-
     test("Get User Include", async () =>
     {
         const email = "pguy@gmail.com";
