@@ -351,7 +351,7 @@ describe("Workout Services Tests", () =>
         );
         expect(result).toBeFalsy();
     });
-  
+
     test("Save workout --- failure (index not in range)", async () =>
     {
         const sessionId = "65f18f3ac6dc7f8d5a1234ab";

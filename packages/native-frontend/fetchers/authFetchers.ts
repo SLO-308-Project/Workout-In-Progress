@@ -1,6 +1,7 @@
-const BACKEND_URL = process.env.EXPO_PUBLIC_API_URL;
+import Constants from "expo-constants";
+const BACKEND_URL = Constants.expoConfig?.extra?.BACKEND_URL;
 
-export function fetchLogin(email: string, password: string): Promise<Response>
+function fetchLogin(email: string, password: string): Promise<Response>
 {
     return fetch(`${BACKEND_URL}/users/login`, {
         method: "POST",
@@ -13,3 +14,5 @@ export function fetchLogin(email: string, password: string): Promise<Response>
         }),
     });
 }
+
+export {fetchLogin};

@@ -1,6 +1,6 @@
 node_modules/
 .idea
-.env
+# .env # Need to check in native-frontend for enviroment variables to bind correctly at build time.
 shell.nix
 coverage/
 .vscode

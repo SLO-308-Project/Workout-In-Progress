@@ -15,19 +15,22 @@ import {
 import { Session } from "@/types/session";
 import SessionComponent, { Empty } from "@/components/sessions/sessionComponent";
 
-export default function HomeScreen() {
+export default function HomeScreen()
+{
     const [sessions, setSessions] = useState<Session[]>([]);
     const [currSession, setCurrSession] = useState<boolean>();
     const router = useRouter();
 
     // Helper function for date formatting
-    function formatDate(dateString: string): string {
+    function formatDate(dateString: string): string
+    {
         return new Date(dateString).toLocaleDateString();
     }
 
     // Helper function for duration formatting
     // Converts database time which is stored in seconds to hours and minutes
-    function formatDuration(milliseconds: number): string {
+    function formatDuration(milliseconds: number): string
+    {
         const hours = Math.floor(milliseconds / 3600 / 1000);
         const minutes = Math.floor((milliseconds / 60 / 1000) % 60);
         const second = Math.floor((milliseconds / 1000) % 60);
@@ -83,10 +86,12 @@ export default function HomeScreen() {
     }
     // Function to fetch sessions
     // Sorts data by date so that most recent is first
-    function loadSessions(): void {
+    function loadSessions(): void
+    {
         fetchGetSessions()
             .then((res: Response) => res.json())
-            .then((data: Session[]) => {
+            .then((data: Session[]) =>
+            {
                 const sortedSessions = [...data]
                     .sort(
                         (sessionA, sessionB) =>
@@ -99,20 +104,25 @@ export default function HomeScreen() {
             .catch((error: unknown) => console.log(error));
     }
 
-    function loadCurrSession(): void {
+    function loadCurrSession(): void
+    {
         fetchCurrentSession()
-            .then((res) => {
+            .then((res) =>
+            {
                 setCurrSession(res.status !== 204);
             })
-            .catch((err) => {
+            .catch((err) =>
+            {
                 console.log("Unable to find curr session", err);
             });
     }
 
     const isFocused = useIsFocused();
 
-    useEffect(() => {
-        if (isFocused) {
+    useEffect(() =>
+    {
+        if (isFocused)
+        {
             loadSessions();
             loadCurrSession();
         }
@@ -120,18 +130,23 @@ export default function HomeScreen() {
 
     // Function to delete a session
     // Will refresh session list if successful
-    function deleteSession(id: string): void {
+    function deleteSession(id: string): void
+    {
         fetchDeleteSession(id)
-            .then((res) => {
-                if (res.status === 204) {
+            .then((res) =>
+            {
+                if (res.status === 204)
+                {
                     setSessions(
-                        sessions.filter((session: Session) => {
+                        sessions.filter((session: Session) =>
+                        {
                             return session._id !== id;
                         }),
                     );
                 }
             })
-            .catch((error: unknown) => {
+            .catch((error: unknown) =>
+            {
                 console.log("Error deleting session:", error);
             });
     }
@@ -142,14 +157,17 @@ export default function HomeScreen() {
             return;
         }
         fetchStartSessions()
-            .then((res) => {
-                if (res.status !== 201) {
+            .then((res) =>
+            {
+                if (res.status !== 201)
+                {
                     throw new Error("No content added");
                 } else {
                     router.navigate("/(tabs)/currSession")
                 }
             })
-            .catch((err: unknown) => {
+            .catch((err: unknown) =>
+            {
                 console.log("Error creating session: ", err);
             });
     }
