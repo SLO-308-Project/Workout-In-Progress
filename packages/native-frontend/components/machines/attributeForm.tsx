@@ -37,7 +37,6 @@ function AttributeForm({handleAddAttribute}: Props)
 
     return (
         <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 m-4">
-            {/* Attribute Name Input */}
             <TextInput
                 value={attribute.name}
                 className="w-full bg-gray-50 px-4 py-3 border border-gray-200 rounded-xl text-base text-gray-900 mb-4"
@@ -46,7 +45,6 @@ function AttributeForm({handleAddAttribute}: Props)
                 onChangeText={(name) => handleNameChange(name)}
             />
 
-            {/* Picker styled as a rounded input */}
             <View className="w-full bg-gray-50 px-4 py-3 border border-gray-200 rounded-xl mb-4">
                 <Picker
                     selectedValue={attribute.unit}
@@ -56,7 +54,6 @@ function AttributeForm({handleAddAttribute}: Props)
                 </Picker>
             </View>
 
-            {/* Add Attribute Button */}
             <Pressable
                 className="bg-blue-600 px-6 py-3 rounded-xl active:opacity-75"
                 onPress={() => handleAddAttribute(attribute)}
