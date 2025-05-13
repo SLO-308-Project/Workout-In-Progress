@@ -14,6 +14,11 @@ export default function RootLayout() {
                     headerBackTitle: "Close"
                 }}
                 />
+                <Stack.Screen name="newMachine" options={{
+                    title: "New Machine",
+                    headerBackTitle: "Back"
+                }}
+                />
             </Stack>
         </GestureHandlerRootView>
     );

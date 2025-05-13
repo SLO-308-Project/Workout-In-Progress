@@ -4,8 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { SearchBar } from '@rneui/themed';
+import { useRouter } from "expo-router";
 
-import MachineForm from "@/components/machines/machineForm";
 import MachineComponent, { Empty } from "@/components/machines/machineComponent";
 import {
     fetchGetMachine,
@@ -18,6 +18,7 @@ import { Machine } from "@/types/machine";
 function MachinePage() {
     const [machines, setMachine] = useState<Machine[]>([]); 
     const [search, setSearch] = useState<string>("");
+    const router = useRouter();
 
     const updateSearch = (search: string) => {
         setSearch(search);
@@ -91,7 +92,7 @@ function MachinePage() {
                 <Text className="text-3xl font-semibold text-black tracking-tight px-4 pt-4 pb-2">
                     Machines
                 </Text>
-                <Pressable className="pr-4">
+                <Pressable className="pr-4" onPress={() => router.push("/newMachine")}>
                     <AntDesign name="plus" size={32} color="black" />
                 </Pressable>
             </View>
