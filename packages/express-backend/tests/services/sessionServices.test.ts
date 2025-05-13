@@ -1,5 +1,7 @@
 import sessionModel from "../../src/data/session";
 import sessionServices from "../../src/services/sessionServices";
+import userModel from "../../src/data/user";
+import sessionLogModel from "../../src/data/sessionLog";
 import {Types} from "mongoose";
 
 describe("Session Services Tests", () =>
@@ -32,14 +34,16 @@ describe("Session Services Tests", () =>
             new sessionModel(),
             new sessionModel(),
         ];
-        sessionModel.find = jest.fn().mockResolvedValue(sessions);
-        const result = await sessionServices.getAllSessions();
+        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
+        userModel.aggregate = jest.fn().mockResolvedValue(sessions);
+        const result = await sessionServices.getAllSessions(stubUserId);
         expect(result.length).toBe(3);
     });
 
     // Get current session
     test("Get current session --- successful", async () =>
     {
+        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
         const sessions = [
             new sessionModel({
                 date: new Date("2025-03-10T17:30:00.000Z"),
@@ -58,8 +62,8 @@ describe("Session Services Tests", () =>
                 ],
             }),
         ];
-        sessionModel.aggregate = jest.fn().mockResolvedValue(sessions);
-        const result = await sessionServices.getCurrentSession();
+        userModel.aggregate = jest.fn().mockResolvedValue(sessions);
+        const result = await sessionServices.getCurrentSession(stubUserId);
         expect(result).toBeTruthy();
         expect(result.length).toBe(1);
         expect(result[0].time).toBe(0);
@@ -73,13 +77,15 @@ describe("Session Services Tests", () =>
     test("End current session --- successful", async () =>
     {
         // Store ID - check if exists or empty for type safety
+        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
         const sessionId = "65f49b7c1d34a2e5f6c89d0a";
         const session = new sessionModel({
             _id: new Types.ObjectId(sessionId),
             time: 1,
         });
+        userModel.aggregate = jest.fn().mockResolvedValue([session]);
         sessionModel.findOneAndUpdate = jest.fn().mockResolvedValue(session);
-        const result = await sessionServices.endSession(sessionId);
+        const result = await sessionServices.endSession(sessionId, stubUserId);
         expect(result).toBeTruthy();
         // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
         expect(result!._id!.toString()).toBe(sessionId);
@@ -90,6 +96,7 @@ describe("Session Services Tests", () =>
     // Build a new session into the database to extract auto generated ID
     test("Get session by ID --- successful", async () =>
     {
+        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
         const session = new sessionModel({
             date: new Date("2025-01-08T12:45:00.000Z"),
             time: 3246,
@@ -106,20 +113,27 @@ describe("Session Services Tests", () =>
         // Store ID - check if exists or empty for type safety
         const sessionId = session._id?.toString() || "";
 
-        sessionModel.findById = jest.fn().mockResolvedValue(session);
-        const result = await sessionServices.getSessionById(sessionId);
+        userModel.aggregate = jest.fn().mockResolvedValue([session]);
+        const result = await sessionServices.getSessionById(
+            sessionId,
+            stubUserId,
+        );
         expect(result).toBeTruthy();
         // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
-        expect(result!.time).toBe(3246);
-        expect(result!.date).toEqual(new Date("2025-01-08T12:45:00.000Z"));
-        expect(result!.workout).toBeDefined();
-        expect(result!.workout.length).toBe(1);
+        expect(result[0].time).toBe(3246);
+        expect(result[0].date).toEqual(new Date("2025-01-08T12:45:00.000Z"));
+        expect(result[0].workout).toBeDefined();
+        expect(result[0].workout.length).toBe(1);
     });
 
     // Add session
     // Verify session is added and data matches
     test("Add session --- successful", async () =>
     {
+        const user = new userModel({
+            sessionLogIds: [],
+        });
+        const userId = user._id?.toString() || "";
         const session = new sessionModel({
             date: new Date("2025-03-10T15:20:00.000Z"),
             time: 3900,
@@ -133,8 +147,12 @@ describe("Session Services Tests", () =>
                 },
             ],
         });
+        userModel.findOne = jest.fn().mockResolvedValue(user);
+        sessionLogModel.findOneAndUpdate = jest
+            .fn()
+            .mockResolvedValue([session]);
         jest.spyOn(sessionModel.prototype, "save").mockResolvedValue(session);
-        const result = await sessionServices.addSession(session);
+        const result = await sessionServices.addSession(session, userId);
         expect(result).toBeTruthy();
         expect(result.date).toBe(session.date);
         expect(result.time).toBe(session.time);
@@ -158,10 +176,14 @@ describe("Session Services Tests", () =>
             ],
         });
         // Store ID - check if exists or empty for type safety
+        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
         const sessionId = session._id?.toString() || "";
-
+        userModel.aggregate = jest.fn().mockResolvedValue([session]);
         sessionModel.findByIdAndDelete = jest.fn().mockResolvedValue(session);
-        const result = await sessionServices.deleteSession(sessionId);
+        const result = await sessionServices.deleteSession(
+            sessionId,
+            stubUserId,
+        );
         expect(result).toBeTruthy();
         // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
         // On successful delete mongoose returns the id

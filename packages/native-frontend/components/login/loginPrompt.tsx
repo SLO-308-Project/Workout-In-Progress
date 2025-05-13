@@ -3,9 +3,9 @@ import {useState} from "react";
 import {useRouter} from "expo-router";
 
 type Props = {
-	handleSubmit: (email: string, password: string) => void;
-	loggedIn: boolean | undefined;
-}
+    handleSubmit: (email: string, password: string) => void;
+    loggedIn: boolean | undefined;
+};
 
 export default function LoginPrompt({handleSubmit, loggedIn}: Props)
 {
@@ -44,16 +44,15 @@ export default function LoginPrompt({handleSubmit, loggedIn}: Props)
                 </Text>
             </Pressable>
 
-
-			{//loggedIn = undefined when first on the page and false when login fails.
-			(loggedIn != undefined && !loggedIn) && (
-				<Text className="text-red-500 text-sm text-center mb-4">
-					Invalid email or password.
-				</Text>
-			)}
-            <View
-                className=""
-            >
+            {
+                //loggedIn = undefined when first on the page and false when login fails.
+                loggedIn != undefined && !loggedIn && (
+                    <Text className="text-red-500 text-sm text-center mb-4">
+                        Invalid email or password.
+                    </Text>
+                )
+            }
+            <View className="">
                 <Text className="text-gray-500 text-center mb-2">
                     Haven't signed up?
                 </Text>

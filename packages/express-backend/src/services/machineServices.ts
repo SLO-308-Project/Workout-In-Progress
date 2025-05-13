@@ -3,17 +3,18 @@ import machineModel, {MachineType} from "../data/machine";
 import machineLogModel from "../data/machineLog";
 import userModel from "../data/user";
 import sessionTemplateModel from "../data/sessionTemplate";
+import {Types} from "mongoose";
 
 /**
  * Gets list of all machines associated with a user
  *
- * @param {String} userEmail - The user email
+ * @param {string} userId - The user's ID
  * @return {Promise} - List of machines
  */
-function getListOfMachinesAggregate(userEmail: string)
+function getListOfMachinesAggregate(userId: string)
 {
     return [
-        {$match: {email: userEmail}}, // Find user by email
+        {$match: {_id: new Types.ObjectId(userId)}}, // Find user by email
         {
             //Attach all machineLogs as an array called collectedMachineLogs.
             $lookup: {
@@ -99,20 +100,19 @@ function saveMachine(machineId: string, templateId: string)
 /**
  * Get all machines that match the critera
  *
- * @param {String} name - Name of machine to find
- * @param {String} muscle - Name of muscle group to find
- * @param {String} userEmail - User associated with search
+ * @param {string} name - Name of machine to find
+ * @param {string} muscle - Name of muscle group to find
+ * @param {string} userId - User associated with search
  *
  * @returns {Promise<MachineType[]>} - List of machines meeting criteria
  */
 async function getMachines(
     name: string,
     muscle: string,
-    userEmail: string,
+    userId: string,
 ): Promise<MachineType[]>
 {
-    const listOfMachines: PipelineStage[] =
-        getListOfMachinesAggregate(userEmail);
+    const listOfMachines: PipelineStage[] = getListOfMachinesAggregate(userId);
 
     //if there is a name add it to the aggregate to find it.
     if (name)
@@ -176,15 +176,14 @@ async function removeMachine(machineId: string, templateId: string)
 /**
  * Removes a machine
  *
- * @param {String} userEmail - Associated user
- * @param {String} machineName - Name of Machine
+ * @param {string} userId - Associated user
+ * @param {string} machineName - Name of Machine
  *
  * @returns {Promise} - Remove machine
  */
-async function deleteMachine(userEmail: string, machineName: string)
+async function deleteMachine(userId: string, machineName: string)
 {
-    const listOfMachines: PipelineStage[] =
-        getListOfMachinesAggregate(userEmail);
+    const listOfMachines: PipelineStage[] = getListOfMachinesAggregate(userId);
     listOfMachines.push({$match: {name: machineName}}); //match with the correct machine.
     console.log(listOfMachines);
 
@@ -198,17 +197,15 @@ async function deleteMachine(userEmail: string, machineName: string)
                 .findByIdAndDelete(machine._id) //remove the machine with the found Id
                 .then((deletedMachine) =>
                 {
-                    return userModel
-                        .findOne({email: userEmail})
-                        .then((user) =>
-                        {
-                            return machineLogModel
-                                .findOneAndUpdate(
-                                    {_id: user!.machineLogId},
-                                    {$pull: {machineIds: machine._id}},
-                                )
-                                .then(() => deletedMachine);
-                        });
+                    return userModel.findOne({_id: userId}).then((user) =>
+                    {
+                        return machineLogModel
+                            .findOneAndUpdate(
+                                {_id: user!.machineLogId},
+                                {$pull: {machineIds: machine._id}},
+                            )
+                            .then(() => deletedMachine);
+                    });
                 });
         });
 }
@@ -216,21 +213,20 @@ async function deleteMachine(userEmail: string, machineName: string)
 /**
  * Update a machine with a new one
  *
- * @param {String} userEmail - Associated user
- * @param {String} currentName - Name of machine to change
+ * @param {string} userId - Associated user
+ * @param {string} currentName - Name of machine to change
  * @param {MachineType} updatedMachine - New machine to replace the old one with
  *
  * @returns {Promise} - Update machine
  */
 async function updateMachine(
-    userEmail: string,
+    userId: string,
     currentName: string,
     updatedMachine: MachineType,
 )
 {
     //aggregate to get the machine to update.
-    const listOfMachines: PipelineStage[] =
-        getListOfMachinesAggregate(userEmail);
+    const listOfMachines: PipelineStage[] = getListOfMachinesAggregate(userId);
     listOfMachines.push({$match: {name: currentName}});
 
     return userModel
@@ -257,7 +253,7 @@ async function updateMachine(
 /**
  * Get the attributes of a machine by id
  *
- * @param {String} machineId - Object id of machine to search
+ * @param {string} machineId - Object id of machine to search
  * @returns {Promise} - Get attributes of a machine
  */
 async function getAttributes(machineId: string)
@@ -282,9 +278,9 @@ async function getAttributes(machineId: string)
 /**
  * Add attribute to a machine
  *
- * @param {String} machineId - Id to idenify the machine
- * @param {String} name - Name of attribute
- * @param {String} unit - Unit of measure for given measure
+ * @param {string} machineId - Id to idenify the machine
+ * @param {string} name - Name of attribute
+ * @param {string} unit - Unit of measure for given measure
  * @returns {Promise} - Attribute added to machine
  */
 async function addAttribute(machineId: string, name: string, unit: string)
@@ -310,8 +306,8 @@ async function addAttribute(machineId: string, name: string, unit: string)
 /**
  * Remove an attribute
  *
- * @param {String} machineId - Unique Id of the machine
- * @param {String} attrName - Attribute to remove
+ * @param {string} machineId - Unique Id of the machine
+ * @param {string} attrName - Attribute to remove
  * @returns {Promise} - Remove attribute
  */
 async function deleteAttribute(machineId: string, attrName: string)

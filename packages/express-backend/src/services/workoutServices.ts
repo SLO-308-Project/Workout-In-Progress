@@ -1,15 +1,23 @@
 import sessionModel from "../data/session";
 import sessionTemplateModel from "../data/sessionTemplate";
+import {verifyUserOwnSession} from "./sessionServices";
 
 /**
  * Gets all workouts for a session
- * @param {String} session_id - Object id of session to search
+ *
+ * @param {string} sessionId - Object id of session to search
+ * @param {string} userId - User associated id
  * @returns {Proimse} - List of workout or Null on failure
  */
-async function getWorkout(session_id: string)
+async function getWorkout(sessionId: string, userId: string)
 {
+    // Ensure session is owned by user
+    if (!(await verifyUserOwnSession(sessionId, userId)))
+    {
+        return null;
+    }
     return sessionModel
-        .findById(session_id)
+        .findById(sessionId)
         .then((session) =>
         {
             if (!session)
@@ -30,10 +38,20 @@ async function getWorkout(session_id: string)
  *
  * @param {String} machineId - Machine id to add for a workout
  * @param {String} sessionId - Session id for workout to be added to
+ * @param {string} userId - User associated id
  * @returns {Promise} - Workout added
  */
-async function addWorkout(machineId: string, sessionId: string)
+async function addWorkout(
+    machineId: string,
+    sessionId: string,
+    userId: string,
+)
 {
+    // Ensure session is owned by user
+    if (!(await verifyUserOwnSession(sessionId, userId)))
+    {
+        return null;
+    }
     return sessionModel
         .findOne({_id: sessionId})
         .then((session) =>
@@ -59,6 +77,7 @@ async function addWorkout(machineId: string, sessionId: string)
  * @param {string} templateId - Template Object id
  * @param {string} sessionId - Machine Object id
  * @param {number} index - Index of workout to add
+ * @param {string} userId - User associated id
  *
  * @return {Promise} - Workout saved to template
  */
@@ -66,8 +85,14 @@ async function saveWorkout(
     templateId: string,
     sessionId: string,
     index: number,
+    userId: string,
 )
 {
+    // Ensure session is owned by user
+    if (!(await verifyUserOwnSession(sessionId, userId)))
+    {
+        return null;
+    }
     const workoutToSave = await sessionModel
         .findById(sessionId)
         .then((session) =>
@@ -166,16 +191,26 @@ async function getSavedWorkout(templateId: string)
 /**
  * Removes a workout given a session id
  *
- * @param {String} sessionId - Session id of workout to be removed
- * @param {String} workoutId - Workout id of workout of the session that is removed
+ * @param {string} sessionId - Session id of workout to be removed
+ * @param {string} workoutId - Workout id of workout of the session that is removed
+ * @param {string} userId - User associated id
  * @returns {Promise} - Remove workout
  */
-async function removeWorkout(sessionId: string, workoutId: string)
+async function removeWorkout(
+    sessionId: string,
+    workoutId: string,
+    userId: string,
+)
 {
     if (!sessionId || !workoutId)
     {
         console.log(`sessionId: ${sessionId} workoutId: ${workoutId}`);
         throw new Error("Session or workout were null.");
+    }
+    // Ensure session is owned by user
+    if (!(await verifyUserOwnSession(sessionId, userId)))
+    {
+        return null;
     }
     return sessionModel
         .findOne({_id: sessionId})

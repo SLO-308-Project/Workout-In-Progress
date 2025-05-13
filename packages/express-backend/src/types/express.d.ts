@@ -12,6 +12,14 @@ interface MachineAttributes
     unit: string;
 }
 
+interface Set
+{
+    attributeValues: {
+        name: string;
+        value: number;
+    }[];
+}
+
 // Request Types
 export type WorkoutRequest = Request<
     ParamsDictionary,
@@ -24,3 +32,16 @@ export type MachineRequest = Request<
     unknown,
     MachineAttributes
 >;
+
+declare global
+{
+    namespace Express
+    {
+        export interface Request
+        {
+            sub?: string | (() => string);
+        }
+    }
+}
+
+export type SetRequest = Request<ParamsDictionary, unknown, Set>;
