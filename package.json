@@ -10,7 +10,7 @@
         "format": "npx prettier . --write",
         "frontdev": "npm run -w native-frontend start",
         "backdev": "npm run -w express-backend dev",
-        "prepare": "npx husky"
+        "prepare": "husky"
     },
     "repository": {
         "type": "git",
