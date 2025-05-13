@@ -16,10 +16,7 @@ function AttributeForm({ handleAddAttribute }: Props) {
         unit: Unit.LBS, // default is the first unit in the enum. which is lbs
     });
     const [showPicker, setShowPicker] = useState(false);
-
-    const listAttributeEnum = Object.keys(Unit).map((opt: string) => (
-        <Picker.Item key={opt} label={Unit[opt]} value={Unit[opt]} />
-    ));
+    const [selectedUnitIdx, setSelectedUnitIdx] = useState(0);
 
     function handleUnitChange(unitIndex: number) {
         const unit = Object.entries(Unit)[unitIndex][1];
@@ -39,7 +36,7 @@ function AttributeForm({ handleAddAttribute }: Props) {
     // TODO: The scroll picker here is kind of awful.
 
     return (
-        <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-2 m-2 flex-row justify-between items-center">
+        <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 m-2 flex-row justify-between items-center">
             <TextInput
                 value={attribute.name}
                 className="w-60 bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black"
@@ -49,11 +46,15 @@ function AttributeForm({ handleAddAttribute }: Props) {
             />
             {showPicker &&
                 <ScrollPicker
+                    selectedIndex={selectedUnitIdx}
                     onTouchEnd={() => setShowPicker(false)}
                     dataSource={Object.values(Unit)}
                     wrapperBackground="#FFF"
-                    wrapperHeight={60}
-                    onValueChange={(data, selectedIndex) => handleUnitChange(selectedIndex)}
+                    wrapperHeight={40}
+                    onValueChange={(data, selectedIndex) => {
+                        setSelectedUnitIdx(selectedIndex)
+                        handleUnitChange(selectedIndex)
+                    }}
 
                 />
             }

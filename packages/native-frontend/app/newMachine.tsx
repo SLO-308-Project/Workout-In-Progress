@@ -104,7 +104,7 @@ export default function MachineForm()
         {
             Alert.alert("Missing name or muscle.");
         }
-        if (machine.attributes.length === 0)
+        else if (machine.attributes.length === 0)
         {
             Alert.alert("At least 1 attribute required.");
         }
