@@ -15,7 +15,7 @@ const BACKEND_URL = Constants.expoConfig?.extra?.BACKEND_URL;
 //  "email": "test1@gmail.com",
 //  "units": "lbs"
 // }
-const USER_EMAIL: string = "test1@gmail.com";
+// const USER_EMAIL: string = "test1@gmail.com";
 
 /**
  * Executes a GET request to the backend to retrieve machines.
@@ -42,7 +42,7 @@ function fetchGetMachine(
     {
         params = `?name=${name}&muscle={muscle}`;
     }
-    return fetch(`${BACKEND_URL}/machines/${USER_EMAIL}${params}`);
+    return fetch(`${BACKEND_URL}/machines/${params}`);
 }
 
 /**
@@ -53,7 +53,7 @@ function fetchGetMachine(
  * */
 function fetchDeleteMachine(name: string): Promise<Response>
 {
-    return fetch(`${BACKEND_URL}/machines/${USER_EMAIL}/${name}`, {
+    return fetch(`${BACKEND_URL}/machines/${name}`, {
         method: "DELETE",
     });
 }
@@ -67,7 +67,7 @@ function fetchDeleteMachine(name: string): Promise<Response>
 function fetchPostMachine(machine: Machine): Promise<Response>
 {
     console.log(`fetchPostMachine: ${JSON.stringify(machine)}`);
-    return fetch(`${BACKEND_URL}/machines/${USER_EMAIL}`, {
+    return fetch(`${BACKEND_URL}/machines`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -93,7 +93,7 @@ function fetchUpdateMachine(
     newMuscle: string | undefined,
 ): Promise<Response>
 {
-    return fetch(`${BACKEND_URL}/machines/${USER_EMAIL}/${currentName}`, {
+    return fetch(`${BACKEND_URL}/machines/${currentName}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
