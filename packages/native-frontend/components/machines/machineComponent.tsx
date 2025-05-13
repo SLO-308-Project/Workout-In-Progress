@@ -1,11 +1,11 @@
-import { View, Text, Pressable } from "react-native";
-import { useState, useEffect, useCallback } from "react";
-import EvilIcons from '@expo/vector-icons/EvilIcons';
-import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+import {View, Text, Pressable} from "react-native";
+import {useState, useEffect, useCallback} from "react";
+import EvilIcons from "@expo/vector-icons/EvilIcons";
+import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import Reanimated, {
     SharedValue,
     useAnimatedStyle,
-} from 'react-native-reanimated';
+} from "react-native-reanimated";
 
 import AttributeForm from "./attributeForm";
 import AttributeComponent from "./attributeComponent";
@@ -14,49 +14,60 @@ import {
     fetchPostAttribute,
     fetchDeleteAttribute,
 } from "@/fetchers/machineFetchers";
-import { Attribute } from "@/types/attribute";
-import { Machine } from "@/types/machine";
+import {Attribute} from "@/types/attribute";
+import {Machine} from "@/types/machine";
 
 type Props = {
     machine: Machine;
     handleDelete: (name: string) => void;
 };
 
-export default function MachineComponent({ machine, handleDelete }: Props) {
+export default function MachineComponent({machine, handleDelete}: Props)
+{
     const [attributes, setAttributes] = useState<Attribute[]>([]);
 
-    const getAttributes = useCallback(() => {
+    const getAttributes = useCallback(() =>
+    {
         console.log(`MACHINE._id = ${machine._id}`);
         fetchGetAttributes(machine._id)
-            .then((res) => {
-                if (res.ok) {
+            .then((res) =>
+            {
+                if (res.ok)
+                {
                     return res.json();
                 }
             })
-            .then((res_data) => {
+            .then((res_data) =>
+            {
                 console.log(`res_data.attributes = ${res_data.attributes}`);
 
                 console.log(`${JSON.stringify(res_data)}`);
                 setAttributes(res_data);
             })
-            .catch((err) => {
+            .catch((err) =>
+            {
                 console.log(err);
             });
     }, [machine]);
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         getAttributes();
     }, [getAttributes]);
 
-    function deleteMachine(): void {
+    function deleteMachine(): void
+    {
         handleDelete(machine.name);
     }
 
-    function addAttribute(attribute: Attribute) {
+    function addAttribute(attribute: Attribute)
+    {
         console.log(`NAME: ${attribute.name} UNIT: ${attribute.unit}`);
         fetchPostAttribute(machine._id, attribute)
-            .then((res) => {
-                if (res.ok) {
+            .then((res) =>
+            {
+                if (res.ok)
+                {
                     return res.json();
                 }
             })
@@ -64,11 +75,14 @@ export default function MachineComponent({ machine, handleDelete }: Props) {
             .catch((err) => console.log(err));
     }
 
-    function deleteAttribute(attrName: string) {
+    function deleteAttribute(attrName: string)
+    {
         console.log(`DELETING ATTRIBUTE: ${attrName}`);
         fetchDeleteAttribute(machine._id, attrName)
-            .then((res) => {
-                if (res.ok) {
+            .then((res) =>
+            {
+                if (res.ok)
+                {
                     setAttributes(
                         attributes.filter(
                             (attribute) => attribute.name !== attrName,
@@ -92,7 +106,7 @@ export default function MachineComponent({ machine, handleDelete }: Props) {
         <></>
     );
 
-    // Displays a delete button when swiping right on a session
+    // Displays a delete button when swiping right on a machine
     function RightSwipeDelete(
         prog: SharedValue<number>,
         drag: SharedValue<number>,
@@ -100,17 +114,21 @@ export default function MachineComponent({ machine, handleDelete }: Props) {
             openLeft: () => void;
             openRight: () => void;
             close: () => void;
-        }) {
-        const styleAnimation = useAnimatedStyle(() => {
+        },
+    )
+    {
+        const styleAnimation = useAnimatedStyle(() =>
+        {
             return {
-                transform: [{ translateX: drag.value + 140 }],
+                transform: [{translateX: drag.value + 140}],
             };
         });
 
         return (
             <Reanimated.View style={styleAnimation}>
                 <Pressable
-                    onPress={() => {
+                    onPress={() =>
+                    {
                         swipeableMethods.close();
                         deleteMachine();
                     }}
@@ -159,12 +177,13 @@ export default function MachineComponent({ machine, handleDelete }: Props) {
 //     <AttributeForm handleAddAttribute={addAttribute} />
 // </View>
 // Component to be rendered when machine list is empty
-export function Empty() {
+export function Empty()
+{
     return (
         <View className="flex-1 items-center bg-white">
             <Text className="text-2xl text-gray-300 font-semibold">
                 No Machines Found
             </Text>
         </View>
-    )
+    );
 }

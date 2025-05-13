@@ -1,70 +1,90 @@
 import "@/global.css";
-import { Text, FlatList, Pressable, View, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useEffect } from "react";
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { SearchBar } from '@rneui/themed';
-import { useRouter } from "expo-router";
+import {Text, FlatList, Pressable, View, StyleSheet} from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {useState, useEffect} from "react";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import {SearchBar} from "@rneui/themed";
+import {useRouter} from "expo-router";
 
-import MachineComponent, { Empty } from "@/components/machines/machineComponent";
+import MachineComponent, {Empty} from "@/components/machines/machineComponent";
 import {
     fetchGetMachine,
     fetchPostMachine,
     fetchDeleteMachine,
 } from "@/fetchers/machineFetchers";
 
-import { Machine } from "@/types/machine";
+import {Machine} from "@/types/machine";
 
-function MachinePage() {
-    const [machines, setMachine] = useState<Machine[]>([]); 
+function MachinePage()
+{
+    const [machines, setMachine] = useState<Machine[]>([]);
     const [search, setSearch] = useState<string>("");
     const router = useRouter();
 
-    const updateSearch = (search: string) => {
+    const updateSearch = (search: string) =>
+    {
         setSearch(search);
-    }
+    };
 
-    useEffect(() => {
+    useEffect(() =>
+    {
         getMachines();
     }, []);
 
-    function getMachines(): void {
+    function getMachines(): void
+    {
         fetchGetMachine()
-            .then((res: Response) => res.json())
-            .then((res_data) => {
+            .then((res: Response) =>
+            {
+                if (res.ok)
+                {
+                    return res.json();
+                }
+            })
+            .then((res_data) =>
+            {
                 console.log(`GETMACHINES RES_DATA=${res_data}`);
                 setMachine(res_data);
             })
             .catch((error: unknown) => console.log(error));
     }
 
-    function addOneMachine(machine: Machine): void {
+    function addOneMachine(machine: Machine): void
+    {
         console.log(`${machine.name} ${machine.muscle}`);
         fetchPostMachine(machine)
-            .then((res) => {
-                if (res.status === 201) {
+            .then((res) =>
+            {
+                if (res.status === 201)
+                {
                     return res.json();
                 }
             })
-            .then((res_data) => {
+            .then((res_data) =>
+            {
                 console.log(`RES_DATA=${JSON.stringify(res_data)}`);
                 setMachine([...machines, res_data]);
             })
-            .catch((error: unknown) => {
+            .catch((error: unknown) =>
+            {
                 console.log(error);
             });
     }
 
-    function removeOneMachine(name: string) {
+    function removeOneMachine(name: string)
+    {
         fetchDeleteMachine(name)
-            .then((res) => {
-                if (res.ok) {
+            .then((res) =>
+            {
+                if (res.ok)
+                {
                     setMachine(
                         machines.filter((machine) => machine.name !== name),
                     );
                 }
             })
-            .catch((error: unknown) => {
+            .catch((error: unknown) =>
+            {
                 console.log(error);
             });
     }
@@ -77,13 +97,16 @@ function MachinePage() {
     //     />
     // ));
     //
-    function filterMachines() {
-        if (search === "") {
+    function filterMachines()
+    {
+        if (search === "")
+        {
             return machines;
         }
-        return machines.filter((machine: Machine) => {
+        return machines.filter((machine: Machine) =>
+        {
             return machine.name.toLowerCase().includes(search.toLowerCase());
-        })
+        });
     }
 
     return (
@@ -92,7 +115,10 @@ function MachinePage() {
                 <Text className="text-3xl font-semibold text-black tracking-tight px-4 pt-4 pb-2">
                     Machines
                 </Text>
-                <Pressable className="pr-4" onPress={() => router.push("/newMachine")}>
+                <Pressable
+                    className="pr-4"
+                    onPress={() => router.push("/newMachine")}
+                >
                     <AntDesign name="plus" size={32} color="black" />
                 </Pressable>
             </View>
@@ -108,14 +134,14 @@ function MachinePage() {
             />
             <FlatList
                 data={filterMachines()}
-                renderItem={({ item, index }) =>
+                renderItem={({item, index}) => (
                     <MachineComponent
                         key={index}
                         machine={item}
                         handleDelete={removeOneMachine}
                     />
-                }
-                ListEmptyComponent={(<Empty />)}
+                )}
+                ListEmptyComponent={<Empty />}
                 showsVerticalScrollIndicator={false}
                 className="container"
             />
@@ -134,7 +160,7 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         color: "#000",
-        fontSize: 16
-    }
+        fontSize: 16,
+    },
 });
 // <MachineForm handleSubmit={addOneMachine} />
