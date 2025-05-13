@@ -11,9 +11,11 @@ import {fetchRegister} from "@/fetchers/userFetchers";
 import {useState} from "react";
 import {login} from "@/util/loginHelper";
 import {useRouter} from "expo-router";
+import {useAuth} from "@/util/authContext";
 
 export default function Signup()
 {
+    const {login} = useAuth();
     const [emailExists, setEmailExists] = useState(false);
     const router = useRouter();
 
@@ -32,9 +34,9 @@ export default function Signup()
             {
                 if (res.ok)
                 {
-                    login(email, password).then((loggedIn) =>
+                    login(email, password).then((success) =>
                     {
-                        if (loggedIn) router.replace("./(tabs)");
+                        if (success) router.replace("./(tabs)");
                     });
                 }
                 else if (res.status == 409)
