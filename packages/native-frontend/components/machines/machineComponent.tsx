@@ -180,7 +180,7 @@ export default function MachineComponent({machine, handleDelete}: Props)
 export function Empty()
 {
     return (
-        <View className="flex-1 items-center bg-white">
+        <View className="flex-1 items-center bg-white pt-16">
             <Text className="text-2xl text-gray-300 font-semibold">
                 No Machines Found
             </Text>
