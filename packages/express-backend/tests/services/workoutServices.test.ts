@@ -382,7 +382,7 @@ describe("Workout Services Tests", () =>
     });
     test("Save workout --- failure (session id not found)", async () =>
     {
-        const sessionId = "";
+        const sessionId = "a3f91c7e5d2b48c1e6fa3d09";
         const templateId = "61f12342cf4b93ee8b0b37d4";
         const index = 0;
         const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
