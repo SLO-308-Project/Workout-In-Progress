@@ -56,17 +56,18 @@ function getListOfMachinesAggregate(userId: string)
  *
  * @returns {Promise} - Machine added
  */
-async function addMachine(machine: MachineType, email: string)
+async function addMachine(machine: MachineType, userId: string)
 {
-    console.log(
-        `IN MACHINESERVICES machine: ${JSON.stringify(machine)}, email: ${email}`,
-    );
+    //console.log(
+    //    `IN MACHINESERVICES machine: ${JSON.stringify(machine)}, email: ${email}`,
+    //);
     //console.log(email);
     const machineToAdd = new machineModel(machine);
+    const savedMachine = await machineToAdd.save();
 
     //Second promise to find a machineLogId
     userModel
-        .findOne({email: email})
+        .findOne({_id: userId})
         .then((foundUser) =>
             machineLogModel.findOneAndUpdate(
                 {_id: foundUser?.machineLogId}, //previously queried user.
@@ -75,7 +76,7 @@ async function addMachine(machine: MachineType, email: string)
         )
         .catch((err) => console.log(err));
 
-    return machineToAdd.save();
+    return savedMachine;
 }
 
 /**
