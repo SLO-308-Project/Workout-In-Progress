@@ -109,7 +109,7 @@ function addSession(
 function getSessionById(id: string, userId: string): Promise<SessionType[]>
 {
     const listOfSessions: PipelineStage[] = aggregateUserSession(userId);
-    listOfSessions.push({$match: {_id: id}});
+    listOfSessions.push({$match: {_id: new Types.ObjectId(id)}});
     return userModel.aggregate(listOfSessions);
 }
 

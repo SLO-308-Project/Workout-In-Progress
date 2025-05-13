@@ -211,9 +211,12 @@ export default function CurrentSessionPage()
         fetchGetWorkouts(session._id)
             .then((res) =>
             {
+                console.log(res);
                 if (res.status === 201)
                 {
-                    return res.json();
+                    const text = res.text();
+                    console.log(text);
+                    return text;
                 }
                 else
                 {
@@ -222,8 +225,11 @@ export default function CurrentSessionPage()
             })
             .then((json) =>
             {
-                setWorkouts(json);
-            });
+                const newJson = JSON.parse(json);
+                console.log(newJson);
+                setWorkouts(newJson);
+            })
+            .catch((x) => console.log(x));
     }
 
     function addWorkout(machineId: string): void
