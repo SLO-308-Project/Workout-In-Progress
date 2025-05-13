@@ -41,10 +41,10 @@ export default function MachineForm()
     const navigation = useNavigation();
     const router = useRouter();
 
-    function addOneMachine(machine: Machine): void
+    async function addOneMachine(machine: Machine) 
     {
         console.log(`${machine.name} ${machine.muscle}`);
-        fetchPostMachine(machine)
+        return fetchPostMachine(machine)
             .then((res) =>
             {
                 if (res.status === 201)
@@ -96,7 +96,7 @@ export default function MachineForm()
         });
     }
 
-    function submitForm()
+    async function submitForm()
     {
         console.log(`IN SUBMITFORM: ${JSON.stringify(machine.attributes)}`);
         console.log(`name: ${machine.name} muscle: ${machine.muscle}`);
@@ -110,7 +110,7 @@ export default function MachineForm()
         }
         else
         {
-            addOneMachine(machine);
+            await addOneMachine(machine);
             router.back();
         }
     }

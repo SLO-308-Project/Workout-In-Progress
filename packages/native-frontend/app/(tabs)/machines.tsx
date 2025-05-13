@@ -1,10 +1,11 @@
 import "@/global.css";
 import { Text, FlatList, Pressable, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { SearchBar } from "@rneui/themed";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
+import { useIsFocused } from "@react-navigation/native";
 
 import MachineComponent, { Empty } from "@/components/machines/machineComponent";
 import {
@@ -19,14 +20,16 @@ function MachinePage() {
     const [machines, setMachine] = useState<Machine[]>([]);
     const [search, setSearch] = useState<string>("");
     const router = useRouter();
+    const isFocused = useIsFocused();
 
     const updateSearch = (search: string) => {
         setSearch(search);
     };
 
     useEffect(() => {
-        getMachines();
-    }, []);
+        if (isFocused)
+            getMachines();
+    }, [isFocused]);
 
     function getMachines(): void {
         fetchGetMachine()
@@ -91,7 +94,7 @@ function MachinePage() {
     }
 
     return (
-        <SafeAreaView className="flex-1 bg-white pt-4">
+        <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
             <View className="flex-row justify-between">
                 <Text className="text-3xl font-semibold text-black tracking-tight px-4 pt-4 pb-1">
                     Machines
@@ -124,7 +127,7 @@ function MachinePage() {
                 )}
                 ListEmptyComponent={<Empty />}
                 showsVerticalScrollIndicator={false}
-                className="container"
+                className="flex-1"
             />
         </SafeAreaView>
     );
