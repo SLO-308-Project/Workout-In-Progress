@@ -23,7 +23,7 @@ jobs:
             - name: Set up Node.js
               uses: actions/setup-node@v3
               with:
-                node-version: '22.15.1'
+                node-version: '22.9.0'
 
             - name: Build And Deploy
               id: builddeploy
