@@ -2,6 +2,9 @@
     "name": "native-frontend",
     "main": "expo-router/entry",
     "version": "1.0.0",
+    "engines": {
+        "node": "23.11.0"
+    },
     "scripts": {
         "build": "npx expo export --platform web",
         "start": "expo start",
