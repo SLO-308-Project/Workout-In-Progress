@@ -44,6 +44,19 @@ export default function TabLayout()
                     }}
                 />
                 <Tabs.Screen
+                    name="templates"
+                    options={{
+                        title: "Templates",
+                        tabBarIcon: ({color}) => (
+                            <AntDesign
+                                size={28}
+                                name="folderopen"
+                                color={color}
+                            />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
                     name="machines"
                     options={{
                         title: "Machines",

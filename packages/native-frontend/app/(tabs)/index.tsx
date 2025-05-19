@@ -194,16 +194,34 @@ export default function HomeScreen()
         router.push("../settings");
     };
 
+    const openStatisticsStack = () =>
+    {
+        router.push("../statistics");
+    };
+
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
-            <View className="flex-row justify-between">
-                <Text className="text-3xl font-semibold text-black tracking-tight px-4 pt-4 pb-2">
+            <View className="flex-row justify-between items-center px-4 pt-4 pb-2">
+                <Text className="text-3xl font-semibold text-black tracking-tight">
                     Your Sessions
                 </Text>
-                <Pressable className="pr-4" onPress={openSettingsStack}>
-                    <Feather name="settings" size={24} color="black" />
+                <Pressable className="" onPress={openSettingsStack}>
+                    <Feather
+                        className=""
+                        name="settings"
+                        size={24}
+                        color="black"
+                    />
                 </Pressable>
             </View>
+            <Pressable
+                className="flex-row justify-center"
+                onPress={openStatisticsStack}
+            >
+                <Text className="text-lg font-semibold text-black tracking-tight px-4 pt-4 pb-2">
+                    Statistics
+                </Text>
+            </Pressable>
             <FlatList
                 data={sessions.reverse()}
                 renderItem={({item, index}) => (

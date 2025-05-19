@@ -1,21 +1,22 @@
 import "@/util/authHeader";
-import { Stack } from "expo-router";
-import { AuthProvider } from "@/util/authContext";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import {Stack} from "expo-router";
+import {AuthProvider} from "@/util/authContext";
+import {GestureHandlerRootView} from "react-native-gesture-handler";
 
-export default function RootLayout() {
+export default function RootLayout()
+{
     return (
         <AuthProvider>
             <GestureHandlerRootView>
                 <Stack>
-                    <Stack.Screen name="login" options={{ headerShown: false }} />
+                    <Stack.Screen name="login" options={{headerShown: false}} />
                     <Stack.Screen
                         name="signup"
-                        options={{ headerShown: false }}
+                        options={{headerShown: false}}
                     />
                     <Stack.Screen
                         name="(tabs)"
-                        options={{ headerShown: false }}
+                        options={{headerShown: false}}
                     />
                     <Stack.Screen
                         name="settings"
@@ -24,10 +25,19 @@ export default function RootLayout() {
                             headerBackTitle: "Close",
                         }}
                     />
-                    <Stack.Screen name="newMachine" options={{
-                        title: "New Machine",
-                        headerBackTitle: "Back"
-                    }}
+                    <Stack.Screen
+                        name="newMachine"
+                        options={{
+                            title: "New Machine",
+                            headerBackTitle: "Back",
+                        }}
+                    />
+                    <Stack.Screen
+                        name="statistics"
+                        options={{
+                            title: "Statistics",
+                            headerBackTitle: "Back",
+                        }}
                     />
                 </Stack>
             </GestureHandlerRootView>
