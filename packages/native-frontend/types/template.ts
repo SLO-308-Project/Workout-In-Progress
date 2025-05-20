@@ -1,8 +1,10 @@
+import {Machine} from "./machine";
+
 export interface Template
 {
     _id: string;
-    // name: string,
-    machineIds: string[];
+    name: string;
+    machines: Machine[];
     workout: [
         {
             _id: string;
