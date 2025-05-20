@@ -1,11 +1,53 @@
+import {Template} from "@/types/template";
 import {AntDesign} from "@expo/vector-icons";
-import {useState} from "react";
-import {Pressable, Text, View, StyleSheet} from "react-native";
+import {useEffect, useState} from "react";
+import {Pressable, Text, View, StyleSheet, FlatList} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
+import {SearchBar} from "@rneui/themed";
+import {useIsFocused} from "@react-navigation/native";
 
 export default function TemplatesPage()
 {
     const [templates, setTemplates] = useState<Template[]>([]);
+    const [search, setSearch] = useState<string>("");
+
+    const isFocused = useIsFocused(); // is true if the screen is focused and false if not.
+
+    // useEffect(() =>
+    // {
+
+    // }, [isFocused])
+
+    function test()
+    {
+        console.log(search);
+    }
+
+    // Returns all templates for the authorized user.
+    function getTemplates(): void
+    {}
+
+    // Called on swipe button to remove a template.
+    function removeOneTemplate(_id: string)
+    {}
+
+    // Called to give the data for FlatList.
+    function filterTemplates(): Template[]
+    {
+        if (search === "")
+        {
+            return templates;
+        }
+        else
+        {
+            return templates.filter((template: Template) =>
+            {
+                return template.name
+                    .toLowerCase()
+                    .includes(search.toLowerCase());
+            });
+        }
+    }
 
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
@@ -18,6 +60,32 @@ export default function TemplatesPage()
                     <AntDesign name="plus" size={32} color="black" />
                 </Pressable>
             </View>
+            <Pressable onPress={test}>
+                <Text className="text-3xl">Press Me!</Text>
+            </Pressable>
+            <SearchBar
+                containerStyle={styles.containerStyle}
+                inputStyle={styles.inputStyle}
+                inputContainerStyle={styles.inputContainerStyle}
+                placeholder="Search"
+                onChangeText={setSearch}
+                value={search}
+                lightTheme
+                round
+            />
+            <FlatList
+                data={filterTemplates()}
+                renderItem={({item, index}) => (
+                    <TemplateComponent
+                        key={index}
+                        machine={item}
+                        handleDelete={removeOneTemplate}
+                    />
+                )}
+                ListEmptyComponent={<Empty />}
+                showsVerticalScrollIndicator={false}
+                className="flex-1"
+            />
         </SafeAreaView>
     );
 }
