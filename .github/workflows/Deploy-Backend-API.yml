@@ -31,6 +31,7 @@ jobs:
             - name: root install
               run: |
                   npm ci
+                  cp -a ./node_modules /packages/express-backend/npm_modules
 
             - name: npm build, and test
               run: |
