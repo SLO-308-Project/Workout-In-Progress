@@ -98,7 +98,10 @@ function fetchUpdateMachine(
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({name: `${newName}`, muscle: `${newMuscle}`}),
+        body: JSON.stringify({
+            name: `${newName}`,
+            muscle: `${newMuscle}`,
+        }),
     });
 }
 

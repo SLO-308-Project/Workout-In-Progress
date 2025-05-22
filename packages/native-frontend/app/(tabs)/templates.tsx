@@ -5,6 +5,9 @@ import {Pressable, Text, View, StyleSheet, FlatList} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {SearchBar} from "@rneui/themed";
 import {useIsFocused} from "@react-navigation/native";
+import TemplateComponent, {
+    Empty,
+} from "@/components/templates/TemplateComponent";
 
 export default function TemplatesPage()
 {
@@ -28,7 +31,7 @@ export default function TemplatesPage()
     {}
 
     // Called on swipe button to remove a template.
-    function removeOneTemplate(_id: string)
+    function removeOneTemplate(_id: string): void
     {}
 
     // Called to give the data for FlatList.
@@ -78,7 +81,7 @@ export default function TemplatesPage()
                 renderItem={({item, index}) => (
                     <TemplateComponent
                         key={index}
-                        machine={item}
+                        template={item}
                         handleDelete={removeOneTemplate}
                     />
                 )}
