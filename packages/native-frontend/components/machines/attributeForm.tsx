@@ -33,19 +33,6 @@ function AttributeForm({handleAddAttribute}: Props)
         });
     }
 
-    // TODO: The scroll picker here is kind of awful.
-
-    // const [showPicker, setShowPicker] = useState(false);
-    // const [selectedUnitIdx, setSelectedUnitIdx] = useState(0);
-
-    // function handleUnitChange(unitIndex: number) {
-    //     const unit = Object.entries(Unit)[unitIndex][1];
-    //     setAttribute({
-    //         ...attribute,
-    //         unit: unit,
-    //     });
-    // }
-
     return (
         <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 m-2 flex-row justify-between items-center">
             <TextInput
@@ -55,6 +42,7 @@ function AttributeForm({handleAddAttribute}: Props)
                 placeholderTextColor="#A0A0A0"
                 onChangeText={(name) => handleNameChange(name)}
             />
+
             <Picker
                 className="w-20 bg-gray-100 px-4 py-3 border-gray-200 rounded-xl text-base 900 items-center"
                 prompt="Units"
@@ -64,31 +52,10 @@ function AttributeForm({handleAddAttribute}: Props)
                 }}
             >
                 {Object.values(Unit).map((unit, index) => (
-                    <Picker.Item label={unit} value={unit} />
+                    <Picker.Item key={index} label={unit} value={unit} />
                 ))}
             </Picker>
-            {/* {showPicker &&
-                <ScrollPicker
-                    selectedIndex={selectedUnitIdx}
-                    onTouchEnd={() => setShowPicker(false)}
-                    dataSource={Object.values(Unit)}
-                    wrapperBackground="#FFF"
-                    wrapperHeight={40}
-                    onValueChange={(data, selectedIndex) => {
-                        setSelectedUnitIdx(selectedIndex)
-                        handleUnitChange(selectedIndex)
-                    }}
 
-                />
-            }
-            {!showPicker &&
-                <Pressable
-                    className="w-20 bg-gray-100 px-4 py-3 border-gray-200 rounded-xl text-base 900 items-center"
-                    onPress={() => setShowPicker(true)}
-                >
-                    <Text className="justify-center">{attribute.unit}</Text>
-                </Pressable>
-            } */}
             <Pressable
                 onPress={() => handleAddAttribute(attribute)}
                 className="p-2 rounded-full active:scale-90"
