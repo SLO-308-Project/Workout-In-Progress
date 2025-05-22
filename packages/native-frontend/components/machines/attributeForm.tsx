@@ -1,32 +1,32 @@
-import { Unit } from "@/types/unit";
-import { Attribute } from "@/types/attribute";
-import { useState } from "react";
-import { View, TextInput, Pressable, Text, Modal } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import {Unit} from "@/types/unit";
+import {Attribute} from "@/types/attribute";
+import {useState} from "react";
+import {View, TextInput, Pressable, Text} from "react-native";
+import {Picker} from "@react-native-picker/picker";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import ScrollPicker from "react-native-wheel-scrollview-picker";
+// import ScrollPicker from "react-native-wheel-scrollview-picker";
 
 type Props = {
     handleAddAttribute: (attribute: Attribute) => void;
 };
 
-function AttributeForm({ handleAddAttribute }: Props) {
+function AttributeForm({handleAddAttribute}: Props)
+{
     const [attribute, setAttribute] = useState<Attribute>({
         name: "",
         unit: Unit.LBS, // default is the first unit in the enum. which is lbs
     });
-    const [showPicker, setShowPicker] = useState(false);
-    const [selectedUnitIdx, setSelectedUnitIdx] = useState(0);
 
-    function handleUnitChange(unitIndex: number) {
-        const unit = Object.entries(Unit)[unitIndex][1];
+    function handleUnitChange(unit: Unit)
+    {
         setAttribute({
             ...attribute,
             unit: unit,
         });
     }
 
-    function handleNameChange(name: string) {
+    function handleNameChange(name: string)
+    {
         setAttribute({
             ...attribute,
             name: name,
@@ -34,6 +34,17 @@ function AttributeForm({ handleAddAttribute }: Props) {
     }
 
     // TODO: The scroll picker here is kind of awful.
+
+    // const [showPicker, setShowPicker] = useState(false);
+    // const [selectedUnitIdx, setSelectedUnitIdx] = useState(0);
+
+    // function handleUnitChange(unitIndex: number) {
+    //     const unit = Object.entries(Unit)[unitIndex][1];
+    //     setAttribute({
+    //         ...attribute,
+    //         unit: unit,
+    //     });
+    // }
 
     return (
         <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 m-2 flex-row justify-between items-center">
@@ -44,7 +55,19 @@ function AttributeForm({ handleAddAttribute }: Props) {
                 placeholderTextColor="#A0A0A0"
                 onChangeText={(name) => handleNameChange(name)}
             />
-            {showPicker &&
+            <Picker
+                className="w-20 bg-gray-100 px-4 py-3 border-gray-200 rounded-xl text-base 900 items-center"
+                prompt="Units"
+                onValueChange={(value: Unit) =>
+                {
+                    handleUnitChange(value);
+                }}
+            >
+                {Object.values(Unit).map((unit, index) => (
+                    <Picker.Item label={unit} value={unit} />
+                ))}
+            </Picker>
+            {/* {showPicker &&
                 <ScrollPicker
                     selectedIndex={selectedUnitIdx}
                     onTouchEnd={() => setShowPicker(false)}
@@ -65,7 +88,7 @@ function AttributeForm({ handleAddAttribute }: Props) {
                 >
                     <Text className="justify-center">{attribute.unit}</Text>
                 </Pressable>
-            }
+            } */}
             <Pressable
                 onPress={() => handleAddAttribute(attribute)}
                 className="p-2 rounded-full active:scale-90"
@@ -73,7 +96,6 @@ function AttributeForm({ handleAddAttribute }: Props) {
                 <AntDesign name="pluscircle" size={24} color="#34C759" />
             </Pressable>
         </View>
-
     );
 }
 // <Pressable
