@@ -8,6 +8,10 @@ import {useIsFocused} from "@react-navigation/native";
 import TemplateComponent, {
     Empty,
 } from "@/components/templates/TemplateComponent";
+import {
+    fetchDeleteTemplate,
+    fetchGetTemplates,
+} from "@/fetchers/templateFetchers";
 
 export default function TemplatesPage()
 {
@@ -16,10 +20,13 @@ export default function TemplatesPage()
 
     const isFocused = useIsFocused(); // is true if the screen is focused and false if not.
 
-    // useEffect(() =>
-    // {
-
-    // }, [isFocused])
+    useEffect(() =>
+    {
+        if (isFocused)
+        {
+            getTemplates();
+        }
+    }, [isFocused]);
 
     function test()
     {
@@ -28,11 +35,48 @@ export default function TemplatesPage()
 
     // Returns all templates for the authorized user.
     function getTemplates(): void
-    {}
+    {
+        fetchGetTemplates()
+            .then((res) =>
+            {
+                if (res.ok)
+                {
+                    res.json()
+                        .then((json) =>
+                        {
+                            setTemplates(json);
+                        })
+                        .catch((err) =>
+                        {
+                            console.log("Parsing Templates Error: ", err);
+                        });
+                }
+            })
+            .catch((err) =>
+            {
+                console.log("Error Retrieving Templates: ", err);
+            });
+    }
 
     // Called on swipe button to remove a template.
     function removeOneTemplate(_id: string): void
-    {}
+    {
+        fetchDeleteTemplate(_id)
+            .then((res) =>
+            {
+                if (res.status === 204)
+                {
+                    //resource deleted
+                    setTemplates(
+                        templates.filter((template) => template._id !== _id),
+                    );
+                }
+            })
+            .catch((err) =>
+            {
+                console.log("Error deleting Template: ", err);
+            });
+    }
 
     // Called to give the data for FlatList.
     function filterTemplates(): Template[]
@@ -58,10 +102,10 @@ export default function TemplatesPage()
                 <Text className="text-3xl font-semibold text-black tracking-tight">
                     Templates
                 </Text>
-                <Pressable className="" onPress={() =>
+                {/* <Pressable className="" onPress={() =>
                 {}}>
                     <AntDesign name="plus" size={32} color="black" />
-                </Pressable>
+                </Pressable> */}
             </View>
             <Pressable onPress={test}>
                 <Text className="text-3xl">Press Me!</Text>
