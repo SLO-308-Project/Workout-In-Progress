@@ -1,4 +1,5 @@
 import {Template} from "@/types/template";
+import {Feather} from "@expo/vector-icons";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import {View, Text, Pressable} from "react-native";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
@@ -56,10 +57,13 @@ export default function MachineComponent({template, handleDelete}: Props)
             overshootFriction={8}
         >
             <View className="p-4 bg-white shadow-sm border border-neutral-200">
-                <View className="mb-1">
+                <View className="flex-row items-center mb-1">
                     <Text className="text-2xl font-bold text-gray-900">
                         {template.name}
                     </Text>
+                    <Pressable>
+                        <Feather name="copy"></Feather>
+                    </Pressable>
                 </View>
             </View>
         </ReanimatedSwipeable>

@@ -227,6 +227,7 @@ export default function HomeScreen()
                 renderItem={({item, index}) => (
                     <SessionComponent
                         key={index}
+                        sessionId={item._id}
                         name={dateToName(item.date)}
                         date={formatDate(item.date)}
                         duration={formatDuration(item.time)}
