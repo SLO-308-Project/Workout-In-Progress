@@ -1,14 +1,15 @@
 import {View, Text, Pressable} from "react-native";
 import {Session} from "@/types/session";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
-
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import Reanimated, {
     SharedValue,
     useAnimatedStyle,
 } from "react-native-reanimated";
+import SaveAsTemplate from "../templates/SaveAsTemplate";
 
 type Props = {
+    sessionId: string;
     name: string;
     date: string;
     duration: string;
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export default function SessionComponent({
+    sessionId,
     name,
     date,
     duration,
@@ -79,10 +81,18 @@ export default function SessionComponent({
                         {date}
                     </Text>
                 </View>
-                <Text className="text-sm text-neutral-700">{duration}</Text>
-                <Text className="text-sm text-neutral-700">
-                    {getSetCount} Sets
-                </Text>
+
+                <View className="flex-row justify-between items-center">
+                    <View>
+                        <Text className="text-sm text-neutral-700">
+                            {duration}
+                        </Text>
+                        <Text className="text-sm text-neutral-700">
+                            {getSetCount} Sets
+                        </Text>
+                    </View>
+                    <SaveAsTemplate id={session._id} fromSession={true} />
+                </View>
             </View>
         </ReanimatedSwipeable>
     );
