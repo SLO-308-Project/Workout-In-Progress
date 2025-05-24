@@ -74,7 +74,7 @@ describe("Machine Services Tests", () =>
             }),
         ];
         const template = new sessionTemplateModel({
-            machineIds: expected,
+            machines: expected,
             workout: [],
         });
         sessionTemplateModel.findById = jest.fn().mockResolvedValue(template);
@@ -227,9 +227,10 @@ describe("Machine Services Tests", () =>
         const newMachineId = newMachine._id?.toString() || "";
         const template = new sessionTemplateModel({
             workout: [],
-            machineIds: [newMachineId],
+            machines: [newMachine],
         });
         const templateId = template._id?.toString() || "";
+        machineModel.findById = jest.fn().mockResolvedValue(newMachine);
         sessionTemplateModel.findByIdAndUpdate = jest
             .fn()
             .mockResolvedValue(template);
@@ -238,14 +239,14 @@ describe("Machine Services Tests", () =>
             templateId,
         );
         expect(result).toBeTruthy();
-        expect(result?.machineIds[0].toString()).toBe(newMachineId);
+        expect(result?.machines[0]._id?.toString()).toBe(newMachineId);
     });
 
     test("Remove machine --- successful", async () =>
     {
         const template = new sessionTemplateModel({
             workout: [],
-            machineIds: [
+            machines: [
                 new machineModel({
                     _id: new Types.ObjectId("65f18f3ac6dc7f8d5a1234ab"),
                     name: "Shoulder Press",
@@ -259,9 +260,14 @@ describe("Machine Services Tests", () =>
                 }),
             ],
         });
+        const machineId = "65f18f3ac6dc7f8d5a1234ab";
         const newTemplate = new sessionTemplateModel(template);
-        newTemplate.machineIds = [];
-        const machineId = "6458a28d1f3d7c9a8e1b2c46";
+        newTemplate.set(
+            "machines",
+            newTemplate.machines.filter(
+                (machine) => machine._id!.toString() !== machineId,
+            ),
+        );
         const templateId = template._id?.toString() || "";
         sessionTemplateModel.findByIdAndUpdate = jest
             .fn()
@@ -270,8 +276,10 @@ describe("Machine Services Tests", () =>
             machineId,
             templateId,
         );
+        console.log("HERE");
+        console.log(result);
         expect(result).toBeTruthy();
-        expect(result?.machineIds.length).toBe(0);
+        expect(result?.machines.length).toBe(0);
     });
 
     //Get attributes
@@ -447,11 +455,11 @@ describe("Machine Services Tests", () =>
         expect(result).toBeFalsy();
     });
 
-    test("Remove machine --- successful", async () =>
+    test("Remove machine --- unsuccessful", async () =>
     {
         const template = new sessionTemplateModel({
             workout: [],
-            machineIds: [
+            machines: [
                 new machineModel({
                     _id: new Types.ObjectId("65f18f3ac6dc7f8d5a1234ab"),
                     name: "Shoulder Press",
@@ -465,8 +473,6 @@ describe("Machine Services Tests", () =>
                 }),
             ],
         });
-        const newTemplate = new sessionTemplateModel(template);
-        newTemplate.machineIds = [];
         const machineId = "6458a28d1f3d7c9a8e1b2c46";
         const templateId = template._id?.toString() || "";
         sessionTemplateModel.findByIdAndUpdate = jest

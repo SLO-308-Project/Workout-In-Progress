@@ -1,8 +1,7 @@
 import sessionModel, {SessionType} from "../data/session";
-import {PipelineStage} from "mongoose";
+import {PipelineStage, Types} from "mongoose";
 import userModel from "../data/user";
 import sessionLogModel from "../data/sessionLog";
-import {Types} from "mongoose";
 
 /**
  * Gets list of all machines associated with a user
@@ -167,8 +166,16 @@ async function endSession(id: string, userId: string)
  */
 async function deleteSession(id: string, userId: string)
 {
-    userModel
-        .findOne({_id: userId})
+    return getSessionById(id, userId)
+        .then((session) =>
+        {
+            if (session.length === 0)
+            {
+                return null;
+            }
+
+            return userModel.findOne({_id: userId});
+        })
         .then((user) =>
         {
             sessionLogModel.findOneAndUpdate(

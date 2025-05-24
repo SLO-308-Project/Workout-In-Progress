@@ -1,6 +1,7 @@
 import sessionModel from "../data/session";
 import sessionTemplateModel from "../data/sessionTemplate";
 import {verifyUserOwnSession} from "./sessionServices";
+import {Types} from "mongoose";
 
 /**
  * Gets all workouts for a session
@@ -12,12 +13,16 @@ import {verifyUserOwnSession} from "./sessionServices";
 async function getWorkout(sessionId: string, userId: string)
 {
     // Ensure session is owned by user
-    if (!(await verifyUserOwnSession(sessionId, userId)))
-    {
-        return null;
-    }
-    return sessionModel
-        .findById(sessionId)
+    return verifyUserOwnSession(sessionId, userId)
+        .then((verified) =>
+        {
+            if (!verified)
+            {
+                throw new Error("No sesison found");
+            }
+
+            return sessionModel.findById(sessionId);
+        })
         .then((session) =>
         {
             if (!session)
@@ -48,12 +53,15 @@ async function addWorkout(
 )
 {
     // Ensure session is owned by user
-    if (!(await verifyUserOwnSession(sessionId, userId)))
-    {
-        return null;
-    }
-    return sessionModel
-        .findOne({_id: sessionId})
+    return verifyUserOwnSession(sessionId, userId)
+        .then((verified) =>
+        {
+            if (!verified)
+            {
+                throw new Error("Session not found");
+            }
+            return sessionModel.findOne({_id: sessionId});
+        })
         .then((session) =>
         {
             if (!session)
@@ -89,12 +97,15 @@ async function saveWorkout(
 )
 {
     // Ensure session is owned by user
-    if (!(await verifyUserOwnSession(sessionId, userId)))
-    {
-        return null;
-    }
-    const workoutToSave = await sessionModel
-        .findById(sessionId)
+    return verifyUserOwnSession(sessionId, userId)
+        .then((verified) =>
+        {
+            if (!verified)
+            {
+                throw new Error("No session found");
+            }
+            return sessionModel.findById(sessionId);
+        })
         .then((session) =>
         {
             if (session == null)
@@ -107,28 +118,95 @@ async function saveWorkout(
             }
             return session.workout[index].toObject();
         })
+        .then((workoutToSave) =>
+        {
+            if (workoutToSave == null)
+            {
+                throw new Error("No workout saved");
+            }
+            workoutToSave._id = new Types.ObjectId();
+            workoutToSave.sets.map((set) =>
+            {
+                set._id = new Types.ObjectId();
+            });
+            return sessionTemplateModel.findByIdAndUpdate(
+                templateId,
+                {
+                    $push: {workout: workoutToSave},
+                },
+                {new: true},
+            );
+        })
+        .then((template) =>
+        {
+            if (template == null)
+            {
+                throw new Error("Template Not found");
+            }
+            return template.workout[template.workout.length - 1];
+        })
         .catch((error) =>
         {
             console.log(error);
             return null;
         });
-    if (workoutToSave == null)
-    {
-        return null;
-    }
+}
+
+/**
+ * Save a workout to a template
+ *
+ * @param {string} destinationTemplateId - Template Object id for workout to save to
+ * @param {string} sourceTemplateId - Template Object id for workout to save from
+ * @param {number} index - Index of workout to add
+ * @param {string} userId - User associated id
+ *
+ * @return {Promise} - Workout saved to template
+ */
+async function saveWorkoutFromTemplate(
+    destinationTemplateId: string,
+    sourceTemplateId: string,
+    index: number,
+)
+{
+    // Ensure session is owned by user
     return sessionTemplateModel
-        .findByIdAndUpdate(
-            templateId,
+        .findById(sourceTemplateId)
+        .then((template) =>
+        {
+            if (!template)
             {
-                $push: {workout: workoutToSave},
-            },
-            {new: true},
-        )
+                throw new Error("No template found");
+            }
+            if (index >= template.workout.length || index < 0)
+            {
+                throw new Error("Index invalid");
+            }
+            return template.workout[index];
+        })
+        .then((workoutToSave) =>
+        {
+            if (workoutToSave == null)
+            {
+                throw new Error("No workout to save");
+            }
+            workoutToSave._id = new Types.ObjectId();
+            workoutToSave.sets.map((set) =>
+            {
+                set._id = new Types.ObjectId();
+            });
+            return sessionTemplateModel.findByIdAndUpdate(
+                destinationTemplateId,
+                {
+                    $push: {workout: workoutToSave},
+                },
+                {new: true},
+            );
+        })
         .then((template) =>
         {
             if (template == null)
             {
-                throw new Error("Template not found");
+                throw new Error("Template Not found");
             }
             return template.workout[template.workout.length - 1];
         })
@@ -208,12 +286,15 @@ async function removeWorkout(
         throw new Error("Session or workout were null.");
     }
     // Ensure session is owned by user
-    if (!(await verifyUserOwnSession(sessionId, userId)))
-    {
-        return null;
-    }
-    return sessionModel
-        .findOne({_id: sessionId})
+    return verifyUserOwnSession(sessionId, userId)
+        .then((verified) =>
+        {
+            if (!verified)
+            {
+                throw new Error("Session not found");
+            }
+            return sessionModel.findOne({_id: sessionId});
+        })
         .then((session) =>
         {
             if (!session)
@@ -251,6 +332,7 @@ export default {
     getWorkout,
     addWorkout,
     saveWorkout,
+    saveWorkoutFromTemplate,
     getSavedWorkout,
     removeWorkout,
     removeSavedWorkout,
