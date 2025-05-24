@@ -171,23 +171,26 @@ async function deleteSession(id: string, userId: string)
         {
             if (session.length === 0)
             {
-                return null;
+                throw new Error("No session found");
             }
 
             return userModel.findOne({_id: userId});
         })
         .then((user) =>
         {
-            sessionLogModel.findOneAndUpdate(
+            return sessionLogModel.findOneAndUpdate(
                 {_id: user?.sessionLogId},
                 {$pull: {sessionIds: id}}, //previously added session id.
             );
+        })
+        .then(() =>
+        {
+            return sessionModel.findByIdAndDelete(id);
         })
         .catch((error) =>
         {
             console.log(error);
         });
-    return sessionModel.findByIdAndDelete(id);
 }
 
 /**
