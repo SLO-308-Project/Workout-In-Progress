@@ -1,5 +1,12 @@
 import {View, Text, Pressable} from "react-native";
 import {useState, useEffect, useCallback} from "react";
+import EvilIcons from "@expo/vector-icons/EvilIcons";
+import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import Reanimated, {
+    SharedValue,
+    useAnimatedStyle,
+} from "react-native-reanimated";
+
 import AttributeForm from "./attributeForm";
 import AttributeComponent from "./attributeComponent";
 import {
@@ -99,35 +106,84 @@ export default function MachineComponent({machine, handleDelete}: Props)
         <></>
     );
 
+    // Displays a delete button when swiping right on a machine
+    function RightSwipeDelete(
+        prog: SharedValue<number>,
+        drag: SharedValue<number>,
+        swipeableMethods: {
+            openLeft: () => void;
+            openRight: () => void;
+            close: () => void;
+        },
+    )
+    {
+        const styleAnimation = useAnimatedStyle(() =>
+        {
+            return {
+                transform: [{translateX: drag.value + 140}],
+            };
+        });
+
+        return (
+            <Reanimated.View style={styleAnimation}>
+                <Pressable
+                    onPress={() =>
+                    {
+                        swipeableMethods.close();
+                        deleteMachine();
+                    }}
+                    className="bg-red-500 w-40 h-full flex items-center justify-center"
+                >
+                    <EvilIcons name="trash" size={36} color="white" />
+                </Pressable>
+            </Reanimated.View>
+        );
+    }
+
     return (
-        <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 m-4">
-            {/* Machine info */}
-            <View className="mb-4">
-                <Text className="text-2xl font-bold text-gray-900">
-                    {machine.name}
-                </Text>
-                <Text className="text-base text-gray-600">
-                    {machine.muscle}
-                </Text>
+        <ReanimatedSwipeable
+            friction={2}
+            rightThreshold={20}
+            renderRightActions={RightSwipeDelete}
+            overshootFriction={8}
+        >
+            <View className="p-4 bg-white shadow-sm border border-neutral-200">
+                <View className="mb-1">
+                    <Text className="text-2xl font-bold text-gray-900">
+                        {machine.name}
+                    </Text>
+                    <Text className="text-base text-gray-600">
+                        {machine.muscle}
+                    </Text>
+                </View>
             </View>
-
-            {/* Delete button */}
-            <Pressable
-                onPress={deleteMachine}
-                className="bg-red-50 border border-red-300 px-4 py-2 rounded-full active:opacity-75 mb-4"
-            >
-                <Text className="text-red-600 font-semibold text-center">
-                    Delete {machine.name}
-                </Text>
-            </Pressable>
-
-            {/* Attribute list */}
-            <View className="mb-4">{listAttributes}</View>
-
-            {/* Attribute form */}
-            <View>
-                <AttributeForm handleAddAttribute={addAttribute} />
-            </View>
+        </ReanimatedSwipeable>
+    );
+}
+// <Pressable
+//     onPress={deleteMachine}
+//     className="bg-red-50 border border-red-300 px-4 py-2 rounded-full active:opacity-75 mb-4"
+// >
+//     <Text className="text-red-600 font-semibold text-center">
+//         Delete {machine.name}
+//     </Text>
+// </Pressable>
+//
+// {/* Attribute list */}
+// <View className="mb-4">{listAttributes}</View>
+//
+// {/* Attribute form */}
+// <View>
+//     <AttributeForm handleAddAttribute={addAttribute} />
+// </View>
+// Component to be rendered when machine list is empty
+export function Empty()
+{
+    return (
+        <View className="flex-1 items-center bg-white pt-16">
+            <Text className="text-2xl text-gray-300 font-semibold">
+                No Machines Found
+            </Text>
         </View>
     );
 }
