@@ -77,7 +77,7 @@ export default function MachineSlide({currMachine, handleUpdate}: Props)
         {
             Alert.alert("At least 1 attribute required.");
         }
-        else
+        else if (editMachine !== machine)
         {
             if (machine)
             {
@@ -85,6 +85,10 @@ export default function MachineSlide({currMachine, handleUpdate}: Props)
                 setMachine(editMachine);
                 setEditMode(false);
             }
+        }
+        else
+        {
+            setEditMode(false);
         }
     }
 

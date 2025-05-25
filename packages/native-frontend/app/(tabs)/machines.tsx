@@ -32,6 +32,16 @@ function MachinePage()
         null,
     );
 
+    // State for machines list refresh functionality
+    const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+
+    function handleRefresh()
+    {
+        setIsRefreshing(true);
+        getMachines();
+        setIsRefreshing(false);
+    }
+
     // Called when a machine card is tapped
     const handleOpenSheet = useCallback((machine: Machine) =>
     {
@@ -63,6 +73,7 @@ function MachinePage()
             {
                 console.log(`GETMACHINES RES_DATA=${res_data}`);
                 setMachine(res_data);
+                setIsRefreshing(false);
             })
             .catch((error: unknown) => console.log(error));
     }
@@ -179,6 +190,8 @@ function MachinePage()
                 ListEmptyComponent={<Empty />}
                 showsVerticalScrollIndicator={false}
                 className="flex-1"
+                onRefresh={handleRefresh}
+                refreshing={isRefreshing}
             />
             <BottomSheetModal
                 ref={bottomSheetModalRef}
