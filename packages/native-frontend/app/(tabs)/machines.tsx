@@ -13,6 +13,7 @@ import {
     fetchGetMachine,
     fetchPostMachine,
     fetchDeleteMachine,
+    fetchUpdateMachine,
 } from "@/fetchers/machineFetchers";
 
 import {Machine} from "@/types/machine";
@@ -64,6 +65,30 @@ function MachinePage()
                 setMachine(res_data);
             })
             .catch((error: unknown) => console.log(error));
+    }
+
+    // Called by edit slide to update machine
+    async function updateMachine(machine: Machine, newMachine: Machine)
+    {
+        return fetchUpdateMachine(machine.name, newMachine)
+            .then((res) =>
+            {
+                if (res.ok)
+                {
+                    // Update local list
+                    setMachine(
+                        machines.map((oldMachine) =>
+                            oldMachine._id === newMachine._id
+                                ? {...oldMachine, ...newMachine}
+                                : oldMachine,
+                        ),
+                    );
+                }
+            })
+            .catch((error: unknown) =>
+            {
+                console.log(error);
+            });
     }
 
     function addOneMachine(machine: Machine): void
@@ -164,7 +189,10 @@ function MachinePage()
                 snapPoints={["90%"]}
                 enableDynamicSizing={false}
             >
-                <MachineSlide machine={selectedMachine} />
+                <MachineSlide
+                    currMachine={selectedMachine}
+                    handleUpdate={updateMachine}
+                />
             </BottomSheetModal>
         </SafeAreaView>
     );

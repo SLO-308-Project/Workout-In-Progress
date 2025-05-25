@@ -9,41 +9,17 @@ import AttributeComponent, {
     Empty,
 } from "@/components/machines/attributeComponent";
 import AttributeForm from "@/components/machines/attributeForm";
-import {fetchUpdateMachine} from "@/fetchers/machineFetchers";
 
 type Props = {
-    machine: Machine | null;
+    currMachine: Machine | null;
+    handleUpdate: (machine: Machine, newMachine: Machine) => Promise<void>;
 };
 
-export default function MachineSlide({machine}: Props)
+export default function MachineSlide({currMachine, handleUpdate}: Props)
 {
     const [editMode, setEditMode] = useState<boolean>(false);
-    const [editMachine, setEditMachine] = useState<Machine | null>(machine);
-
-    async function updateMachine(machine: Machine)
-    {
-        console.log(`${machine.name} ${machine.muscle}`);
-        return fetchUpdateMachine(
-            machine.name,
-            editMachine?.name,
-            editMachine?.muscle,
-        )
-            .then((res) =>
-            {
-                if (res.status === 201)
-                {
-                    return res.json();
-                }
-            })
-            .then((res_data) =>
-            {
-                console.log(`RES_DATA=${JSON.stringify(res_data)}`);
-            })
-            .catch((error: unknown) =>
-            {
-                console.log(error);
-            });
-    }
+    const [editMachine, setEditMachine] = useState<Machine | null>(currMachine);
+    const [machine, setMachine] = useState<Machine | null>(currMachine);
 
     function handleNameChange(name: string)
     {
@@ -103,8 +79,12 @@ export default function MachineSlide({machine}: Props)
         }
         else
         {
-            await updateMachine(editMachine);
-            setEditMode(false);
+            if (machine)
+            {
+                await handleUpdate(machine, editMachine);
+                setMachine(editMachine);
+                setEditMode(false);
+            }
         }
     }
 
@@ -157,7 +137,7 @@ export default function MachineSlide({machine}: Props)
                     <View className="flex-row justify-between">
                         <TextInput
                             className="w-80 font-bold bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"
-                            value={machine?.name}
+                            value={editMachine?.name}
                             onChangeText={(text) => handleNameChange(text)}
                             placeholder="Name"
                             placeholderTextColor="#9CA3AF" // lighter muted gray
@@ -169,7 +149,7 @@ export default function MachineSlide({machine}: Props)
                     </View>
                     <TextInput
                         className="w-40 bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"
-                        value={machine?.muscle}
+                        value={editMachine?.muscle}
                         onChangeText={(text) => handleMuscleChange(text)}
                         placeholder="Muscle"
                         placeholderTextColor="#9CA3AF" // lighter muted gray
@@ -181,7 +161,7 @@ export default function MachineSlide({machine}: Props)
                         Attributes
                     </Text>
                     <FlatList
-                        data={machine?.attributes}
+                        data={editMachine?.attributes}
                         renderItem={({item, index}) => (
                             <AttributeComponent
                                 key={index}
