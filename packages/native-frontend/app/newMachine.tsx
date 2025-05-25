@@ -41,7 +41,7 @@ export default function MachineForm()
     const navigation = useNavigation();
     const router = useRouter();
 
-    async function addOneMachine(machine: Machine) 
+    async function addOneMachine(machine: Machine)
     {
         console.log(`${machine.name} ${machine.muscle}`);
         return fetchPostMachine(machine)
@@ -115,19 +115,6 @@ export default function MachineForm()
         }
     }
 
-    const listAttributes = machine.attributes ? (
-        machine.attributes.map((attribute: Attribute, index) => (
-            <AttributeComponent
-                key={index}
-                name={attribute.name}
-                unit={attribute.unit}
-                handleDelete={deleteAttribute}
-            />
-        ))
-    ) : (
-        <></>
-    );
-
     useLayoutEffect(() =>
     {
         navigation.setOptions({
@@ -138,7 +125,7 @@ export default function MachineForm()
     return (
         <View className="flex-1 bg-white pt-4 pl-4">
             <TextInput
-                className="w-80 bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"
+                className="w-80 font-bold bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"
                 value={machine.name}
                 onChangeText={(text) => handleNameChange(text)}
                 placeholder="Name"
@@ -157,7 +144,7 @@ export default function MachineForm()
                 style={{lineHeight: 16}}
                 autoCapitalize="none"
             />
-            <Text className="text-2xl font-semibold text-black tracking-tight pt-4">
+            <Text className="px-4 mb-4 text-2xl font-semibold text-black tracking-tight pt-4">
                 Attributes
             </Text>
             <FlatList
