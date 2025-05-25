@@ -1,5 +1,5 @@
-import {View, Text, Pressable} from "react-native";
-import {useState, useEffect, useCallback} from "react";
+import {View, Text, Pressable, Modal} from "react-native";
+import {useState, useEffect, useCallback, useRef} from "react";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import Reanimated, {
@@ -20,9 +20,14 @@ import {Machine} from "@/types/machine";
 type Props = {
     machine: Machine;
     handleDelete: (name: string) => void;
+    onPress: () => void;
 };
 
-export default function MachineComponent({machine, handleDelete}: Props)
+export default function MachineComponent({
+    machine,
+    handleDelete,
+    onPress,
+}: Props)
 {
     const [attributes, setAttributes] = useState<Attribute[]>([]);
 
@@ -60,51 +65,45 @@ export default function MachineComponent({machine, handleDelete}: Props)
         handleDelete(machine.name);
     }
 
-    function addAttribute(attribute: Attribute)
-    {
-        console.log(`NAME: ${attribute.name} UNIT: ${attribute.unit}`);
-        fetchPostAttribute(machine._id, attribute)
-            .then((res) =>
-            {
-                if (res.ok)
-                {
-                    return res.json();
-                }
-            })
-            .then((res_data) => setAttributes(res_data.attributes))
-            .catch((err) => console.log(err));
-    }
+    // function addAttribute(attribute: Attribute) {
+    //     console.log(`NAME: ${attribute.name} UNIT: ${attribute.unit}`);
+    //     fetchPostAttribute(machine._id, attribute)
+    //         .then((res) => {
+    //             if (res.ok) {
+    //                 return res.json();
+    //             }
+    //         })
+    //         .then((res_data) => setAttributes(res_data.attributes))
+    //         .catch((err) => console.log(err));
+    // }
 
-    function deleteAttribute(attrName: string)
-    {
-        console.log(`DELETING ATTRIBUTE: ${attrName}`);
-        fetchDeleteAttribute(machine._id, attrName)
-            .then((res) =>
-            {
-                if (res.ok)
-                {
-                    setAttributes(
-                        attributes.filter(
-                            (attribute) => attribute.name !== attrName,
-                        ),
-                    );
-                }
-            })
-            .catch((err) => console.log(err));
-    }
+    // function deleteAttribute(attrName: string) {
+    //     console.log(`DELETING ATTRIBUTE: ${attrName}`);
+    //     fetchDeleteAttribute(machine._id, attrName)
+    //         .then((res) => {
+    //             if (res.ok) {
+    //                 setAttributes(
+    //                     attributes.filter(
+    //                         (attribute) => attribute.name !== attrName,
+    //                     ),
+    //                 );
+    //             }
+    //         })
+    //         .catch((err) => console.log(err));
+    // }
 
-    const listAttributes = attributes ? (
-        attributes.map((attribute: Attribute, index) => (
-            <AttributeComponent
-                key={index}
-                name={attribute.name}
-                unit={attribute.unit}
-                handleDelete={deleteAttribute}
-            />
-        ))
-    ) : (
-        <></>
-    );
+    // const listAttributes = attributes ? (
+    //     attributes.map((attribute: Attribute, index) => (
+    //         <AttributeComponent
+    //             key={index}
+    //             name={attribute.name}
+    //             unit={attribute.unit}
+    //             handleDelete={deleteAttribute}
+    //         />
+    //     ))
+    // ) : (
+    //     <></>
+    // );
 
     // Displays a delete button when swiping right on a machine
     function RightSwipeDelete(
@@ -141,23 +140,25 @@ export default function MachineComponent({machine, handleDelete}: Props)
     }
 
     return (
-        <ReanimatedSwipeable
-            friction={2}
-            rightThreshold={20}
-            renderRightActions={RightSwipeDelete}
-            overshootFriction={8}
-        >
-            <View className="p-4 bg-white shadow-sm border border-neutral-200">
-                <View className="mb-1">
-                    <Text className="text-2xl font-bold text-gray-900">
-                        {machine.name}
-                    </Text>
-                    <Text className="text-base text-gray-600">
-                        {machine.muscle}
-                    </Text>
+        <Pressable onPress={onPress}>
+            <ReanimatedSwipeable
+                friction={2}
+                rightThreshold={20}
+                renderRightActions={RightSwipeDelete}
+                overshootFriction={8}
+            >
+                <View className="p-4 bg-white shadow-sm border border-neutral-200">
+                    <View className="mb-1">
+                        <Text className="text-2xl font-bold text-gray-900">
+                            {machine.name}
+                        </Text>
+                        <Text className="text-base text-gray-600">
+                            {machine.muscle}
+                        </Text>
+                    </View>
                 </View>
-            </View>
-        </ReanimatedSwipeable>
+            </ReanimatedSwipeable>
+        </Pressable>
     );
 }
 // <Pressable
