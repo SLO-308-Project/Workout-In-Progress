@@ -144,7 +144,7 @@ export default function MachineForm()
                 style={{lineHeight: 16}}
                 autoCapitalize="none"
             />
-            <Text className="px-4 mb-4 text-2xl font-semibold text-black tracking-tight pt-4">
+            <Text className="px-4 text-2xl font-semibold text-black tracking-tight pt-4">
                 Attributes
             </Text>
             <FlatList
