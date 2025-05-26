@@ -3,6 +3,7 @@ import userServices from "../services/userServices";
 import {UserType} from "../data/user";
 import {hashPassword, verifyPassword} from "../util/password";
 import {generateAccessToken} from "../util/jwt";
+import {validatePassword} from "../util/pwValidator";
 
 //all start with /users
 const router = Router();
@@ -22,34 +23,41 @@ router.post("/register", (req: Request, res: Response) =>
      * }
      */
     const userData = req.body as UserType;
-    // Make sure email and password are provided
     if (!userData.password || !userData.email)
     {
-        res.status(400).send("Bad request: Invalid input data.");
+        res.status(400).send("Bad request: Email and password are required");
+        return;
     }
-    else
+
+    const passwordValidation = validatePassword(userData.password);
+    if (!passwordValidation.isValid)
     {
-        // Check if user exists already, create if not.
-        userServices
-            .getUser(userData.email)
-            .then(async (userExists) =>
-            {
-                if (userExists)
-                {
-                    return res.status(409).send("User already exists");
-                }
-                else
-                {
-                    userData.password = await hashPassword(userData.password);
-                    await userServices.addUser(userData);
-                    return res.status(201).send("User added successfully");
-                }
-            })
-            .catch((error) =>
-            {
-                return res.status(400).send("Bad Request: " + error);
-            });
+        res.status(400).json({
+            error: "Password does not meet requirements",
+            details: passwordValidation.errors,
+        });
+        return;
     }
+
+    userServices
+        .getUser(userData.email)
+        .then(async (userExists) =>
+        {
+            if (userExists)
+            {
+                return res.status(409).send("User already exists");
+            }
+            else
+            {
+                userData.password = await hashPassword(userData.password);
+                await userServices.addUser(userData);
+                return res.status(201).send("User added successfully");
+            }
+        })
+        .catch((error) =>
+        {
+            return res.status(400).send("Bad Request: " + error);
+        });
 });
 
 router.post(
