@@ -2,6 +2,7 @@ import {Router} from "expo-router";
 import {useState} from "react";
 import {Pressable, Text, TextInput, View} from "react-native";
 import {validatePassword} from "@/util/passwordValidator";
+import {validateEmail} from "@/util/emailValidator";
 
 type Props = {
     handleSignUp: (userName: string, email: string, password: string) => void;
@@ -20,6 +21,7 @@ export default function SignupPrompt({
     const [password, setPassword] = useState<string>("");
     const [showPasswordErrors, setShowPasswordErrors] =
         useState<boolean>(false);
+    const [showEmailError, setShowEmailError] = useState<boolean>(false);
 
     const handlePasswordChange = (text: string) =>
     {
@@ -30,8 +32,24 @@ export default function SignupPrompt({
         }
     };
 
+    const handleEmailChange = (text: string) =>
+    {
+        setEmail(text.trim());
+        if (showEmailError)
+        {
+            setShowEmailError(false);
+        }
+    };
+
     const handleSubmit = () =>
     {
+        const emailValidation = validateEmail(email);
+        if (!emailValidation.isValid)
+        {
+            setShowEmailError(true);
+            return;
+        }
+
         const passwordValidation = validatePassword(password);
         if (!passwordValidation.isValid)
         {
@@ -52,6 +70,7 @@ export default function SignupPrompt({
             <TextInput
                 className="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"
                 onChangeText={(text) => setUserName(text.trim())}
+                maxLength={20}
                 placeholder="username"
                 placeholderTextColor="7A7674"
                 textAlignVertical="center"
@@ -60,7 +79,8 @@ export default function SignupPrompt({
             />
             <TextInput
                 className="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"
-                onChangeText={(text) => setEmail(text.trim())}
+                onChangeText={handleEmailChange}
+                maxLength={254}
                 placeholder="email"
                 placeholderTextColor="7A7674"
                 textAlignVertical="center"
@@ -70,6 +90,7 @@ export default function SignupPrompt({
             <TextInput
                 className="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-2"
                 onChangeText={handlePasswordChange}
+                maxLength={128}
                 placeholder="password"
                 placeholderTextColor="7A7674"
                 textAlignVertical="center"
@@ -110,6 +131,11 @@ export default function SignupPrompt({
             {showPasswordErrors && (
                 <Text className="text-red-500 text-sm text-center mb-4">
                     Password does not meet requirements
+                </Text>
+            )}
+            {showEmailError && (
+                <Text className="text-red-500 text-sm text-center mb-4">
+                    Please enter a valid email address
                 </Text>
             )}
             {emailExists && (
