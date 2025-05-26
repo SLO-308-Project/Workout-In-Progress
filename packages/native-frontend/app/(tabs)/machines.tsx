@@ -4,14 +4,13 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import {useState, useEffect, useCallback, useRef} from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {SearchBar} from "@rneui/themed";
-import {useRouter, useFocusEffect} from "expo-router";
+import {useRouter} from "expo-router";
 import {useIsFocused} from "@react-navigation/native";
 import {BottomSheetModal} from "@gorhom/bottom-sheet";
 
 import MachineComponent, {Empty} from "@/components/machines/machineComponent";
 import {
     fetchGetMachine,
-    fetchPostMachine,
     fetchDeleteMachine,
     fetchUpdateMachine,
 } from "@/fetchers/machineFetchers";
@@ -39,13 +38,15 @@ function MachinePage()
     {
         setIsRefreshing(true);
         getMachines();
-        setIsRefreshing(false);
     }
 
     // Called when a machine card is tapped
     const handleOpenSheet = useCallback((machine: Machine) =>
     {
         setSelectedMachine(machine);
+        console.log(
+            `passing machine: machine.name=${machine.name} machine.muscle=${machine.muscle} machine.attributes=${JSON.stringify(machine.attributes)}`,
+        );
         bottomSheetModalRef.current?.present();
     }, []);
 
@@ -71,7 +72,7 @@ function MachinePage()
             })
             .then((res_data) =>
             {
-                console.log(`GETMACHINES RES_DATA=${res_data}`);
+                console.log(`GETMACHINES RES_DATA=${JSON.stringify(res_data)}`);
                 setMachine(res_data);
                 setIsRefreshing(false);
             })
@@ -95,28 +96,6 @@ function MachinePage()
                         ),
                     );
                 }
-            })
-            .catch((error: unknown) =>
-            {
-                console.log(error);
-            });
-    }
-
-    function addOneMachine(machine: Machine): void
-    {
-        console.log(`${machine.name} ${machine.muscle}`);
-        fetchPostMachine(machine)
-            .then((res) =>
-            {
-                if (res.status === 201)
-                {
-                    return res.json();
-                }
-            })
-            .then((res_data) =>
-            {
-                console.log(`RES_DATA=${JSON.stringify(res_data)}`);
-                setMachine([...machines, res_data]);
             })
             .catch((error: unknown) =>
             {
@@ -228,4 +207,3 @@ const sb_styles = StyleSheet.create({
         fontSize: 16,
     },
 });
-// <MachineForm handleSubmit={addOneMachine} />

@@ -109,7 +109,9 @@ export default function MachineSlide({currMachine, handleUpdate}: Props)
                         >
                             {machine?.name}
                         </Text>
-                        <Button title="Edit" onPress={handleEditPress} />
+                        <View>
+                            <Button title="Edit" onPress={handleEditPress} />
+                        </View>
                     </View>
                     <Text
                         className="w-40 px-4 rounded-lg text-base text-black mb-4"
@@ -149,7 +151,9 @@ export default function MachineSlide({currMachine, handleUpdate}: Props)
                             style={{lineHeight: 32, fontSize: 28}}
                             autoCapitalize="none"
                         />
-                        <Button title="Save" onPress={handleSavePress} />
+                        <View>
+                            <Button title="Save" onPress={handleSavePress} />
+                        </View>
                     </View>
                     <TextInput
                         className="w-40 bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"

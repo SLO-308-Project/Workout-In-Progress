@@ -1,5 +1,4 @@
-import {View, Text, Pressable, Modal} from "react-native";
-import {useState, useEffect, useCallback, useRef} from "react";
+import {View, Text, Pressable} from "react-native";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import Reanimated, {
@@ -7,14 +6,6 @@ import Reanimated, {
     useAnimatedStyle,
 } from "react-native-reanimated";
 
-import AttributeForm from "./attributeForm";
-import AttributeComponent from "./attributeComponent";
-import {
-    fetchGetAttributes,
-    fetchPostAttribute,
-    fetchDeleteAttribute,
-} from "@/fetchers/machineFetchers";
-import {Attribute} from "@/types/attribute";
 import {Machine} from "@/types/machine";
 
 type Props = {
@@ -29,81 +20,10 @@ export default function MachineComponent({
     onPress,
 }: Props)
 {
-    const [attributes, setAttributes] = useState<Attribute[]>([]);
-
-    const getAttributes = useCallback(() =>
-    {
-        console.log(`MACHINE._id = ${machine._id}`);
-        fetchGetAttributes(machine._id)
-            .then((res) =>
-            {
-                if (res.ok)
-                {
-                    return res.json();
-                }
-            })
-            .then((res_data) =>
-            {
-                console.log(`res_data.attributes = ${res_data.attributes}`);
-
-                console.log(`${JSON.stringify(res_data)}`);
-                setAttributes(res_data);
-            })
-            .catch((err) =>
-            {
-                console.log(err);
-            });
-    }, [machine]);
-
-    useEffect(() =>
-    {
-        getAttributes();
-    }, [getAttributes]);
-
     function deleteMachine(): void
     {
         handleDelete(machine.name);
     }
-
-    // function addAttribute(attribute: Attribute) {
-    //     console.log(`NAME: ${attribute.name} UNIT: ${attribute.unit}`);
-    //     fetchPostAttribute(machine._id, attribute)
-    //         .then((res) => {
-    //             if (res.ok) {
-    //                 return res.json();
-    //             }
-    //         })
-    //         .then((res_data) => setAttributes(res_data.attributes))
-    //         .catch((err) => console.log(err));
-    // }
-
-    // function deleteAttribute(attrName: string) {
-    //     console.log(`DELETING ATTRIBUTE: ${attrName}`);
-    //     fetchDeleteAttribute(machine._id, attrName)
-    //         .then((res) => {
-    //             if (res.ok) {
-    //                 setAttributes(
-    //                     attributes.filter(
-    //                         (attribute) => attribute.name !== attrName,
-    //                     ),
-    //                 );
-    //             }
-    //         })
-    //         .catch((err) => console.log(err));
-    // }
-
-    // const listAttributes = attributes ? (
-    //     attributes.map((attribute: Attribute, index) => (
-    //         <AttributeComponent
-    //             key={index}
-    //             name={attribute.name}
-    //             unit={attribute.unit}
-    //             handleDelete={deleteAttribute}
-    //         />
-    //     ))
-    // ) : (
-    //     <></>
-    // );
 
     // Displays a delete button when swiping right on a machine
     function RightSwipeDelete(
@@ -161,22 +81,7 @@ export default function MachineComponent({
         </Pressable>
     );
 }
-// <Pressable
-//     onPress={deleteMachine}
-//     className="bg-red-50 border border-red-300 px-4 py-2 rounded-full active:opacity-75 mb-4"
-// >
-//     <Text className="text-red-600 font-semibold text-center">
-//         Delete {machine.name}
-//     </Text>
-// </Pressable>
-//
-// {/* Attribute list */}
-// <View className="mb-4">{listAttributes}</View>
-//
-// {/* Attribute form */}
-// <View>
-//     <AttributeForm handleAddAttribute={addAttribute} />
-// </View>
+
 // Component to be rendered when machine list is empty
 export function Empty()
 {
