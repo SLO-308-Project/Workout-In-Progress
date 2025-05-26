@@ -53,7 +53,7 @@ export default function SignupPrompt({
                 className="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"
                 onChangeText={(text) => setUserName(text.trim())}
                 placeholder="username"
-                placeholderTextColor="#7A7674"
+                placeholderTextColor="7A7674"
                 textAlignVertical="center"
                 style={{lineHeight: 16}}
                 autoCapitalize="none"
@@ -62,7 +62,7 @@ export default function SignupPrompt({
                 className="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"
                 onChangeText={(text) => setEmail(text.trim())}
                 placeholder="email"
-                placeholderTextColor="#7A7674"
+                placeholderTextColor="7A7674"
                 textAlignVertical="center"
                 style={{lineHeight: 16}}
                 autoCapitalize="none"
@@ -71,7 +71,7 @@ export default function SignupPrompt({
                 className="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-2"
                 onChangeText={handlePasswordChange}
                 placeholder="password"
-                placeholderTextColor="#7A7674"
+                placeholderTextColor="7A7674"
                 textAlignVertical="center"
                 style={{lineHeight: 16}}
                 secureTextEntry
@@ -109,7 +109,7 @@ export default function SignupPrompt({
             )}
             {showPasswordErrors && (
                 <Text className="text-red-500 text-sm text-center mb-4">
-                    Please fix the password requirements above
+                    Password does not meet requirements
                 </Text>
             )}
             {emailExists && (
