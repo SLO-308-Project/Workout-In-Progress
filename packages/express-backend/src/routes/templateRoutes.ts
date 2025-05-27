@@ -106,11 +106,7 @@ router.post("/", (req: Request, res: Response) =>
     const templateData: templateDataType = req.body as templateDataType;
     const userId = req.sub?.toString() as string;
     console.log(templateData);
-    if (
-        templateData.fromSession === true &&
-        templateData.id &&
-        templateData.name
-    )
+    if (templateData.fromSession && templateData.id && templateData.name)
     {
         templateController
             .saveSession(templateData.id, templateData.name, userId)
