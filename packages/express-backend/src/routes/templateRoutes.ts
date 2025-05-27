@@ -121,13 +121,6 @@ router.post("/", (req: Request, res: Response) =>
 {
     const templateData: templateDataType = req.body as templateDataType;
     const userId = req.sub?.toString() as string;
-    console.log(
-        Boolean(templateData.fromSession),
-        " ",
-        templateData.id,
-        " ",
-        templateData.name,
-    );
     console.log(templateData);
 
     if (
