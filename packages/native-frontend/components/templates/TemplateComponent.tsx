@@ -7,6 +7,7 @@ import Reanimated, {
     SharedValue,
     useAnimatedStyle,
 } from "react-native-reanimated";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 type Props = {
     template: Template;
@@ -15,6 +16,11 @@ type Props = {
 
 export default function MachineComponent({template, handleDelete}: Props)
 {
+    function copyTemplateToClipboard()
+    {
+        Clipboard.setString(template._id);
+    }
+
     // Displays a delete button when swiping right on a machine
     function RightSwipeDelete(
         prog: SharedValue<number>,
@@ -61,7 +67,12 @@ export default function MachineComponent({template, handleDelete}: Props)
                     <Text className="text-2xl font-bold text-gray-900">
                         {template.name}
                     </Text>
-                    <Pressable>
+                    <Pressable
+                        onPress={() =>
+                        {
+                            copyTemplateToClipboard();
+                        }}
+                    >
                         <Feather name="copy"></Feather>
                     </Pressable>
                 </View>
