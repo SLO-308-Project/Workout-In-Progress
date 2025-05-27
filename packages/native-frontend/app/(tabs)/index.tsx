@@ -14,6 +14,7 @@ import {
 } from "@/fetchers/sessionFetchers";
 import {Session} from "@/types/session";
 import SessionComponent, {Empty} from "@/components/sessions/sessionComponent";
+import StartCurrentSession from "@/components/currSession/StartCurrentSession";
 
 export default function HomeScreen()
 {
@@ -239,12 +240,23 @@ export default function HomeScreen()
                 showsVerticalScrollIndicator={false}
                 className="container"
             />
-            <Pressable
+            <StartCurrentSession
+                Icon={
+                    <View className="absolute bottom-8 right-8 bg-yellow-400 p-4 rounded-full shadow-sm">
+                        <AntDesign name="plus" size={32} color="white" />
+                    </View>
+                }
+            />
+            {/* <Pressable
                 className="absolute bottom-8 right-8 bg-yellow-400 p-4 rounded-full shadow-sm"
                 onPress={() => startSession()}
             >
-                <AntDesign name="plus" size={32} color="white" />
-            </Pressable>
+                <View
+                    className="absolute bottom-8 right-8 bg-yellow-400 p-4 rounded-full shadow-sm"
+                >
+                    <AntDesign name="plus" size={32} color="white" />
+                </View>
+            </Pressable> */}
         </SafeAreaView>
     );
 }
