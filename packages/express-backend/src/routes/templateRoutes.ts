@@ -74,6 +74,7 @@ router.get("/search/:id", (req: Request, res: Response) =>
         });
 });
 
+// Return all user templates
 router.get("/", (req: Request, res: Response) =>
 {
     templateServices
@@ -101,7 +102,7 @@ router.get("/", (req: Request, res: Response) =>
 export interface templateDataType
 {
     template?: sessionTemplateType;
-    fromSession?: boolean;
+    fromSession?: string;
     name?: string;
     id?: string;
 }
@@ -112,7 +113,7 @@ export interface templateDataType
 // }
 // OR
 // {
-//      fromSession: boolean,
+//      fromSession: string "boolean",
 //      name: string,
 //      id: string "Object Id"
 // }
@@ -122,7 +123,11 @@ router.post("/", (req: Request, res: Response) =>
     const templateData: templateDataType = req.body as templateDataType;
     const userId = req.sub?.toString() as string;
     console.log(templateData);
-    if (templateData.fromSession && templateData.id && templateData.name)
+    if (
+        templateData.fromSession === "true" &&
+        templateData.id &&
+        templateData.name
+    )
     {
         templateController
             .saveSession(templateData.id, templateData.name, userId)
@@ -143,7 +148,7 @@ router.post("/", (req: Request, res: Response) =>
                 return res.status(400).send("Bad request: " + err);
             });
     }
-    else if (templateData.fromSession && templateData.id)
+    else if (templateData.fromSession === "false" && templateData.id)
     {
         templateController
             .copyTemplate(templateData.id, userId)
