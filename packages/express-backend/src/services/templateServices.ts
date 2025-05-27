@@ -42,6 +42,7 @@ function aggregateUserTemplates(userId: string)
         {
             //renames "$collectedMachines.name" and "$collectedMachines.muscle" as top level fields called name and muscle.
             $project: {
+                name: "$collectedTemplates.name",
                 machines: "$collectedTemplates.machines",
                 workout: "$collectedTemplates.workout",
                 _id: "$collectedTemplates._id",
