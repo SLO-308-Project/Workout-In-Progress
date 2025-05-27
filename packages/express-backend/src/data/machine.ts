@@ -10,11 +10,21 @@ const machineSchema = new mongoose.Schema(
         name: {
             type: String,
             required: true,
+            maxlength: [50, "Machine name can not exceed 50 characters"],
+            match: [
+                /^[a-zA-Z0-9\s_-]+$/,
+                "Machine name contains invalid characters",
+            ],
             trim: true,
         },
         muscle: {
             type: String,
             required: true,
+            maxLength: [20, "Muscle name can not exceed 20 characters"],
+            match: [
+                /^[a-zA-Z\s]+$/,
+                "Muscle name can only contain letters and spaces",
+            ],
             trim: true,
         },
         attributes: {
@@ -23,6 +33,10 @@ const machineSchema = new mongoose.Schema(
                 {
                     name: {
                         type: String,
+                        maxLength: [
+                            15,
+                            "Attribute name can not exceed 15 characters",
+                        ],
                         trim: true,
                     },
                     unit: {

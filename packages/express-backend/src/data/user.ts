@@ -10,17 +10,25 @@ const userSchema = new mongoose.Schema(
         name: {
             type: String,
             required: true,
+            maxLength: [20, "Username can not exceed 20 characters"],
+            match: [
+                /^[a-zA-Z0-9_-]+$/,
+                "Username can only contain letters, numbers, underscores, and hyphens",
+            ],
             trim: true,
         },
         email: {
             type: String,
             required: true,
+            maxLength: [254, "Email can not exceed 254 characters"],
+            match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Email is not valid"],
             trim: true,
             unique: true,
         },
         password: {
             type: String,
             required: true,
+            maxLength: [128, "Password can not exceed 128 characters"],
             trim: true,
             select: false,
         },

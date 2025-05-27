@@ -18,6 +18,7 @@ export default function LoginPrompt({handleSubmit, loggedIn}: Props)
             <TextInput
                 className="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"
                 onChangeText={(text) => setEmail(text.trim())}
+                maxLength={254}
                 placeholder="Email"
                 placeholderTextColor="#9CA3AF" // lighter muted gray
                 textAlignVertical="center"
@@ -27,6 +28,7 @@ export default function LoginPrompt({handleSubmit, loggedIn}: Props)
             <TextInput
                 className="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-6"
                 textAlignVertical="center"
+                maxLength={128}
                 style={{lineHeight: 16}}
                 onChangeText={(text) => setPassword(text)}
                 placeholder="Password"
