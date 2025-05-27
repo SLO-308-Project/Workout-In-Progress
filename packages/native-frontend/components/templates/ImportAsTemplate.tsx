@@ -11,16 +11,16 @@ import {
 } from "react-native";
 
 type Props = {
-    id: string;
     fromSession: boolean;
     Icon: JSX.Element;
 };
 
-export default function SaveAsTemplate({id, fromSession, Icon}: Props)
+export default function ImportAsTemplate({fromSession, Icon}: Props)
 {
     const [modelVisible, setModelVisible] = useState<boolean>(false);
     const [validName, setValidName] = useState<boolean>(true);
     const [templateName, setTemplateName] = useState<string>("");
+    const [id, setId] = useState<string>("");
 
     function saveTemplate()
     {
@@ -75,6 +75,13 @@ export default function SaveAsTemplate({id, fromSession, Icon}: Props)
                     <View className="flex-1 backdrop-brightness-75 justify-center items-center">
                         <TouchableWithoutFeedback>
                             <View className="rounded-xl px-4 pt-4 pb-4 bg-white">
+                                <TextInput
+                                    className="w-full bg-gray-50 px-4 py-3 border border-gray-200 rounded-xl text-base mb-4"
+                                    value={id}
+                                    placeholder="Past Template Id"
+                                    placeholderTextColor="#A0A0A0"
+                                    onChangeText={(text) => setId(text)}
+                                />
                                 <TextInput
                                     className="w-full bg-gray-50 px-4 py-3 border border-gray-200 rounded-xl text-base mb-4"
                                     value={templateName}

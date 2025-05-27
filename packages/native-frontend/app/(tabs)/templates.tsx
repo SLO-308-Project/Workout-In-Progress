@@ -1,5 +1,5 @@
 import {Template} from "@/types/template";
-import {AntDesign} from "@expo/vector-icons";
+import {AntDesign, MaterialCommunityIcons} from "@expo/vector-icons";
 import {useEffect, useState} from "react";
 import {Pressable, Text, View, StyleSheet, FlatList} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
@@ -12,6 +12,8 @@ import {
     fetchDeleteTemplate,
     fetchGetTemplates,
 } from "@/fetchers/templateFetchers";
+import SaveAsTemplate from "@/components/templates/SaveAsTemplate";
+import ImportAsTemplate from "@/components/templates/ImportAsTemplate";
 
 export default function TemplatesPage()
 {
@@ -25,6 +27,10 @@ export default function TemplatesPage()
         if (isFocused)
         {
             getTemplates();
+            for (const t of templates)
+            {
+                console.log(t.name);
+            }
         }
     }, [isFocused]);
 
@@ -102,10 +108,16 @@ export default function TemplatesPage()
                 <Text className="text-3xl font-semibold text-black tracking-tight">
                     Templates
                 </Text>
-                {/* <Pressable className="" onPress={() =>
-                {}}>
-                    <AntDesign name="plus" size={32} color="black" />
-                </Pressable> */}
+                <ImportAsTemplate
+                    fromSession={false}
+                    Icon={
+                        <MaterialCommunityIcons
+                            name="import"
+                            size={32}
+                            color="black"
+                        />
+                    }
+                />
             </View>
             <Pressable onPress={test}>
                 <Text className="text-3xl">Press Me!</Text>

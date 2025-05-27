@@ -7,6 +7,7 @@ import Reanimated, {
     useAnimatedStyle,
 } from "react-native-reanimated";
 import SaveAsTemplate from "../templates/SaveAsTemplate";
+import {Feather} from "@expo/vector-icons";
 
 type Props = {
     sessionId: string;
@@ -91,7 +92,11 @@ export default function SessionComponent({
                             {getSetCount} Sets
                         </Text>
                     </View>
-                    <SaveAsTemplate id={session._id} fromSession={true} />
+                    <SaveAsTemplate
+                        id={session._id}
+                        fromSession={true}
+                        Icon={<Feather name="save" size={30} color={"black"} />}
+                    />
                 </View>
             </View>
         </ReanimatedSwipeable>

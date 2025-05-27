@@ -19,6 +19,7 @@ export default function MachineComponent({template, handleDelete}: Props)
     function copyTemplateToClipboard()
     {
         Clipboard.setString(template._id);
+        console.log(template.name);
     }
 
     // Displays a delete button when swiping right on a machine
@@ -63,9 +64,9 @@ export default function MachineComponent({template, handleDelete}: Props)
             overshootFriction={8}
         >
             <View className="p-4 bg-white shadow-sm border border-neutral-200">
-                <View className="flex-row items-center mb-1">
+                <View className="flex-row justify-between items-center mb-1">
                     <Text className="text-2xl font-bold text-gray-900">
-                        {template.name}
+                        {template.name} Hi!
                     </Text>
                     <Pressable
                         onPress={() =>
@@ -73,7 +74,7 @@ export default function MachineComponent({template, handleDelete}: Props)
                             copyTemplateToClipboard();
                         }}
                     >
-                        <Feather name="copy"></Feather>
+                        <Feather name="copy" size={24}></Feather>
                     </Pressable>
                 </View>
             </View>
