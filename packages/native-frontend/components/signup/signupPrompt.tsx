@@ -1,8 +1,11 @@
 import {Router} from "expo-router";
 import {useState} from "react";
 import {Pressable, Text, TextInput, View} from "react-native";
-import {validatePassword} from "@/util/passwordValidator";
-import {validateEmail} from "@/util/emailValidator";
+import {
+    validatePassword,
+    validateEmail,
+    validateUsername,
+} from "@/util/signupValidator";
 
 type Props = {
     handleSignUp: (userName: string, email: string, password: string) => void;
@@ -22,6 +25,7 @@ export default function SignupPrompt({
     const [showPasswordErrors, setShowPasswordErrors] =
         useState<boolean>(false);
     const [showEmailError, setShowEmailError] = useState<boolean>(false);
+    const [showUsernameError, setShowUsernameError] = useState<boolean>(false);
 
     const handlePasswordChange = (text: string) =>
     {
@@ -41,8 +45,24 @@ export default function SignupPrompt({
         }
     };
 
+    const handleUsernameChange = (text: string) =>
+    {
+        setUserName(text.trim());
+        if (showUsernameError)
+        {
+            setShowUsernameError(false);
+        }
+    };
+
     const handleSubmit = () =>
     {
+        const usernameValidation = validateUsername(userName);
+        if (!usernameValidation.isValid)
+        {
+            setShowUsernameError(true);
+            return;
+        }
+
         const emailValidation = validateEmail(email);
         if (!emailValidation.isValid)
         {
@@ -69,7 +89,7 @@ export default function SignupPrompt({
         <View className="w-11/12">
             <TextInput
                 className="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"
-                onChangeText={(text) => setUserName(text.trim())}
+                onChangeText={handleUsernameChange}
                 maxLength={20}
                 placeholder="username"
                 placeholderTextColor="7A7674"
@@ -126,6 +146,11 @@ export default function SignupPrompt({
                 <Text className="w-full text-gray-500 py-3 rounded-lg text-center mb-4">
                     Password must contain at least 8 characters, 1 lowercase, 1
                     uppercase, and 1 number
+                </Text>
+            )}
+            {showUsernameError && (
+                <Text className="text-red-500 text-sm text-center mb-4">
+                    Username is required
                 </Text>
             )}
             {showPasswordErrors && (
