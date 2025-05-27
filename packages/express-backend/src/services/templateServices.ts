@@ -71,6 +71,7 @@ function addTemplate(
         .findById(userId, null, options)
         .then((user) =>
         {
+            console.log(user);
             return templateListModel.findByIdAndUpdate(
                 user?.templateListId,
                 {$push: {templateIds: templateToAdd._id}},

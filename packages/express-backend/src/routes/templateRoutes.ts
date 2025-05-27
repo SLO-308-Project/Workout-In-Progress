@@ -3,16 +3,9 @@ import templateServices from "../services/templateServices";
 import templateController from "../controllers/templateController";
 import {sessionTemplateType} from "../data/sessionTemplate";
 
-export interface templateDataType
-{
-    template?: sessionTemplateType;
-    fromSession?: boolean;
-    name?: string;
-    id?: string;
-}
-
 const router = Router();
 
+// Delete a template by id
 router.delete("/:id", (req: Request, res: Response) =>
 {
     templateServices
@@ -35,6 +28,7 @@ router.delete("/:id", (req: Request, res: Response) =>
         });
 });
 
+// Return all templates
 router.get("/search", (_req: Request, res: Response) =>
 {
     templateServices
@@ -57,6 +51,7 @@ router.get("/search", (_req: Request, res: Response) =>
         });
 });
 
+// Search a template by id
 router.get("/search/:id", (req: Request, res: Response) =>
 {
     templateServices
@@ -101,6 +96,27 @@ router.get("/", (req: Request, res: Response) =>
         });
 });
 
+// Overloaded Template Data Type
+// Requires Either Only Template Or fromSession, name, and id
+export interface templateDataType
+{
+    template?: sessionTemplateType;
+    fromSession?: boolean;
+    name?: string;
+    id?: string;
+}
+
+// Requires Either
+// {
+//      template: sessionTemplateType
+// }
+// OR
+// {
+//      fromSession: boolean,
+//      name: string,
+//      id: string "Object Id"
+// }
+// Creates a template from either existing data or a new one from scratch
 router.post("/", (req: Request, res: Response) =>
 {
     const templateData: templateDataType = req.body as templateDataType;
@@ -127,7 +143,7 @@ router.post("/", (req: Request, res: Response) =>
                 return res.status(400).send("Bad request: " + err);
             });
     }
-    else if (templateData.fromSession === false && templateData.id)
+    else if (templateData.fromSession && templateData.id)
     {
         templateController
             .copyTemplate(templateData.id, userId)
