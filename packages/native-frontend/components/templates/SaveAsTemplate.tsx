@@ -39,13 +39,16 @@ export default function SaveAsTemplate({id, fromSession}: Props)
                 }
                 else
                 {
-                    console.log(`status ${res.status}: Not Created, but okay`);
+                    console.log(
+                        `status ${res.status}: Not Created, but okay, ${res.statusText}`,
+                    );
                 }
             })
             .catch((err) =>
             {
                 console.log("Error Creating Template: ", err);
             });
+        setModelVisible(false);
     }
 
     return (

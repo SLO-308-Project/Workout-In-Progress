@@ -31,7 +31,7 @@ function fetchDeleteTemplate(id: string): Promise<Response>
  * @returns
  */
 function fetchCreateTemplate(
-    Id: string,
+    id: string,
     templateName: string,
     fromSession: boolean,
 ): Promise<Response>
@@ -42,8 +42,9 @@ function fetchCreateTemplate(
             "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            Id: `${Id}`,
-            templateName: `${templateName}`,
+            id: `${id}`,
+            name: `${templateName}`,
+            fromSession: `${fromSession}`,
         }),
     });
 }
