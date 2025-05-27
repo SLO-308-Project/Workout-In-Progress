@@ -1,9 +1,9 @@
 import {Unit} from "@/types/unit";
 import {Attribute} from "@/types/attribute";
 import {useState} from "react";
-import {View, TextInput, Pressable, Text} from "react-native";
+import {View, TextInput, Pressable} from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import ScrollPicker from "react-native-wheel-scrollview-picker";
+import WheelPicker from "@quidone/react-native-wheel-picker";
 
 type Props = {
     handleAddAttribute: (attribute: Attribute) => void;
@@ -15,12 +15,9 @@ function AttributeForm({handleAddAttribute}: Props)
         name: "",
         unit: Unit.LBS, // default is the first unit in the enum. which is lbs
     });
-    const [showPicker, setShowPicker] = useState(false);
-    const [selectedUnitIdx, setSelectedUnitIdx] = useState(0);
 
-    function handleUnitChange(unitIndex: number)
+    function handleUnitChange(unit: Unit)
     {
-        const unit = Object.entries(Unit)[unitIndex][1];
         setAttribute({
             ...attribute,
             unit: unit,
@@ -35,7 +32,10 @@ function AttributeForm({handleAddAttribute}: Props)
         });
     }
 
-    // TODO: The scroll picker here is kind of awful.
+    const unitData = Object.entries(Unit).map(([value, label]) => ({
+        value: label,
+        label: label,
+    }));
 
     return (
         <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 m-2 flex-row justify-between items-center">
@@ -46,28 +46,15 @@ function AttributeForm({handleAddAttribute}: Props)
                 placeholderTextColor="#A0A0A0"
                 onChangeText={(name) => handleNameChange(name)}
             />
-            {showPicker && (
-                <ScrollPicker
-                    selectedIndex={selectedUnitIdx}
-                    onTouchEnd={() => setShowPicker(false)}
-                    dataSource={Object.values(Unit)}
-                    wrapperBackground="#FFF"
-                    wrapperHeight={40}
-                    onValueChange={(data, selectedIndex) =>
-                    {
-                        setSelectedUnitIdx(selectedIndex);
-                        handleUnitChange(selectedIndex);
-                    }}
-                />
-            )}
-            {!showPicker && (
-                <Pressable
-                    className="w-20 bg-gray-100 px-4 py-3 border-gray-200 rounded-xl text-base 900 items-center"
-                    onPress={() => setShowPicker(true)}
-                >
-                    <Text className="justify-center">{attribute.unit}</Text>
-                </Pressable>
-            )}
+            <WheelPicker
+                data={unitData}
+                value={attribute.unit}
+                onValueChanged={({item: {value}}) => handleUnitChange(value)}
+                itemHeight={27}
+                visibleItemCount={3}
+                width={64}
+                itemTextStyle={{fontSize: 16}}
+            />
             <Pressable
                 onPress={() => handleAddAttribute(attribute)}
                 className="p-2 rounded-full active:scale-90"
@@ -77,10 +64,5 @@ function AttributeForm({handleAddAttribute}: Props)
         </View>
     );
 }
-// <Pressable
-//     className="w-20 bg-gray-100 px-4 py-3 border-gray-200 rounded-xl text-base 900 items-center"
-// >
-//     <Text className="justify-center">{attribute.unit}</Text>
-// </Pressable>
 
 export default AttributeForm;

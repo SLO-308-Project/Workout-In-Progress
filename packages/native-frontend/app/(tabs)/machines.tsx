@@ -180,6 +180,9 @@ function MachinePage()
                 index={0}
                 snapPoints={["90%"]}
                 enableDynamicSizing={false}
+                enableHandlePanningGesture={true}
+                enableContentPanningGesture={false}
+                enablePanDownToClose={true}
             >
                 <MachineSlide
                     currMachine={selectedMachine}
