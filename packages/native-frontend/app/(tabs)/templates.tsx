@@ -1,7 +1,7 @@
 import {Template} from "@/types/template";
-import {AntDesign, MaterialCommunityIcons} from "@expo/vector-icons";
+import {MaterialCommunityIcons} from "@expo/vector-icons";
 import {useEffect, useState} from "react";
-import {Pressable, Text, View, StyleSheet, FlatList} from "react-native";
+import {Text, View, StyleSheet, FlatList} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {SearchBar} from "@rneui/themed";
 import {useIsFocused} from "@react-navigation/native";
@@ -12,12 +12,12 @@ import {
     fetchDeleteTemplate,
     fetchGetTemplates,
 } from "@/fetchers/templateFetchers";
-import SaveAsTemplate from "@/components/templates/SaveAsTemplate";
 import ImportAsTemplate from "@/components/templates/ImportAsTemplate";
+import {useTemplateContext} from "@/util/templateContext";
 
 export default function TemplatesPage()
 {
-    const [templates, setTemplates] = useState<Template[]>([]);
+    const {templates, setTemplates} = useTemplateContext(); //useState<Template[]>([]);
     const [search, setSearch] = useState<string>("");
 
     const isFocused = useIsFocused(); // is true if the screen is focused and false if not.
@@ -119,9 +119,6 @@ export default function TemplatesPage()
                     }
                 />
             </View>
-            <Pressable onPress={test}>
-                <Text className="text-3xl">Press Me!</Text>
-            </Pressable>
             <SearchBar
                 containerStyle={styles.containerStyle}
                 inputStyle={styles.inputStyle}

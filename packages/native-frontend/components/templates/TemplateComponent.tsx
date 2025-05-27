@@ -65,7 +65,7 @@ export default function MachineComponent({template, handleDelete}: Props)
         >
             <View className="p-4 bg-white shadow-sm border border-neutral-200">
                 <View className="flex-row justify-between items-center mb-1">
-                    <Text className="text-2xl font-bold text-gray-900">
+                    <Text className="text-lg font-bold text-gray-900">
                         {template.name}
                     </Text>
                     <Pressable
