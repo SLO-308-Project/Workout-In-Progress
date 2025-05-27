@@ -118,36 +118,28 @@ export default function SignupPrompt({
                 secureTextEntry
                 autoCapitalize="none"
             />
-            {password.length > 0 && (
-                <View className="w-full bg-gray-50 p-3 rounded-lg mb-4">
-                    <Text
-                        className={`text-sm ${hasMinLength ? "text-green-600" : "text-gray-500"}`}
-                    >
-                        {hasMinLength ? "✓" : "○"} At least 8 characters
-                    </Text>
-                    <Text
-                        className={`text-sm ${hasLowercase ? "text-green-600" : "text-gray-500"}`}
-                    >
-                        {hasLowercase ? "✓" : "○"} One lowercase letter
-                    </Text>
-                    <Text
-                        className={`text-sm ${hasUppercase ? "text-green-600" : "text-gray-500"}`}
-                    >
-                        {hasUppercase ? "✓" : "○"} One uppercase letter
-                    </Text>
-                    <Text
-                        className={`text-sm ${hasNumber ? "text-green-600" : "text-gray-500"}`}
-                    >
-                        {hasNumber ? "✓" : "○"} One number
-                    </Text>
-                </View>
-            )}
-            {!password.length && (
-                <Text className="w-full text-gray-500 py-3 rounded-lg text-center mb-4">
-                    Password must contain at least 8 characters, 1 lowercase, 1
-                    uppercase, and 1 number
+            <View className="w-full bg-gray-50 p-3 rounded-lg mb-4">
+                <Text
+                    className={`text-sm ${hasMinLength ? "text-green-600" : "text-gray-500"}`}
+                >
+                    {hasMinLength ? "✓" : "○"} At least 8 characters
                 </Text>
-            )}
+                <Text
+                    className={`text-sm ${hasLowercase ? "text-green-600" : "text-gray-500"}`}
+                >
+                    {hasLowercase ? "✓" : "○"} One lowercase letter
+                </Text>
+                <Text
+                    className={`text-sm ${hasUppercase ? "text-green-600" : "text-gray-500"}`}
+                >
+                    {hasUppercase ? "✓" : "○"} One uppercase letter
+                </Text>
+                <Text
+                    className={`text-sm ${hasNumber ? "text-green-600" : "text-gray-500"}`}
+                >
+                    {hasNumber ? "✓" : "○"} One number
+                </Text>
+            </View>
             {showUsernameError && (
                 <Text className="text-red-500 text-sm text-center mb-4">
                     Username is required
