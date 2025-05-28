@@ -1,14 +1,6 @@
 import {useState, useLayoutEffect} from "react";
 import {useNavigation, useRouter} from "expo-router";
-import {
-    Alert,
-    Text,
-    Pressable,
-    TextInput,
-    View,
-    Button,
-    FlatList,
-} from "react-native";
+import {Alert, Text, TextInput, View, Button, FlatList} from "react-native";
 
 import AttributeForm from "@/components/machines/attributeForm";
 import AttributeComponent, {

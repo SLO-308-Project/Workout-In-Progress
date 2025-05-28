@@ -332,34 +332,32 @@ export default function CurrentSessionPage()
 
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white px-4 pt-4">
-            <Text className="text-3xl font-semibold text-black tracking-tight pt-4">
-                Current Session
-            </Text>
             {!sessions && (
-                <View className="flex-1 justify-center items-center bg-white">
+                <View className="flex-1 items-center bg-white">
+                    <Text className="text-3xl font-semibold text-black tracking-tight pb-16 pt-4">
+                        No Active Session
+                    </Text>
                     <Pressable
                         onPress={startSession}
                         className="w-60 h-60 bg-green-100 rounded-full justify-center items-center active:opacity-80 transition-all duration-200"
                     >
                         <Text className="text-green-600 text-xl font-semibold">
-                            Start
+                            Start Session
                         </Text>
                     </Pressable>
                 </View>
             )}
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                className="container"
-            >
-                {sessions && sessionData()}
-                {sessions && listWorkouts}
-                {sessions && (
+            {sessions && (
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    className="container"
+                >
+                    {sessionData()}
+                    {listWorkouts}
                     <WorkoutForm
                         handleSubmit={addWorkout}
                         machineOptions={machines}
                     />
-                )}
-                {sessions && (
                     <View className="items-center mt-8">
                         <Pressable
                             onPress={endSession}
@@ -370,8 +368,8 @@ export default function CurrentSessionPage()
                             </Text>
                         </Pressable>
                     </View>
-                )}
-            </ScrollView>
+                </ScrollView>
+            )}
         </SafeAreaView>
     );
 }
