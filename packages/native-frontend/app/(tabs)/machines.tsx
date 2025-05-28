@@ -135,12 +135,12 @@ function MachinePage()
 
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
-            <View className="flex-row justify-between">
-                <Text className="text-3xl font-semibold text-black tracking-tight px-4 pt-4 pb-1">
+            <View className="flex-row justify-between items-center px-4 pt-4 pb-2">
+                <Text className="text-3xl font-semibold text-black tracking-tight">
                     Machines
                 </Text>
                 <Pressable
-                    className="pr-4"
+                    className=""
                     onPress={() => router.push("/newMachine")}
                 >
                     <AntDesign name="plus" size={32} color="black" />

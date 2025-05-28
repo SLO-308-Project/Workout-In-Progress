@@ -8,6 +8,8 @@ const sessionTemplateSchema = new mongoose.Schema(
             auto: true,
         },
         name: {
+            //Name can't be constrained by DB on length.
+            //Recusively copying a template will append "Copy of" and eventually throw an error.
             type: String,
             required: true,
             trim: true,
