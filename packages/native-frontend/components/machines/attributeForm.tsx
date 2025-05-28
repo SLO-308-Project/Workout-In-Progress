@@ -1,9 +1,10 @@
 import {Unit} from "@/types/unit";
 import {Attribute} from "@/types/attribute";
 import {useState} from "react";
-import {View, TextInput, Pressable} from "react-native";
+import {View, TextInput, Pressable, StyleSheet} from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import WheelPicker from "@quidone/react-native-wheel-picker";
+// import RNPickerSelect from "react-native-picker-select";
+import {Picker} from "@react-native-picker/picker";
 
 type Props = {
     handleAddAttribute: (attribute: Attribute) => void;
@@ -32,10 +33,10 @@ function AttributeForm({handleAddAttribute}: Props)
         });
     }
 
-    const unitData = Object.entries(Unit).map(([value, label]) => ({
-        value: label,
-        label: label,
-    }));
+    // const unitData = Object.entries(Unit).map(([value, label]) => ({
+    //     value: label,
+    //     label: label,
+    // }));
 
     return (
         <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 m-2 flex-row justify-between items-center">
@@ -46,7 +47,19 @@ function AttributeForm({handleAddAttribute}: Props)
                 placeholderTextColor="#A0A0A0"
                 onChangeText={(name) => handleNameChange(name)}
             />
-            <WheelPicker
+            <Picker
+                className="w-20 bg-gray-100 px-4 py-3 border-gray-200 rounded-xl text-base 900 items-center"
+                prompt="Units"
+                onValueChange={(value: Unit) =>
+                {
+                    handleUnitChange(value);
+                }}
+            >
+                {Object.values(Unit).map((unit, index) => (
+                    <Picker.Item key={index} label={unit} value={unit} />
+                ))}
+            </Picker>
+            {/* <WheelPicker
                 data={unitData}
                 value={attribute.unit}
                 onValueChanged={({item: {value}}) => handleUnitChange(value)}
@@ -54,7 +67,7 @@ function AttributeForm({handleAddAttribute}: Props)
                 visibleItemCount={3}
                 width={64}
                 itemTextStyle={{fontSize: 16}}
-            />
+            /> */}
             <Pressable
                 onPress={() => handleAddAttribute(attribute)}
                 className="p-2 rounded-full active:scale-90"
