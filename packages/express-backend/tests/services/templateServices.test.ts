@@ -1,5 +1,7 @@
 import sessionTemplateModel from "../../src/data/sessionTemplate";
 import templateServices from "../../src/services/templateServices";
+import userModel from "../../src/data/user";
+import templateListModel from "../../src/data/templateList";
 
 describe("Template Services Tests", () =>
 {
@@ -48,10 +50,21 @@ describe("Template Services Tests", () =>
             workout: [],
             machienIds: [],
         });
+        const templateList = new templateListModel({
+            templateIds: [template._id],
+        });
+        const user = new userModel({
+            templateListId: templateList._id,
+        });
+        const userId = user._id?.toString() || "";
+        userModel.findById = jest.fn().mockResolvedValue(user);
+        templateListModel.findByIdAndUpdate = jest
+            .fn()
+            .mockResolvedValue(templateList);
         jest.spyOn(sessionTemplateModel.prototype, "save").mockResolvedValue(
             template,
         );
-        const result = await templateServices.addTemplate(template);
+        const result = await templateServices.addTemplate(template, userId);
         expect(result).toBeTruthy();
     });
 
@@ -62,10 +75,24 @@ describe("Template Services Tests", () =>
             machineIds: [],
         });
         const templateId = template._id?.toString() || "";
+        const templateList = new templateListModel({
+            templateIds: [template._id],
+        });
+        const user = new userModel({
+            templateListId: templateList._id,
+        });
+        const userId = user._id?.toString() || "";
+        userModel.findOne = jest.fn().mockResolvedValue(user);
+        templateListModel.findOneAndUpdate = jest
+            .fn()
+            .mockResolvedValue(templateList);
         sessionTemplateModel.findByIdAndDelete = jest
             .fn()
             .mockResolvedValue(template);
-        const result = await templateServices.deleteTemplate(templateId);
+        const result = await templateServices.deleteTemplate(
+            templateId,
+            userId,
+        );
         expect(result).toBeTruthy();
         expect(result!._id!.toString()).toBe(templateId);
     });

@@ -48,7 +48,7 @@ export default function LoginPrompt({handleSubmit, loggedIn}: Props)
 
             {
                 //loggedIn = undefined when first on the page and false when login fails.
-                loggedIn != undefined && !loggedIn && (
+                loggedIn !== undefined && !loggedIn && (
                     <Text className="text-red-500 text-sm text-center mb-4">
                         Invalid email or password.
                     </Text>

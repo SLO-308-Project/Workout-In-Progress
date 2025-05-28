@@ -1,33 +1,28 @@
-import {View, Text, Pressable} from "react-native";
-import {Session} from "@/types/session";
+import {Template} from "@/types/template";
+import {Feather} from "@expo/vector-icons";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
+import {View, Text, Pressable} from "react-native";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import Reanimated, {
     SharedValue,
     useAnimatedStyle,
 } from "react-native-reanimated";
-import SaveAsTemplate from "../templates/SaveAsTemplate";
-import {Feather} from "@expo/vector-icons";
+import Clipboard from "@react-native-clipboard/clipboard";
 
 type Props = {
-    sessionId: string;
-    name: string;
-    date: string;
-    duration: string;
-    deleteSession: (id: string) => void;
-    session: Session;
+    template: Template;
+    handleDelete: (_id: string) => void;
 };
 
-export default function SessionComponent({
-    sessionId,
-    name,
-    date,
-    duration,
-    deleteSession,
-    session,
-}: Props)
+export default function MachineComponent({template, handleDelete}: Props)
 {
-    // Displays a delete button when swiping right on a session
+    function copyTemplateToClipboard()
+    {
+        Clipboard.setString(template._id);
+        console.log(template.name);
+    }
+
+    // Displays a delete button when swiping right on a machine
     function RightSwipeDelete(
         prog: SharedValue<number>,
         drag: SharedValue<number>,
@@ -51,7 +46,7 @@ export default function SessionComponent({
                     onPress={() =>
                     {
                         swipeableMethods.close();
-                        deleteSession(session._id);
+                        handleDelete(template._id);
                     }}
                     className="bg-red-500 w-40 h-full flex items-center justify-center"
                 >
@@ -61,11 +56,6 @@ export default function SessionComponent({
         );
     }
 
-    const getSetCount = session.workout.reduce((sum, workout) =>
-    {
-        return sum + workout.sets.length;
-    }, 0);
-
     return (
         <ReanimatedSwipeable
             friction={2}
@@ -74,42 +64,30 @@ export default function SessionComponent({
             overshootFriction={8}
         >
             <View className="p-4 bg-white shadow-sm border border-neutral-200">
-                <View className="flex-row justify-between">
-                    <Text className="text-lg font-semibold text-black mb-1">
-                        {name}
+                <View className="flex-row justify-between items-center mb-1">
+                    <Text className="text-lg font-bold text-gray-900">
+                        {template.name}
                     </Text>
-                    <Text className="text-sm text-neutral-700 mb-1">
-                        {date}
-                    </Text>
-                </View>
-
-                <View className="flex-row justify-between items-center">
-                    <View>
-                        <Text className="text-sm text-neutral-700">
-                            {duration}
-                        </Text>
-                        <Text className="text-sm text-neutral-700">
-                            {getSetCount} Sets
-                        </Text>
-                    </View>
-                    <SaveAsTemplate
-                        id={session._id}
-                        fromSession={true}
-                        Icon={<Feather name="save" size={30} color={"black"} />}
-                    />
+                    <Pressable
+                        onPress={() =>
+                        {
+                            copyTemplateToClipboard();
+                        }}
+                    >
+                        <Feather name="copy" size={24}></Feather>
+                    </Pressable>
                 </View>
             </View>
         </ReanimatedSwipeable>
     );
 }
 
-// Component to be rendered when session list is empty
 export function Empty()
 {
     return (
         <View className="flex-1 items-center bg-white pt-16">
             <Text className="text-2xl text-gray-300 font-semibold">
-                No Sessions Yet
+                No Templates Found
             </Text>
         </View>
     );

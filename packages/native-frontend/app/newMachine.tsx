@@ -1,7 +1,6 @@
 import {useState, useLayoutEffect} from "react";
 import {useNavigation, useRouter} from "expo-router";
 import {Alert, Text, TextInput, View, Button, FlatList} from "react-native";
-
 import AttributeForm from "@/components/machines/attributeForm";
 import AttributeComponent, {
     Empty,
@@ -112,7 +111,7 @@ export default function MachineForm()
         });
     }
 
-    async function submitForm()
+    function submitForm()
     {
         console.log(`IN SUBMITFORM: ${JSON.stringify(machine.attributes)}`);
         console.log(`name: ${machine.name} muscle: ${machine.muscle}`);
@@ -137,23 +136,10 @@ export default function MachineForm()
         }
         else
         {
-            await addOneMachine(machine);
+            addOneMachine(machine);
             router.back();
         }
     }
-
-    const listAttributes = machine.attributes ? (
-        machine.attributes.map((attribute: Attribute, index) => (
-            <AttributeComponent
-                key={index}
-                name={attribute.name}
-                unit={attribute.unit}
-                handleDelete={deleteAttribute}
-            />
-        ))
-    ) : (
-        <></>
-    );
 
     useLayoutEffect(() =>
     {

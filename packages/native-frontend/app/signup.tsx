@@ -9,7 +9,6 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import SignupPrompt from "@/components/signup/signupPrompt";
 import {fetchRegister} from "@/fetchers/userFetchers";
 import {useState} from "react";
-import {login} from "@/util/loginHelper";
 import {useRouter} from "expo-router";
 import {useAuth} from "@/util/authContext";
 
@@ -39,7 +38,7 @@ export default function Signup()
                         if (success) router.replace("./(tabs)");
                     });
                 }
-                else if (res.status == 409)
+                else if (res.status === 409)
                 {
                     //User already exists. Checks by unique email.
                     setEmailExists(true);

@@ -1,9 +1,8 @@
-import {PipelineStage} from "mongoose";
+import mongoose, {PipelineStage, Types} from "mongoose";
 import machineModel, {MachineType} from "../data/machine";
 import machineLogModel from "../data/machineLog";
 import userModel from "../data/user";
 import sessionTemplateModel from "../data/sessionTemplate";
-import {Types} from "mongoose";
 
 /**
  * Gets list of all machines associated with a user
@@ -42,6 +41,7 @@ function getListOfMachinesAggregate(userId: string)
             $project: {
                 name: "$collectedMachines.name",
                 muscle: "$collectedMachines.muscle",
+                attributes: "$collectedMachines.attributes",
                 _id: "$collectedMachines._id",
             },
         },
@@ -80,22 +80,96 @@ async function addMachine(machine: MachineType, userId: string)
 }
 
 /**
- * Add machine to template
+ * Save a session machine to template
  *
  * @param {string} machineId - Machine object id
  * @param {string} templateId - ID to template object
- *
+ * @param {mongoose.ClientSession} [session] - Optional Mongo Session
  * @returns {Promise} - Machine saved
  */
-function saveMachine(machineId: string, templateId: string)
+async function saveMachine(
+    machineId: string,
+    templateId: string,
+    options?: {session?: mongoose.ClientSession},
+)
 {
+    const machine = await machineModel.findById(machineId, null, options);
+    if (machine === null)
+    {
+        return null;
+    }
+    const updateOptions = {
+        new: true,
+        ...options,
+    };
+    machine._id = new Types.ObjectId();
+    machine.attributes.map((attribute) =>
+    {
+        attribute._id = new Types.ObjectId();
+    });
     return sessionTemplateModel.findByIdAndUpdate(
         templateId,
         {
-            $push: {machineIds: machineId},
+            $push: {machines: machine},
         },
-        {new: true},
+        updateOptions,
     );
+}
+
+/**
+ * Save a template machine to template
+ *
+ * @param {string} sourceTemplateId - Id to template containing machine
+ * @param {string} machineId - Machine object id
+ * @param {string} destinationTemplateId - ID to template object to copy into
+ * @param {mongoose.ClientSession} [session] - Optional Mongo Session
+ * @returns {Promise} - Machine saved
+ */
+async function saveMachineFromTemplate(
+    machineId: string,
+    templateId: string,
+    sourceTemplateId: string,
+    options?: {session?: mongoose.ClientSession},
+)
+{
+    const updateOptions = {
+        new: true,
+        ...options,
+    };
+    return sessionTemplateModel
+        .findById(sourceTemplateId, null, options)
+        .then((template) =>
+        {
+            const machine = template?.machines.filter((mach) =>
+            {
+                return mach._id?.toString() !== machineId;
+            });
+            if (!machine)
+            {
+                return null;
+            }
+            machine[0]._id = new Types.ObjectId();
+            machine[0].attributes.map((attribute) =>
+            {
+                attribute._id = new Types.ObjectId();
+            });
+            return machine[0];
+        })
+        .then((machine) =>
+        {
+            return sessionTemplateModel.findByIdAndUpdate(
+                templateId,
+                {
+                    $push: {machines: machine},
+                },
+                updateOptions,
+            );
+        })
+        .catch((error) =>
+        {
+            console.log(error);
+            return null;
+        });
 }
 
 /**
@@ -129,23 +203,70 @@ async function getMachines(
 }
 
 /**
+ * Get all machines that match the critera
+ *
+ * @param {string[]} ids - Array of ids to search by
+ * @param {string} userId - User associated with search
+ * @param {mongoose.ClientSession} [options] - Optional Mongoose Session
+ *
+ * @returns {Promise<MachineType[]>} - List of machines meeting criteria
+ */
+async function getMachinesByIds(
+    ids: string[],
+    userId: string,
+    options?: {session?: mongoose.ClientSession},
+)
+{
+    const listOfMachines: PipelineStage[] = getListOfMachinesAggregate(userId);
+    listOfMachines.push({
+        $match: {_id: {$in: ids.map((id) => new mongoose.Types.ObjectId(id))}},
+    });
+    const aggregate = userModel.aggregate(listOfMachines);
+
+    if (options?.session)
+    {
+        aggregate.session(options.session);
+    }
+
+    return aggregate
+        .exec()
+        .then((machines) =>
+        {
+            const machineIds = machines.map(
+                (machine) => (machine as MachineType)._id,
+            );
+            return machineModel.find({_id: {$in: machineIds}});
+        })
+        .catch((error) =>
+        {
+            console.log(error);
+            return null;
+        });
+}
+
+/**
  * Get all saved machines from a template
  *
  * @param {string} templateId - Template object id
+ * @param {mongoose.ClientSession} [session] - Optional Mongoose Session
  *
  * @returns {Promise} - List of machines in template
  */
-async function getSavedMachines(templateId: string)
+async function getSavedMachines(
+    templateId: string,
+    options?: {session?: mongoose.ClientSession},
+)
 {
     return sessionTemplateModel
-        .findById(templateId)
+        .findById(templateId, options)
         .then((template) =>
         {
             if (template == null)
             {
                 throw new Error("No template found");
             }
-            return template.machineIds;
+            console.log(template.machines);
+            return template.machines;
         })
         .catch((error) =>
         {
@@ -167,7 +288,7 @@ async function removeMachine(machineId: string, templateId: string)
     return sessionTemplateModel.findByIdAndUpdate(
         templateId,
         {
-            $pull: {machineIds: machineId},
+            $pull: {machines: {$match: {_id: machineId}}},
         },
         {new: true},
     );
@@ -337,8 +458,10 @@ async function deleteAttribute(machineId: string, attrName: string)
 export default {
     addMachine,
     getMachines,
+    getMachinesByIds,
     getSavedMachines,
     saveMachine,
+    saveMachineFromTemplate,
     removeMachine,
     deleteMachine,
     updateMachine,
