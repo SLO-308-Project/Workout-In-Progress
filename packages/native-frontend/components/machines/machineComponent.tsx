@@ -160,23 +160,7 @@ export default function MachineComponent({machine, handleDelete}: Props)
         </ReanimatedSwipeable>
     );
 }
-// <Pressable
-//     onPress={deleteMachine}
-//     className="bg-red-50 border border-red-300 px-4 py-2 rounded-full active:opacity-75 mb-4"
-// >
-//     <Text className="text-red-600 font-semibold text-center">
-//         Delete {machine.name}
-//     </Text>
-// </Pressable>
-//
-// {/* Attribute list */}
-// <View className="mb-4">{listAttributes}</View>
-//
-// {/* Attribute form */}
-// <View>
-//     <AttributeForm handleAddAttribute={addAttribute} />
-// </View>
-// Component to be rendered when machine list is empty
+
 export function Empty()
 {
     return (

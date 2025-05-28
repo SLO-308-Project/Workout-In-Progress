@@ -1,13 +1,16 @@
-import {View, Text, Pressable, ScrollView} from "react-native";
+import {View, Text, Pressable, ScrollView, FlatList} from "react-native";
 import {useState, useEffect} from "react";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useIsFocused} from "@react-navigation/native";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 import {Machine} from "@/types/machine";
 import {Session} from "@/types/session";
 import {Workout} from "@/types/workout";
 
-import WorkoutComponent from "@/components/currSession/workoutComponent";
+import WorkoutComponent, {
+    Empty,
+} from "@/components/currSession/workoutComponent";
 import WorkoutForm from "@/components/currSession/workoutForm";
 
 import {
@@ -310,31 +313,18 @@ export default function CurrentSessionPage()
         />
     ));
 
-    function sessionData()
-    {
-        return (
-            <View className="bg-white rounded-2xl space-y-1 mt-4">
-                <Text className="text-base text-black font-semibold">
-                    Session: {sessionNum}
-                </Text>
-                <Text className="text-sm text-neutral-700">
-                    Start Date: {formatDate(sessions!.date)}
-                </Text>
-                <Text className="text-sm text-neutral-700">
-                    Duration:{" "}
-                    {formatDuration(
-                        Date.now() - new Date(sessions!.date).getTime(),
-                    )}
-                </Text>
-            </View>
-        );
-    }
+    //     <Text className="text-base text-black font-semibold">
+    //         Session: {sessionNum}
+    //     </Text>
+    //         <Text className="text-sm text-neutral-700">
+    //             Start Date: {formatDate(sessions!.date)}
+    // </Text>
 
     return (
-        <SafeAreaView edges={["top"]} className="flex-1 bg-white px-4 pt-4">
+        <SafeAreaView edges={["top"]} className="flex-1 bg-white">
             {!sessions && (
                 <View className="flex-1 items-center bg-white">
-                    <Text className="text-3xl font-semibold text-black tracking-tight pb-16 pt-4">
+                    <Text className="text-3xl font-semibold text-black tracking-tight pb-16 pt-4 px-4">
                         No Active Session
                     </Text>
                     <Pressable
@@ -348,12 +338,32 @@ export default function CurrentSessionPage()
                 </View>
             )}
             {sessions && (
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    className="container"
-                >
-                    {sessionData()}
-                    {listWorkouts}
+                <>
+                    <Text className="text-3xl font-semibold text-black tracking-tight pt-4 px-4">
+                        Current Session
+                    </Text>
+                    <Text className="text-lg font-bold text-neutral-700 px-4">
+                        {formatDuration(
+                            Date.now() - new Date(sessions!.date).getTime(),
+                        )}
+                    </Text>
+                    <FlatList
+                        data={workouts}
+                        renderItem={({item, index}) => (
+                            <WorkoutComponent
+                                key={index}
+                                workoutId={item._id}
+                                machineId={item.machineId}
+                                machineName={machineIdToName(item.machineId)}
+                                handleDelete={removeWorkout}
+                                sessionId={sessions?._id}
+                                sets={item.sets}
+                            />
+                        )}
+                        ListEmptyComponent={<Empty />}
+                        showsVerticalScrollIndicator={false}
+                        className="flex-1"
+                    />
                     <WorkoutForm
                         handleSubmit={addWorkout}
                         machineOptions={machines}
@@ -368,7 +378,7 @@ export default function CurrentSessionPage()
                             </Text>
                         </Pressable>
                     </View>
-                </ScrollView>
+                </>
             )}
         </SafeAreaView>
     );
