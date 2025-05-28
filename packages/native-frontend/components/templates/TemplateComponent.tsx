@@ -7,7 +7,7 @@ import Reanimated, {
     SharedValue,
     useAnimatedStyle,
 } from "react-native-reanimated";
-import Clipboard from "@react-native-clipboard/clipboard";
+import * as Clipboard from "expo-clipboard";
 
 type Props = {
     template: Template;
@@ -18,7 +18,7 @@ export default function MachineComponent({template, handleDelete}: Props)
 {
     function copyTemplateToClipboard()
     {
-        Clipboard.setString(template._id);
+        Clipboard.setStringAsync(template._id);
         console.log(template.name);
     }
 
