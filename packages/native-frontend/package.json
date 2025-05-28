@@ -20,6 +20,8 @@
     },
     "dependencies": {
         "@expo/vector-icons": "^14.0.2",
+        "@gorhom/bottom-sheet": "^5.1.4",
+        "@quidone/react-native-wheel-picker": "^1.4.1",
         "@react-native-async-storage/async-storage": "1.23.1",
         "@react-native-clipboard/clipboard": "^1.16.2",
         "@react-native-picker/picker": "2.9.0",

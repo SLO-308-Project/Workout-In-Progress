@@ -4,7 +4,6 @@ import {useState} from "react";
 import {View, TextInput, Pressable, Text, Modal} from "react-native";
 import {Picker} from "@react-native-picker/picker";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import ScrollPicker from "react-native-wheel-scrollview-picker";
 import {validateAttributeName} from "@/util/machineValidator";
 
 type Props = {
@@ -17,13 +16,10 @@ function AttributeForm({handleAddAttribute}: Props)
         name: "",
         unit: Unit.LBS, // default is the first unit in the enum. which is lbs
     });
-    const [showPicker, setShowPicker] = useState(false);
-    const [selectedUnitIdx, setSelectedUnitIdx] = useState(0);
     const [showError, setShowError] = useState(false);
 
-    function handleUnitChange(unitIndex: number)
+    function handleUnitChange(unit: Unit)
     {
-        const unit = Object.entries(Unit)[unitIndex][1];
         setAttribute({
             ...attribute,
             unit: unit,
@@ -44,6 +40,13 @@ function AttributeForm({handleAddAttribute}: Props)
 
     function handleAdd()
     {
+        //Pre api call validate input.
+        if (!validateAttributeName(attribute.name).isValid)
+        {
+            setShowError(true);
+            return;
+        }
+        // validator passed to try to add attribute.
         const success = handleAddAttribute(attribute);
         if (!success)
         {
@@ -70,28 +73,18 @@ function AttributeForm({handleAddAttribute}: Props)
                     placeholderTextColor="#A0A0A0"
                     onChangeText={(name) => handleNameChange(name)}
                 />
-                {showPicker && (
-                    <ScrollPicker
-                        selectedIndex={selectedUnitIdx}
-                        onTouchEnd={() => setShowPicker(false)}
-                        dataSource={Object.values(Unit)}
-                        wrapperBackground="#FFF"
-                        wrapperHeight={40}
-                        onValueChange={(data, selectedIndex) =>
-                        {
-                            setSelectedUnitIdx(selectedIndex);
-                            handleUnitChange(selectedIndex);
-                        }}
-                    />
-                )}
-                {!showPicker && (
-                    <Pressable
-                        className="w-20 bg-gray-100 px-4 py-3 border-gray-200 rounded-xl text-base 900 items-center"
-                        onPress={() => setShowPicker(true)}
-                    >
-                        <Text className="justify-center">{attribute.unit}</Text>
-                    </Pressable>
-                )}
+                <Picker
+                    className="w-20 bg-gray-100 px-4 py-3 border-gray-200 rounded-xl text-base 900 items-center"
+                    prompt="Units"
+                    onValueChange={(value: Unit) =>
+                    {
+                        handleUnitChange(value);
+                    }}
+                >
+                    {Object.values(Unit).map((unit, index) => (
+                        <Picker.Item key={index} label={unit} value={unit} />
+                    ))}
+                </Picker>
                 <Pressable
                     onPress={handleAdd}
                     className="p-2 rounded-full active:scale-90"

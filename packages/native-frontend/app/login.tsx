@@ -4,11 +4,9 @@ import {
     KeyboardAvoidingView,
     Platform,
     TouchableWithoutFeedback,
-    Keyboard,
 } from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import LoginPrompt from "@/components/login/loginPrompt";
-// import { fetchLogin } from "@/fetchers/authFetchers";
 import {useState, useEffect} from "react";
 import {Redirect} from "expo-router";
 import {useAuth} from "@/util/authContext";

@@ -41,6 +41,7 @@ function getListOfMachinesAggregate(userId: string)
             $project: {
                 name: "$collectedMachines.name",
                 muscle: "$collectedMachines.muscle",
+                attributes: "$collectedMachines.attributes",
                 _id: "$collectedMachines._id",
             },
         },

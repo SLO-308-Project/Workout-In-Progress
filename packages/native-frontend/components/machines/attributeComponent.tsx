@@ -5,7 +5,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 type Props = {
     name: string;
     unit: Unit;
-    handleDelete: (name: string) => void;
+    handleDelete?: (name: string) => void;
 };
 
 export default function Attribute({name, unit, handleDelete}: Props)
@@ -20,12 +20,14 @@ export default function Attribute({name, unit, handleDelete}: Props)
                     ({unit})
                 </Text>
             </View>
-            <Pressable
-                onPress={() => handleDelete(name)}
-                className="p-2 rounded-full active:scale-90"
-            >
-                <AntDesign name="minuscircle" size={24} color="#FF3B30" />
-            </Pressable>
+            {handleDelete && (
+                <Pressable
+                    onPress={() => handleDelete(name)}
+                    className="p-2 rounded-full active:scale-90"
+                >
+                    <AntDesign name="minuscircle" size={24} color="#FF3B30" />
+                </Pressable>
+            )}
         </View>
     );
 }
@@ -33,7 +35,7 @@ export default function Attribute({name, unit, handleDelete}: Props)
 export function Empty()
 {
     return (
-        <View className="flex-1 items-center bg-white">
+        <View className="flex-1 items-center">
             <Text className="text-gray-300 font-semibold">
                 You must have at least 1 attribute.
             </Text>

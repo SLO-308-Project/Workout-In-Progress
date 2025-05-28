@@ -89,8 +89,7 @@ function fetchPostMachine(machine: Machine): Promise<Response>
  * */
 function fetchUpdateMachine(
     currentName: string,
-    newName: string | undefined,
-    newMuscle: string | undefined,
+    newMachine: Machine,
 ): Promise<Response>
 {
     return fetch(`${BACKEND_URL}/machines/${currentName}`, {
@@ -98,10 +97,7 @@ function fetchUpdateMachine(
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-            name: `${newName}`,
-            muscle: `${newMuscle}`,
-        }),
+        body: JSON.stringify(newMachine),
     });
 }
 
