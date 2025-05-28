@@ -34,11 +34,6 @@ export default function TemplatesPage()
         }
     }, [isFocused]);
 
-    function test()
-    {
-        console.log(search);
-    }
-
     // Returns all templates for the authorized user.
     function getTemplates(): void
     {

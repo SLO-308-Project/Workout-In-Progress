@@ -29,6 +29,7 @@ function setupAPP(PORT: number)
             origin: [
                 "https://orange-bush-0991c211e.6.azurestaticapps.net",
                 "http://localhost:8081",
+                "http://localhost:8082",
             ],
             credentials: true,
         }),
