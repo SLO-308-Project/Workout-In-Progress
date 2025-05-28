@@ -70,20 +70,7 @@ function AttributeForm({handleAddAttribute}: Props)
                     placeholderTextColor="#A0A0A0"
                     onChangeText={(name) => handleNameChange(name)}
                 />
-
-                <Picker
-                    className="w-20 bg-gray-100 px-4 py-3 border-gray-200 rounded-xl text-base 900 items-center"
-                    prompt="Units"
-                    onValueChange={(value: Unit) =>
-                    {
-                        handleUnitChange(value);
-                    }}
-                >
-                    {Object.values(Unit).map((unit, index) => (
-                        <Picker.Item key={index} label={unit} value={unit} />
-                    ))}
-                </Picker>
-                {/* {showPicker && (
+                {showPicker && (
                     <ScrollPicker
                         selectedIndex={selectedUnitIdx}
                         onTouchEnd={() => setShowPicker(false)}
@@ -92,8 +79,8 @@ function AttributeForm({handleAddAttribute}: Props)
                         wrapperHeight={40}
                         onValueChange={(data, selectedIndex) =>
                         {
-                            setSelectedUnitIdx(data);
-                            handleUnitChange(data);
+                            setSelectedUnitIdx(selectedIndex);
+                            handleUnitChange(selectedIndex);
                         }}
                     />
                 )}
@@ -104,7 +91,7 @@ function AttributeForm({handleAddAttribute}: Props)
                     >
                         <Text className="justify-center">{attribute.unit}</Text>
                     </Pressable>
-                )} */}
+                )}
                 <Pressable
                     onPress={handleAdd}
                     className="p-2 rounded-full active:scale-90"
