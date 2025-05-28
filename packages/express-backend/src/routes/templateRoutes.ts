@@ -74,6 +74,7 @@ router.get("/search/:id", (req: Request, res: Response) =>
         });
 });
 
+// Return all user templates
 router.get("/", (req: Request, res: Response) =>
 {
     templateServices
@@ -112,7 +113,7 @@ export interface templateDataType
 // }
 // OR
 // {
-//      fromSession: boolean,
+//      fromSession: string "boolean",
 //      name: string,
 //      id: string "Object Id"
 // }
@@ -122,7 +123,6 @@ router.post("/", (req: Request, res: Response) =>
     const templateData: templateDataType = req.body as templateDataType;
     const userId = req.sub?.toString() as string;
     console.log(templateData);
-
     if (
         templateData.fromSession === "true" &&
         templateData.id &&
