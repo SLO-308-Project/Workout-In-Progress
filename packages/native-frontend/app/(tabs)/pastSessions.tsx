@@ -15,12 +15,40 @@ import {
 import {Session} from "@/types/session";
 import SessionComponent, {Empty} from "@/components/sessions/sessionComponent";
 import StartCurrentSession from "@/components/currSession/StartCurrentSession";
+import {fetchGetTemplates} from "@/fetchers/templateFetchers";
+import {useTemplateContext} from "@/util/templateContext";
 
 export default function PastSessionsPage()
 {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [currSession, setCurrSession] = useState<boolean>();
     const router = useRouter();
+    const {setTemplates} = useTemplateContext();
+
+    function populateTemplates()
+    {
+        console.log("Populating Templates");
+        fetchGetTemplates()
+            .then((res) =>
+            {
+                if (res.status === 200)
+                {
+                    res.json()
+                        .then((json) =>
+                        {
+                            setTemplates(json);
+                        })
+                        .catch((err) =>
+                        {
+                            console.log("Parsing Templates Error: ", err);
+                        });
+                }
+            })
+            .catch((err) =>
+            {
+                console.log("Error Retrieving Templates: ", err);
+            });
+    }
 
     // Helper function for date formatting
     function formatDate(dateString: string): string
@@ -137,6 +165,7 @@ export default function PastSessionsPage()
     {
         if (isFocused)
         {
+            populateTemplates();
             loadSessions();
             loadCurrSession();
         }
