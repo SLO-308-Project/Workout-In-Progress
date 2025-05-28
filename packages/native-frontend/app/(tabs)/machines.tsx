@@ -1,94 +1,134 @@
 import "@/global.css";
-import { Text, FlatList, Pressable, View, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useEffect, useCallback } from "react";
+import {Text, FlatList, Pressable, View, StyleSheet} from "react-native";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {useState, useEffect, useCallback, useRef} from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { SearchBar } from "@rneui/themed";
-import { useRouter, useFocusEffect } from "expo-router";
-import { useIsFocused } from "@react-navigation/native";
+import {SearchBar} from "@rneui/themed";
+import {useRouter} from "expo-router";
+import {useIsFocused} from "@react-navigation/native";
+import {BottomSheetModal} from "@gorhom/bottom-sheet";
 
-import MachineComponent, { Empty } from "@/components/machines/machineComponent";
+import MachineComponent, {Empty} from "@/components/machines/machineComponent";
 import {
     fetchGetMachine,
-    fetchPostMachine,
     fetchDeleteMachine,
+    fetchUpdateMachine,
 } from "@/fetchers/machineFetchers";
 
-import { Machine } from "@/types/machine";
+import {Machine} from "@/types/machine";
+import MachineSlide from "@/components/machines/machineEditSlide";
 
-function MachinePage() {
+function MachinePage()
+{
     const [machines, setMachine] = useState<Machine[]>([]);
     const [search, setSearch] = useState<string>("");
     const router = useRouter();
     const isFocused = useIsFocused();
 
-    const updateSearch = (search: string) => {
+    // State for Edit Bottom Sheet Modal
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+    const [selectedMachine, setSelectedMachine] = useState<Machine | null>(
+        null,
+    );
+
+    // State for machines list refresh functionality
+    const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+
+    function handleRefresh()
+    {
+        setIsRefreshing(true);
+        getMachines();
+    }
+
+    // Called when a machine card is tapped
+    const handleOpenSheet = useCallback((machine: Machine) =>
+    {
+        setSelectedMachine(machine);
+        console.log(
+            `passing machine: machine.name=${machine.name} machine.muscle=${machine.muscle} machine.attributes=${JSON.stringify(machine.attributes)}`,
+        );
+        bottomSheetModalRef.current?.present();
+    }, []);
+
+    const updateSearch = (search: string) =>
+    {
         setSearch(search);
     };
 
-    useEffect(() => {
-        if (isFocused)
-            getMachines();
+    useEffect(() =>
+    {
+        if (isFocused) getMachines();
     }, [isFocused]);
 
-    function getMachines(): void {
+    function getMachines(): void
+    {
         fetchGetMachine()
-            .then((res: Response) => {
-                if (res.ok) {
+            .then((res: Response) =>
+            {
+                if (res.ok)
+                {
                     return res.json();
                 }
             })
-            .then((res_data) => {
-                console.log(`GETMACHINES RES_DATA=${res_data}`);
+            .then((res_data) =>
+            {
+                console.log(`GETMACHINES RES_DATA=${JSON.stringify(res_data)}`);
                 setMachine(res_data);
+                setIsRefreshing(false);
             })
             .catch((error: unknown) => console.log(error));
     }
 
-    function addOneMachine(machine: Machine): void {
-        console.log(`${machine.name} ${machine.muscle}`);
-        fetchPostMachine(machine)
-            .then((res) => {
-                if (res.status === 201) {
-                    return res.json();
+    // Called by edit slide to update machine
+    async function updateMachine(machine: Machine, newMachine: Machine)
+    {
+        return fetchUpdateMachine(machine.name, newMachine)
+            .then((res) =>
+            {
+                if (res.ok)
+                {
+                    // Update local list
+                    setMachine(
+                        machines.map((oldMachine) =>
+                            oldMachine._id === newMachine._id
+                                ? {...oldMachine, ...newMachine}
+                                : oldMachine,
+                        ),
+                    );
                 }
             })
-            .then((res_data) => {
-                console.log(`RES_DATA=${JSON.stringify(res_data)}`);
-                setMachine([...machines, res_data]);
-            })
-            .catch((error: unknown) => {
+            .catch((error: unknown) =>
+            {
                 console.log(error);
             });
     }
 
-    function removeOneMachine(name: string) {
+    function removeOneMachine(name: string)
+    {
         fetchDeleteMachine(name)
-            .then((res) => {
-                if (res.ok) {
+            .then((res) =>
+            {
+                if (res.ok)
+                {
                     setMachine(
                         machines.filter((machine) => machine.name !== name),
                     );
                 }
             })
-            .catch((error: unknown) => {
+            .catch((error: unknown) =>
+            {
                 console.log(error);
             });
     }
 
-    // const listMachines = machines.map((machine: Machine) => (
-    //     <MachineComponent
-    //         key={machine.name}
-    //         machine={machine}
-    //         handleDelete={removeOneMachine}
-    //     />
-    // ));
-    //
-    function filterMachines() {
-        if (search === "") {
+    function filterMachines()
+    {
+        if (search === "")
+        {
             return machines;
         }
-        return machines.filter((machine: Machine) => {
+        return machines.filter((machine: Machine) =>
+        {
             return machine.name.toLowerCase().includes(search.toLowerCase());
         });
     }
@@ -107,9 +147,9 @@ function MachinePage() {
                 </Pressable>
             </View>
             <SearchBar
-                containerStyle={styles.containerStyle}
-                inputStyle={styles.inputStyle}
-                inputContainerStyle={styles.inputContainerStyle}
+                containerStyle={sb_styles.containerStyle}
+                inputStyle={sb_styles.inputStyle}
+                inputContainerStyle={sb_styles.inputContainerStyle}
                 placeholder="Search"
                 onChangeText={updateSearch}
                 value={search}
@@ -118,8 +158,9 @@ function MachinePage() {
             />
             <FlatList
                 data={filterMachines()}
-                renderItem={({ item, index }) => (
+                renderItem={({item, index}) => (
                     <MachineComponent
+                        onPress={() => handleOpenSheet(item)}
                         key={index}
                         machine={item}
                         handleDelete={removeOneMachine}
@@ -128,14 +169,33 @@ function MachinePage() {
                 ListEmptyComponent={<Empty />}
                 showsVerticalScrollIndicator={false}
                 className="flex-1"
+                onRefresh={handleRefresh}
+                refreshing={isRefreshing}
             />
+            <BottomSheetModal
+                ref={bottomSheetModalRef}
+                backgroundStyle={{
+                    backgroundColor: "#F9F9F9",
+                }}
+                index={0}
+                snapPoints={["90%"]}
+                enableDynamicSizing={false}
+                enableHandlePanningGesture={true}
+                enableContentPanningGesture={false}
+                enablePanDownToClose={true}
+            >
+                <MachineSlide
+                    currMachine={selectedMachine}
+                    handleUpdate={updateMachine}
+                />
+            </BottomSheetModal>
         </SafeAreaView>
     );
 }
 export default MachinePage;
 
 // SearchBar component wants a Stylesheet type passed to its props (so I can't use tailwind)
-const styles = StyleSheet.create({
+const sb_styles = StyleSheet.create({
     containerStyle: {
         backgroundColor: "#FFF",
         borderTopWidth: 0,
@@ -150,4 +210,3 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
-// <MachineForm handleSubmit={addOneMachine} />
