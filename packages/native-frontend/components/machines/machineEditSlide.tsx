@@ -9,6 +9,7 @@ import AttributeComponent, {
     Empty,
 } from "@/components/machines/attributeComponent";
 import AttributeForm from "@/components/machines/attributeForm";
+import {validateAttributeName} from "@/util/machineValidator";
 
 type Props = {
     currMachine: Machine | null;
@@ -47,11 +48,17 @@ export default function MachineSlide({currMachine, handleUpdate}: Props)
     {
         if (editMachine)
         {
+            const attributeValidation = validateAttributeName(attribute.name);
+            if (!attributeValidation.isValid)
+            {
+                return false;
+            }
             setEditMachine({
                 ...editMachine,
                 attributes: [...editMachine?.attributes, attribute],
             });
         }
+        return true;
     }
 
     function deleteAttribute(attributeName: string)

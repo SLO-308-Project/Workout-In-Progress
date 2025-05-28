@@ -1,15 +1,7 @@
 import {fetchCreateTemplate} from "@/fetchers/templateFetchers";
-import {Feather} from "@expo/vector-icons";
 import {useState} from "react";
-import {
-    Modal,
-    Pressable,
-    View,
-    Text,
-    TouchableWithoutFeedback,
-    TextInput,
-} from "react-native";
-import ModalTemplate from "../ModalTemplate";
+import {Pressable, View, Text, TextInput} from "react-native";
+import ModalTemplate from "../UtilComponents/ModalTemplate";
 
 type Props = {
     id: string;
@@ -72,7 +64,7 @@ export default function SaveAsTemplate({id, fromSession, Icon}: Props)
                     )}
                     <View className="flex-row justify-center items-center">
                         <Pressable onPress={() => setModalVisible(false)}>
-                            <Text className="text-2xl px-3 py-1 rounded-xl outline outline-1 outline-gray-300 bg-gray-200 hover:bg-gray-300">
+                            <Text className="text-2xl px-3 py-1 rounded-xl outline outline-1 outline-gray-300 bg-gray-200 ">
                                 Cancel
                             </Text>
                         </Pressable>
@@ -80,7 +72,7 @@ export default function SaveAsTemplate({id, fromSession, Icon}: Props)
                         <Pressable
                             onPress={() => saveTemplate(setModalVisible)}
                         >
-                            <Text className="text-2xl px-3 py-1 rounded-xl outline outline-1 outline-gray-300 bg-gray-200 hover:bg-gray-300">
+                            <Text className="text-2xl px-3 py-1 rounded-xl outline outline-1 outline-gray-300 bg-gray-200 ">
                                 Save
                             </Text>
                         </Pressable>
