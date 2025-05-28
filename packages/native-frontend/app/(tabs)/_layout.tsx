@@ -19,8 +19,9 @@ export default function TabLayout()
                         headerShown: false,
                     }}
                 >
+                    <Tabs.Screen name="index" options={{href: null}} />
                     <Tabs.Screen
-                        name="index"
+                        name="pastSessions"
                         options={{
                             title: "Home",
                             tabBarIcon: ({color}) => (
