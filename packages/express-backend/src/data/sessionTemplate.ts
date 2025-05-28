@@ -7,10 +7,51 @@ const sessionTemplateSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             auto: true,
         },
-        machineIds: [
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+        machines: [
             {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "machine",
+                _id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    auto: true,
+                },
+                name: {
+                    type: String,
+                    required: true,
+                    trim: true,
+                },
+                muscle: {
+                    type: String,
+                    required: true,
+                    trim: true,
+                },
+                attributes: {
+                    default: [],
+                    type: [
+                        {
+                            name: {
+                                type: String,
+                                trim: true,
+                            },
+                            unit: {
+                                type: String,
+                                enum: [
+                                    "lbs",
+                                    "deg",
+                                    "kgs",
+                                    "s",
+                                    "m",
+                                    "reps",
+                                    "cal",
+                                ],
+                                required: true,
+                            },
+                        },
+                    ],
+                },
             },
         ],
         workout: [
