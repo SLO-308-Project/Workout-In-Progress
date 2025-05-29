@@ -27,6 +27,7 @@ import {
     fetchCurrentSession,
     fetchGetSessions,
 } from "@/fetchers/currentSessionFetchers";
+import {useMachineContext} from "@/util/machineContext";
 
 const clockSpeed = 200;
 
@@ -39,6 +40,7 @@ export default function CurrentSessionPage()
 
     const isFocused = useIsFocused();
     const router = useRouter();
+    const {machines, setMachines} = useMachineContext();
 
     // Receives machineId passed from workout select
     let {machineId} = useLocalSearchParams<{machineId?: string}>();
@@ -51,13 +53,11 @@ export default function CurrentSessionPage()
         }
     }, [machineId]);
 
-    // State for the users currently selected machine
-    const [machines, setMachines] = useState<Machine[]>([]);
     useEffect(() =>
     {
         if (isFocused)
         {
-            getMachines();
+            // getMachines();
             getCurrentSession();
             getSessionNumber();
         }

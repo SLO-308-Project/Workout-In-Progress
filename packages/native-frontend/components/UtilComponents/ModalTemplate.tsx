@@ -27,15 +27,20 @@ export default function ModalTemplate({Icon, Content}: Props)
                 {Icon}
             </Pressable>
             <Modal visible={modalVisible} transparent={true}>
-                <Pressable
+                {/* <View className="items-center"> */}
+                <Pressable className="absolute top-0 left-0 right-0 bottom-0 bg-black/25" />
+                <TouchableWithoutFeedback
                     onPress={() => setModalVisible(false)}
-                    className="absolute top-0 left-0 right-0 bottom-0 bg-black/60"
-                />
-                <View className="flex-1 justify-center items-center">
-                    <View className="bg-white p-4 rounded-xl rounded-lg">
-                        {Content(setModalVisible)}
+                >
+                    <View className="flex-1 justify-center items-center">
+                        <TouchableWithoutFeedback onPress={() =>
+                        {}}>
+                            <View className="bg-white p-4 rounded-xl rounded-lg">
+                                {Content(setModalVisible)}
+                            </View>
+                        </TouchableWithoutFeedback>
                     </View>
-                </View>
+                </TouchableWithoutFeedback>
             </Modal>
         </View>
     );

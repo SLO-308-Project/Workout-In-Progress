@@ -12,6 +12,7 @@ export default {
         userInterfaceStyle: "automatic",
         newArchEnabled: true,
         ios: {
+            bundleIdentifier: "com.anonymous.nativefrontend",
             supportsTablet: true,
         },
         android: {

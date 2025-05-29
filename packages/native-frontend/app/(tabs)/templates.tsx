@@ -108,7 +108,7 @@ export default function TemplatesPage()
                     Icon={
                         <MaterialCommunityIcons
                             name="import"
-                            size={32}
+                            size={34}
                             color="black"
                         />
                     }

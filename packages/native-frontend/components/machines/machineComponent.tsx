@@ -72,7 +72,7 @@ export default function MachineComponent({
                         <Text className="text-2xl font-bold text-gray-900">
                             {machine.name}
                         </Text>
-                        <Text className="text-base text-gray-600">
+                        <Text className="text-xl text-gray-600">
                             {machine.muscle}
                         </Text>
                     </View>
