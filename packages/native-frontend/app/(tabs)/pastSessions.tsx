@@ -61,13 +61,11 @@ export default function PastSessionsPage()
             .then((res: Response) => res.json())
             .then((data: Session[]) =>
             {
-                const sortedSessions = [...data]
-                    .sort(
-                        (sessionA, sessionB) =>
-                            new Date(sessionB.date).getTime() -
-                            new Date(sessionA.date).getTime(),
-                    )
-                    .reverse();
+                const sortedSessions = [...data].sort(
+                    (sessionA, sessionB) =>
+                        new Date(sessionA.date).getTime() -
+                        new Date(sessionB.date).getTime(),
+                );
                 setSessions(sortedSessions);
             })
             .catch((error: unknown) => console.log(error));
@@ -142,7 +140,7 @@ export default function PastSessionsPage()
 
         if (hour < 6)
         {
-            name += "Late Night Session";
+            name += "Early Morning Session";
         }
         else if (hour >= 6 && hour < 12)
         {

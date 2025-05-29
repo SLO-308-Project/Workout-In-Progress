@@ -42,7 +42,7 @@ export default function StartCurrentSession({Icon}: Props)
             Icon={Icon}
             Content={(setModalVisible) => (
                 <View className="rounded-xl px-4 pt-4 pb-4 bg-white">
-                    <Pressable onPress={startBlank}>
+                    <Pressable onPress={() => startBlank()}>
                         <Text className="text-2xl px-3 py-1 rounded-xl outline outline-1 outline-gray-300 bg bg-gray-200">
                             Create Blank Session
                         </Text>
@@ -75,7 +75,9 @@ export default function StartCurrentSession({Icon}: Props)
                                 </Pressable>
                             )}
                             ListEmptyComponent={
-                                <Text className="px-1 pl-3 ">No Templates</Text>
+                                <Text className="pl-4 pl-3 text-lg ">
+                                    No Templates
+                                </Text>
                             }
                             className="flex-1 py-1"
                         />
