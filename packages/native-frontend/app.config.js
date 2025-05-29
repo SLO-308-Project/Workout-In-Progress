@@ -14,6 +14,7 @@ export default {
         ios: {
             bundleIdentifier: "com.anonymous.nativefrontend",
             supportsTablet: true,
+            ITSAppUsesNonExemptEncryption: false,
         },
         android: {
             adaptiveIcon: {
@@ -45,6 +46,9 @@ export default {
         // ALL enviroment variables must be added here.
         extra: {
             BACKEND_URL: process.env.EXPO_PUBLIC_API_URL,
+            eas: {
+                projectId: "96f97430-1ad6-42e6-b17b-dbe6a47f0048",
+            },
         },
     },
 };
