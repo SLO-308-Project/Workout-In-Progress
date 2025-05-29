@@ -78,20 +78,20 @@ export default function SessionComponent({
             >
                 <View className="p-4 bg-white shadow-sm border border-neutral-200">
                     <View className="flex-row justify-between">
-                        <Text className="text-lg font-semibold text-black mb-1">
+                        <Text className="text-2xl font-semibold text-black mb-1">
                             {name}
                         </Text>
-                        <Text className="text-sm text-neutral-700 mb-1">
+                        <Text className="text-xl text-neutral-700 mb-1">
                             {date}
                         </Text>
                     </View>
 
                     <View className="flex-row justify-between items-center">
                         <View>
-                            <Text className="text-sm text-neutral-700">
+                            <Text className="text-xl text-neutral-700">
                                 {duration}
                             </Text>
-                            <Text className="text-sm text-neutral-700">
+                            <Text className="text-xl text-neutral-700">
                                 {getSetCount} Sets
                             </Text>
                         </View>
@@ -101,7 +101,7 @@ export default function SessionComponent({
                             Icon={
                                 <Feather
                                     name="save"
-                                    size={30}
+                                    size={34}
                                     color={"black"}
                                 />
                             }

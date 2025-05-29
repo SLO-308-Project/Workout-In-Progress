@@ -16,8 +16,8 @@ export default function DisplayWorkout({allMachines, workout}: Props)
 
     return (
         <View className="bg-gray-200 border border-gray-400 rounded-lg shadow-sm p-2 m-1 justify-center">
-            <Text className="text-base">{machine?.name}</Text>
-            <Text className="pl-2 text-xs">{machine?.muscle}</Text>
+            <Text className="text-xl font-bold">{machine?.name}</Text>
+            <Text className="pl-2 text-lg">{machine?.muscle}</Text>
             <FlatList
                 data={workout.sets}
                 renderItem={({item, index}) => (

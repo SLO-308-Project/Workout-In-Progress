@@ -138,11 +138,11 @@ export default function PastSessionsPage()
             name += "Saturday ";
         }
 
-        if (hour < 6)
+        if (hour < 7)
         {
-            name += "Early Morning Session";
+            name += "Sunrise Session";
         }
-        else if (hour >= 6 && hour < 12)
+        else if (hour >= 7 && hour < 12)
         {
             name += "Morning Session";
         }
@@ -252,19 +252,21 @@ export default function PastSessionsPage()
                     <Feather
                         className=""
                         name="settings"
-                        size={24}
+                        size={34}
                         color="black"
                     />
                 </Pressable>
             </View>
-            <Pressable
-                className="flex-row justify-center"
-                onPress={openStatisticsStack}
-            >
-                <Text className="text-lg font-semibold text-black tracking-tight px-4 pt-4 pb-2">
-                    Statistics
-                </Text>
-            </Pressable>
+            <View className="flex-row justify-center py-2">
+                <Pressable
+                    className=" w-3/5 rounded-lg border bg-gray-100 border-gray-300 flex-row justify-center"
+                    onPress={openStatisticsStack}
+                >
+                    <Text className="text-2xl font-semibold text-black tracking-tight py-1">
+                        Statistics
+                    </Text>
+                </Pressable>
+            </View>
             <FlatList
                 data={sessions.reverse()}
                 renderItem={({item, index}) => (
