@@ -1,4 +1,4 @@
-import express from "express";
+import express, {Application} from "express";
 import cors from "cors";
 import machineRoutes from "./routes/machineRoutes";
 import userRoutes from "./routes/userRoutes";
@@ -11,10 +11,7 @@ import {authToken} from "./util/jwt";
 
 import mongoose from "mongoose";
 
-const app = setupAPP(8000);
-//connectDB("mongodb://localhost:27017/Workout_In_Progress");
-const DB: string | undefined = getEnv("DB_URL");
-connectDB(DB);
+const app: Application = setupAPP(8000);
 
 //----- Connect Listener -----
 function setupAPP(PORT: number)
@@ -47,10 +44,17 @@ function setupAPP(PORT: number)
     app.use("/workouts", authToken, workoutRoutes);
     app.use("/templates", authToken, templateRoutes);
 
-    app.listen(process.env.PORT || PORT, () =>
+    // Only run in when directly used in file
+    if (require.main === module)
     {
-        console.log("REST API is listening.");
-    });
+        //connectDB("mongodb://localhost:27017/Workout_In_Progress");
+        const DB: string | undefined = getEnv("DB_URL");
+        connectDB(DB);
+        app.listen(process.env.PORT || PORT, () =>
+        {
+            console.log("REST API is listening.");
+        });
+    }
     return app;
 }
 
@@ -70,3 +74,4 @@ function connectDB(URI: string)
 }
 
 export default app;
+export {connectDB};
