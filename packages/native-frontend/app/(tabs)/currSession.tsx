@@ -1,8 +1,9 @@
-import {View, Text, Pressable, ScrollView, FlatList} from "react-native";
+import {View, Text, Pressable, FlatList} from "react-native";
 import {useState, useEffect} from "react";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useIsFocused} from "@react-navigation/native";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import {useRouter, useLocalSearchParams} from "expo-router";
 
 import {Machine} from "@/types/machine";
 import {Session} from "@/types/session";
@@ -11,7 +12,6 @@ import {Workout} from "@/types/workout";
 import WorkoutComponent, {
     Empty,
 } from "@/components/currSession/workoutComponent";
-import WorkoutForm from "@/components/currSession/workoutForm";
 
 import {
     fetchGetWorkouts,
@@ -38,8 +38,20 @@ export default function CurrentSessionPage()
     const [workouts, setWorkouts] = useState<Workout[]>([]);
 
     const isFocused = useIsFocused();
-    // State for the users currently selected machine
+    const router = useRouter();
 
+    // Receives machineId passed from workout select
+    let {machineId} = useLocalSearchParams<{machineId?: string}>();
+
+    useEffect(() =>
+    {
+        if (machineId)
+        {
+            addWorkout(machineId);
+        }
+    }, [machineId]);
+
+    // State for the users currently selected machine
     const [machines, setMachines] = useState<Machine[]>([]);
     useEffect(() =>
     {
@@ -50,12 +62,6 @@ export default function CurrentSessionPage()
             getSessionNumber();
         }
     }, [isFocused]);
-
-    // Helper function for date formatting
-    function formatDate(dateString: string): string
-    {
-        return new Date(dateString).toLocaleDateString();
-    }
 
     // Helper function for duration formatting
     // Converts database time which is stored in seconds to hours and minutes
@@ -237,13 +243,11 @@ export default function CurrentSessionPage()
 
     function addWorkout(machineId: string): void
     {
+        console.log("inside of add workout");
         if (sessions === null)
         {
             throw new Error("Could not get session. Session does not exist.");
         }
-        console.log(
-            `trying to add a workout. sessions=${sessions} machineId=${machineId}`,
-        );
         if (sessions && machineId)
         {
             fetchPostWorkout(sessions._id, machineId)
@@ -251,18 +255,17 @@ export default function CurrentSessionPage()
                 {
                     if (res.ok)
                     {
+                        router.setParams({machineId: undefined});
                         return res.json();
                     }
                     else
                     {
+                        router.setParams({machineId: undefined});
                         throw new Error();
                     }
                 })
                 .then((res_data: Session) =>
                 {
-                    console.log(`RES_DATA: ${res_data._id}`);
-                    console.log(`MachineId: ${machineId}`);
-                    console.log(`SessionId: ${sessions._id}`);
                     setWorkouts(res_data.workout);
                 })
                 .catch((error: unknown) => console.log(error));
@@ -301,25 +304,6 @@ export default function CurrentSessionPage()
         }
     };
 
-    const listWorkouts = workouts.map((workout: Workout, idx: number) => (
-        <WorkoutComponent
-            key={idx}
-            workoutId={workout._id}
-            machineId={workout.machineId}
-            machineName={machineIdToName(workout.machineId)}
-            handleDelete={removeWorkout}
-            sessionId={sessions?._id}
-            sets={workout.sets}
-        />
-    ));
-
-    //     <Text className="text-base text-black font-semibold">
-    //         Session: {sessionNum}
-    //     </Text>
-    //         <Text className="text-sm text-neutral-700">
-    //             Start Date: {formatDate(sessions!.date)}
-    // </Text>
-
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white">
             {!sessions && (
@@ -339,9 +323,17 @@ export default function CurrentSessionPage()
             )}
             {sessions && (
                 <>
-                    <Text className="text-3xl font-semibold text-black tracking-tight pt-4 px-4">
-                        Current Session
-                    </Text>
+                    <View className="flex-row justify-between items-center px-4 pt-4">
+                        <Text className="text-3xl font-semibold text-black tracking-tight">
+                            Current Session
+                        </Text>
+                        <Pressable
+                            className=""
+                            onPress={() => router.push("/selectMachine")}
+                        >
+                            <AntDesign name="plus" size={32} color="black" />
+                        </Pressable>
+                    </View>
                     <Text className="text-lg font-bold text-neutral-700 px-4">
                         {formatDuration(
                             Date.now() - new Date(sessions!.date).getTime(),
@@ -364,16 +356,13 @@ export default function CurrentSessionPage()
                         showsVerticalScrollIndicator={false}
                         className="flex-1"
                     />
-                    <WorkoutForm
-                        handleSubmit={addWorkout}
-                        machineOptions={machines}
-                    />
-                    <View className="items-center mt-8">
+                    <View className="absolute bottom-4 left-0 right-0 items-center mb-4">
                         <Pressable
                             onPress={endSession}
-                            className="bg-red-100 px-9 py-3 rounded-full active:opacity-80 transition-all duration-200"
+                            className="bg-red-100 px-9 py-3 rounded-full active:opacity-60 transition-all duration-300"
+                            style={{backgroundColor: "#FF3B30"}}
                         >
-                            <Text className="text-red-600 text-base font-semibold text-center">
+                            <Text className="text-base text-white font-semibold text-center">
                                 End
                             </Text>
                         </Pressable>
