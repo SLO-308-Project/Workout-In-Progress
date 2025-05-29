@@ -10,6 +10,7 @@ import SaveAsTemplate from "../templates/SaveAsTemplate";
 import {Feather} from "@expo/vector-icons";
 
 type Props = {
+    onPress: () => void;
     sessionId: string;
     name: string;
     date: string;
@@ -19,6 +20,7 @@ type Props = {
 };
 
 export default function SessionComponent({
+    onPress,
     sessionId,
     name,
     date,
@@ -67,39 +69,47 @@ export default function SessionComponent({
     }, 0);
 
     return (
-        <ReanimatedSwipeable
-            friction={2}
-            rightThreshold={20}
-            renderRightActions={RightSwipeDelete}
-            overshootFriction={8}
-        >
-            <View className="p-4 bg-white shadow-sm border border-neutral-200">
-                <View className="flex-row justify-between">
-                    <Text className="text-lg font-semibold text-black mb-1">
-                        {name}
-                    </Text>
-                    <Text className="text-sm text-neutral-700 mb-1">
-                        {date}
-                    </Text>
-                </View>
-
-                <View className="flex-row justify-between items-center">
-                    <View>
-                        <Text className="text-sm text-neutral-700">
-                            {duration}
+        <Pressable onPress={onPress}>
+            <ReanimatedSwipeable
+                friction={2}
+                rightThreshold={20}
+                renderRightActions={RightSwipeDelete}
+                overshootFriction={8}
+            >
+                <View className="p-4 bg-white shadow-sm border border-neutral-200">
+                    <View className="flex-row justify-between">
+                        <Text className="text-lg font-semibold text-black mb-1">
+                            {name}
                         </Text>
-                        <Text className="text-sm text-neutral-700">
-                            {getSetCount} Sets
+                        <Text className="text-sm text-neutral-700 mb-1">
+                            {date}
                         </Text>
                     </View>
-                    <SaveAsTemplate
-                        id={session._id}
-                        fromSession={true}
-                        Icon={<Feather name="save" size={30} color={"black"} />}
-                    />
+
+                    <View className="flex-row justify-between items-center">
+                        <View>
+                            <Text className="text-sm text-neutral-700">
+                                {duration}
+                            </Text>
+                            <Text className="text-sm text-neutral-700">
+                                {getSetCount} Sets
+                            </Text>
+                        </View>
+                        <SaveAsTemplate
+                            id={session._id}
+                            fromSession={true}
+                            Icon={
+                                <Feather
+                                    name="save"
+                                    size={30}
+                                    color={"black"}
+                                />
+                            }
+                        />
+                    </View>
                 </View>
-            </View>
-        </ReanimatedSwipeable>
+            </ReanimatedSwipeable>
+        </Pressable>
     );
 }
 

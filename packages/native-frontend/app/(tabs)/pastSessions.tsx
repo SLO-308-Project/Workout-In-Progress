@@ -19,19 +19,25 @@ import StartCurrentSession from "@/components/currSession/StartCurrentSession";
 // import {useTemplateContext} from "@/util/templateContext";
 import {BottomSheetModal} from "@gorhom/bottom-sheet";
 import SessionSlide from "@/components/sessions/sessionSlide";
+import {useTemplateContext} from "@/util/templateContext";
+import {useMachineContext} from "@/util/machineContext";
+import {Machine} from "@/types/machine";
 
 export default function PastSessionsPage()
 {
     //general Data
     const [sessions, setSessions] = useState<Session[]>([]);
     const [currSession, setCurrSession] = useState<boolean>();
-    // const {setTemplates} = useTemplateContext();
     const router = useRouter();
     //Info for sessionSlide
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
     const [selectedSession, setSelectedSession] = useState<Session | null>(
         null,
     );
+    //Machine related data
+    const {templates} = useTemplateContext();
+    const {machines} = useMachineContext();
+    const [allMachines, setAllMachines] = useState<Machine[]>([]);
 
     const isFocused = useIsFocused();
 
@@ -39,37 +45,13 @@ export default function PastSessionsPage()
     {
         if (isFocused)
         {
-            // populateTemplates();
+            console.log("Before Focus setup");
+            getAllMachines();
             loadSessions();
             loadCurrSession();
+            console.log("after Focus setup");
         }
     }, [isFocused]);
-
-    // Populates Templates. Used for starting a session.
-    // function populateTemplates()
-    // {
-    //     console.log("Populating Templates");
-    //     fetchGetTemplates()
-    //         .then((res) =>
-    //         {
-    //             if (res.status === 200)
-    //             {
-    //                 res.json()
-    //                     .then((json) =>
-    //                     {
-    //                         setTemplates(json);
-    //                     })
-    //                     .catch((err) =>
-    //                     {
-    //                         console.log("Parsing Templates Error: ", err);
-    //                     });
-    //             }
-    //         })
-    //         .catch((err) =>
-    //         {
-    //             console.log("Error Retrieving Templates: ", err);
-    //         });
-    // }
 
     // Function to fetch sessions
     // Sorts data by date so that most recent is first
@@ -213,6 +195,18 @@ export default function PastSessionsPage()
         bottomSheetModalRef.current?.present();
     }, []);
 
+    function getAllMachines()
+    {
+        //Get all machines in an arryay.
+        var tempMachineArray: Machine[] = machines;
+        for (const template of templates)
+        {
+            tempMachineArray.push(...template.machines);
+        }
+        //Removing duplicates by converting to set and back.
+        setAllMachines([...new Set<Machine>(tempMachineArray)]);
+    }
+
     //Functions that navigate.
 
     function startSession(): void
@@ -311,6 +305,7 @@ export default function PastSessionsPage()
                 enablePanDownToClose={true}
             >
                 <SessionSlide
+                    allMachines={allMachines}
                     currentSession={selectedSession}
                     name={
                         selectedSession ? dateToName(selectedSession.date) : ""
