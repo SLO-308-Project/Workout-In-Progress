@@ -1,5 +1,5 @@
 import {Text, FlatList, Pressable, View} from "react-native";
-import {useState, useEffect} from "react";
+import {useState, useEffect, useRef, useCallback} from "react";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useIsFocused} from "@react-navigation/native";
 import {useRouter} from "expo-router";
@@ -15,38 +15,93 @@ import {
 import {Session} from "@/types/session";
 import SessionComponent, {Empty} from "@/components/sessions/sessionComponent";
 import StartCurrentSession from "@/components/currSession/StartCurrentSession";
-import {fetchGetTemplates} from "@/fetchers/templateFetchers";
-import {useTemplateContext} from "@/util/templateContext";
+// import {fetchGetTemplates} from "@/fetchers/templateFetchers";
+// import {useTemplateContext} from "@/util/templateContext";
+import {BottomSheetModal} from "@gorhom/bottom-sheet";
+import SessionSlide from "@/components/sessions/sessionSlide";
 
 export default function PastSessionsPage()
 {
+    //general Data
     const [sessions, setSessions] = useState<Session[]>([]);
     const [currSession, setCurrSession] = useState<boolean>();
+    // const {setTemplates} = useTemplateContext();
     const router = useRouter();
-    const {setTemplates} = useTemplateContext();
+    //Info for sessionSlide
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+    const [selectedSession, setSelectedSession] = useState<Session | null>(
+        null,
+    );
 
-    function populateTemplates()
+    const isFocused = useIsFocused();
+
+    useEffect(() =>
     {
-        console.log("Populating Templates");
-        fetchGetTemplates()
+        if (isFocused)
+        {
+            // populateTemplates();
+            loadSessions();
+            loadCurrSession();
+        }
+    }, [isFocused]);
+
+    // Populates Templates. Used for starting a session.
+    // function populateTemplates()
+    // {
+    //     console.log("Populating Templates");
+    //     fetchGetTemplates()
+    //         .then((res) =>
+    //         {
+    //             if (res.status === 200)
+    //             {
+    //                 res.json()
+    //                     .then((json) =>
+    //                     {
+    //                         setTemplates(json);
+    //                     })
+    //                     .catch((err) =>
+    //                     {
+    //                         console.log("Parsing Templates Error: ", err);
+    //                     });
+    //             }
+    //         })
+    //         .catch((err) =>
+    //         {
+    //             console.log("Error Retrieving Templates: ", err);
+    //         });
+    // }
+
+    // Function to fetch sessions
+    // Sorts data by date so that most recent is first
+    function loadSessions(): void
+    {
+        fetchGetSessions()
+            .then((res: Response) => res.json())
+            .then((data: Session[]) =>
+            {
+                const sortedSessions = [...data]
+                    .sort(
+                        (sessionA, sessionB) =>
+                            new Date(sessionB.date).getTime() -
+                            new Date(sessionA.date).getTime(),
+                    )
+                    .reverse();
+                setSessions(sortedSessions);
+            })
+            .catch((error: unknown) => console.log(error));
+    }
+
+    // currSession is a boolean telling if a session is set or not.
+    function loadCurrSession(): void
+    {
+        fetchCurrentSession()
             .then((res) =>
             {
-                if (res.status === 200)
-                {
-                    res.json()
-                        .then((json) =>
-                        {
-                            setTemplates(json);
-                        })
-                        .catch((err) =>
-                        {
-                            console.log("Parsing Templates Error: ", err);
-                        });
-                }
+                setCurrSession(res.status !== 204);
             })
             .catch((err) =>
             {
-                console.log("Error Retrieving Templates: ", err);
+                console.log("Unable to find curr session", err);
             });
     }
 
@@ -126,50 +181,6 @@ export default function PastSessionsPage()
 
         return name;
     }
-    // Function to fetch sessions
-    // Sorts data by date so that most recent is first
-    function loadSessions(): void
-    {
-        fetchGetSessions()
-            .then((res: Response) => res.json())
-            .then((data: Session[]) =>
-            {
-                const sortedSessions = [...data]
-                    .sort(
-                        (sessionA, sessionB) =>
-                            new Date(sessionB.date).getTime() -
-                            new Date(sessionA.date).getTime(),
-                    )
-                    .reverse();
-                setSessions(sortedSessions);
-            })
-            .catch((error: unknown) => console.log(error));
-    }
-
-    function loadCurrSession(): void
-    {
-        fetchCurrentSession()
-            .then((res) =>
-            {
-                setCurrSession(res.status !== 204);
-            })
-            .catch((err) =>
-            {
-                console.log("Unable to find curr session", err);
-            });
-    }
-
-    const isFocused = useIsFocused();
-
-    useEffect(() =>
-    {
-        if (isFocused)
-        {
-            populateTemplates();
-            loadSessions();
-            loadCurrSession();
-        }
-    }, [isFocused]);
 
     // Function to delete a session
     // Will refresh session list if successful
@@ -193,6 +204,16 @@ export default function PastSessionsPage()
                 console.log("Error deleting session:", error);
             });
     }
+
+    //SessionSlide Functions
+
+    const handleOpenSheet = useCallback((session: Session) =>
+    {
+        setSelectedSession(session);
+        bottomSheetModalRef.current?.present();
+    }, []);
+
+    //Functions that navigate.
 
     function startSession(): void
     {
@@ -256,6 +277,7 @@ export default function PastSessionsPage()
                 data={sessions.reverse()}
                 renderItem={({item, index}) => (
                     <SessionComponent
+                        onPress={() => handleOpenSheet(item)}
                         key={index}
                         sessionId={item._id}
                         name={dateToName(item.date)}
@@ -276,16 +298,34 @@ export default function PastSessionsPage()
                     </View>
                 }
             />
-            {/* <Pressable
-                className="absolute bottom-8 right-8 bg-yellow-400 p-4 rounded-full shadow-sm"
-                onPress={() => startSession()}
+            <BottomSheetModal
+                ref={bottomSheetModalRef}
+                backgroundStyle={{
+                    backgroundColor: "#F9F9F9",
+                }}
+                index={0}
+                snapPoints={["90%"]}
+                enableDynamicSizing={false}
+                enableHandlePanningGesture={true}
+                enableContentPanningGesture={false}
+                enablePanDownToClose={true}
             >
-                <View
-                    className="absolute bottom-8 right-8 bg-yellow-400 p-4 rounded-full shadow-sm"
-                >
-                    <AntDesign name="plus" size={32} color="white" />
-                </View>
-            </Pressable> */}
+                <SessionSlide
+                    currentSession={selectedSession}
+                    name={
+                        selectedSession ? dateToName(selectedSession.date) : ""
+                    }
+                    date={
+                        selectedSession ? formatDate(selectedSession.date) : ""
+                    }
+                    duration={
+                        selectedSession
+                            ? formatDuration(selectedSession.time)
+                            : ""
+                    }
+                    deleteSession={deleteSession}
+                />
+            </BottomSheetModal>
         </SafeAreaView>
     );
 }

@@ -17,13 +17,19 @@ import {
 
 import {Machine} from "@/types/machine";
 import MachineSlide from "@/components/machines/machineEditSlide";
+import {useMachineContext} from "@/util/machineContext";
 
 function MachinePage()
 {
-    const [machines, setMachine] = useState<Machine[]>([]);
+    const {machines, setMachines} = useMachineContext();
     const [search, setSearch] = useState<string>("");
     const router = useRouter();
     const isFocused = useIsFocused();
+
+    useEffect(() =>
+    {
+        if (isFocused) getMachines();
+    }, [isFocused]);
 
     // State for Edit Bottom Sheet Modal
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -55,11 +61,6 @@ function MachinePage()
         setSearch(search);
     };
 
-    useEffect(() =>
-    {
-        if (isFocused) getMachines();
-    }, [isFocused]);
-
     function getMachines(): void
     {
         fetchGetMachine()
@@ -73,7 +74,7 @@ function MachinePage()
             .then((res_data) =>
             {
                 console.log(`GETMACHINES RES_DATA=${JSON.stringify(res_data)}`);
-                setMachine(res_data);
+                setMachines(res_data);
                 setIsRefreshing(false);
             })
             .catch((error: unknown) => console.log(error));
@@ -88,7 +89,7 @@ function MachinePage()
                 if (res.ok)
                 {
                     // Update local list
-                    setMachine(
+                    setMachines(
                         machines.map((oldMachine) =>
                             oldMachine._id === newMachine._id
                                 ? {...oldMachine, ...newMachine}
@@ -110,7 +111,7 @@ function MachinePage()
             {
                 if (res.ok)
                 {
-                    setMachine(
+                    setMachines(
                         machines.filter((machine) => machine.name !== name),
                     );
                 }
