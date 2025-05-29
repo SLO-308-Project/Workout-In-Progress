@@ -1,5 +1,5 @@
 import {Text, FlatList, Pressable, View} from "react-native";
-import {useState, useEffect} from "react";
+import {useState, useEffect, useRef, useCallback} from "react";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useIsFocused} from "@react-navigation/native";
 import {useRouter} from "expo-router";
@@ -15,38 +15,73 @@ import {
 import {Session} from "@/types/session";
 import SessionComponent, {Empty} from "@/components/sessions/sessionComponent";
 import StartCurrentSession from "@/components/currSession/StartCurrentSession";
-import {fetchGetTemplates} from "@/fetchers/templateFetchers";
+// import {fetchGetTemplates} from "@/fetchers/templateFetchers";
+// import {useTemplateContext} from "@/util/templateContext";
+import {BottomSheetModal} from "@gorhom/bottom-sheet";
+import SessionSlide from "@/components/sessions/sessionSlide";
 import {useTemplateContext} from "@/util/templateContext";
+import {useMachineContext} from "@/util/machineContext";
+import {Machine} from "@/types/machine";
 
 export default function PastSessionsPage()
 {
+    //general Data
     const [sessions, setSessions] = useState<Session[]>([]);
     const [currSession, setCurrSession] = useState<boolean>();
     const router = useRouter();
-    const {setTemplates} = useTemplateContext();
+    //Info for sessionSlide
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+    const [selectedSession, setSelectedSession] = useState<Session | null>(
+        null,
+    );
+    //Machine related data
+    const {templates} = useTemplateContext();
+    const {machines} = useMachineContext();
+    const [allMachines, setAllMachines] = useState<Machine[]>([]);
 
-    function populateTemplates()
+    const isFocused = useIsFocused();
+
+    useEffect(() =>
     {
-        console.log("Populating Templates");
-        fetchGetTemplates()
+        if (isFocused)
+        {
+            console.log("Before Focus setup");
+            getAllMachines();
+            loadSessions();
+            loadCurrSession();
+            console.log("after Focus setup");
+        }
+    }, [isFocused]);
+
+    // Function to fetch sessions
+    // Sorts data by date so that most recent is first
+    function loadSessions(): void
+    {
+        fetchGetSessions()
+            .then((res: Response) => res.json())
+            .then((data: Session[]) =>
+            {
+                const sortedSessions = [...data].sort(
+                    (sessionA, sessionB) =>
+                        new Date(sessionA.date).getTime() -
+                        new Date(sessionB.date).getTime(),
+                );
+                setSessions(sortedSessions);
+            })
+            .catch((error: unknown) => console.log(error));
+    }
+
+    // currSession is a boolean telling if a session is set or not.
+    function loadCurrSession(): void
+    {
+        fetchCurrentSession()
             .then((res) =>
             {
-                if (res.status === 200)
-                {
-                    res.json()
-                        .then((json) =>
-                        {
-                            setTemplates(json);
-                        })
-                        .catch((err) =>
-                        {
-                            console.log("Parsing Templates Error: ", err);
-                        });
-                }
+                setCurrSession(res.status !== 204);
             })
             .catch((err) =>
             {
-                console.log("Error Retrieving Templates: ", err);
+                console.log("Unable to find curr session", err);
             });
     }
 
@@ -103,11 +138,11 @@ export default function PastSessionsPage()
             name += "Saturday ";
         }
 
-        if (hour < 6)
+        if (hour < 7)
         {
-            name += "Late Night Session";
+            name += "Sunrise Session";
         }
-        else if (hour >= 6 && hour < 12)
+        else if (hour >= 7 && hour < 12)
         {
             name += "Morning Session";
         }
@@ -126,50 +161,6 @@ export default function PastSessionsPage()
 
         return name;
     }
-    // Function to fetch sessions
-    // Sorts data by date so that most recent is first
-    function loadSessions(): void
-    {
-        fetchGetSessions()
-            .then((res: Response) => res.json())
-            .then((data: Session[]) =>
-            {
-                const sortedSessions = [...data]
-                    .sort(
-                        (sessionA, sessionB) =>
-                            new Date(sessionB.date).getTime() -
-                            new Date(sessionA.date).getTime(),
-                    )
-                    .reverse();
-                setSessions(sortedSessions);
-            })
-            .catch((error: unknown) => console.log(error));
-    }
-
-    function loadCurrSession(): void
-    {
-        fetchCurrentSession()
-            .then((res) =>
-            {
-                setCurrSession(res.status !== 204);
-            })
-            .catch((err) =>
-            {
-                console.log("Unable to find curr session", err);
-            });
-    }
-
-    const isFocused = useIsFocused();
-
-    useEffect(() =>
-    {
-        if (isFocused)
-        {
-            populateTemplates();
-            loadSessions();
-            loadCurrSession();
-        }
-    }, [isFocused]);
 
     // Function to delete a session
     // Will refresh session list if successful
@@ -193,6 +184,28 @@ export default function PastSessionsPage()
                 console.log("Error deleting session:", error);
             });
     }
+
+    //SessionSlide Functions
+
+    const handleOpenSheet = useCallback((session: Session) =>
+    {
+        setSelectedSession(session);
+        bottomSheetModalRef.current?.present();
+    }, []);
+
+    function getAllMachines()
+    {
+        //Get all machines in an arryay.
+        var tempMachineArray: Machine[] = machines;
+        for (const template of templates)
+        {
+            tempMachineArray.push(...template.machines);
+        }
+        //Removing duplicates by converting to set and back.
+        setAllMachines([...new Set<Machine>(tempMachineArray)]);
+    }
+
+    //Functions that navigate.
 
     function startSession(): void
     {
@@ -239,23 +252,26 @@ export default function PastSessionsPage()
                     <Feather
                         className=""
                         name="settings"
-                        size={24}
+                        size={34}
                         color="black"
                     />
                 </Pressable>
             </View>
-            <Pressable
-                className="flex-row justify-center"
-                onPress={openStatisticsStack}
-            >
-                <Text className="text-lg font-semibold text-black tracking-tight px-4 pt-4 pb-2">
-                    Statistics
-                </Text>
-            </Pressable>
+            <View className="flex-row justify-center py-2">
+                <Pressable
+                    className=" w-3/5 rounded-lg border bg-gray-100 border-gray-300 flex-row justify-center"
+                    onPress={openStatisticsStack}
+                >
+                    <Text className="text-2xl font-semibold text-black tracking-tight py-1">
+                        Statistics
+                    </Text>
+                </Pressable>
+            </View>
             <FlatList
                 data={sessions.reverse()}
                 renderItem={({item, index}) => (
                     <SessionComponent
+                        onPress={() => handleOpenSheet(item)}
                         key={index}
                         sessionId={item._id}
                         name={dateToName(item.date)}
@@ -276,16 +292,35 @@ export default function PastSessionsPage()
                     </View>
                 }
             />
-            {/* <Pressable
-                className="absolute bottom-8 right-8 bg-yellow-400 p-4 rounded-full shadow-sm"
-                onPress={() => startSession()}
+            <BottomSheetModal
+                ref={bottomSheetModalRef}
+                backgroundStyle={{
+                    backgroundColor: "#F9F9F9",
+                }}
+                index={0}
+                snapPoints={["90%"]}
+                enableDynamicSizing={false}
+                enableHandlePanningGesture={true}
+                enableContentPanningGesture={false}
+                enablePanDownToClose={true}
             >
-                <View
-                    className="absolute bottom-8 right-8 bg-yellow-400 p-4 rounded-full shadow-sm"
-                >
-                    <AntDesign name="plus" size={32} color="white" />
-                </View>
-            </Pressable> */}
+                <SessionSlide
+                    allMachines={allMachines}
+                    currentSession={selectedSession}
+                    name={
+                        selectedSession ? dateToName(selectedSession.date) : ""
+                    }
+                    date={
+                        selectedSession ? formatDate(selectedSession.date) : ""
+                    }
+                    duration={
+                        selectedSession
+                            ? formatDuration(selectedSession.time)
+                            : ""
+                    }
+                    deleteSession={deleteSession}
+                />
+            </BottomSheetModal>
         </SafeAreaView>
     );
 }

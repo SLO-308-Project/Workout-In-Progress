@@ -24,6 +24,7 @@ import {
     fetchCurrentSession,
     fetchGetSessions,
 } from "@/fetchers/currentSessionFetchers";
+import {useMachineContext} from "@/util/machineContext";
 
 const clockSpeed = 200;
 
@@ -36,13 +37,14 @@ export default function CurrentSessionPage()
 
     const isFocused = useIsFocused();
     // State for the users currently selected machine
+    const {machines, setMachines} = useMachineContext();
+    // const [machines, setMachines] = useState<Machine[]>([]);
 
-    const [machines, setMachines] = useState<Machine[]>([]);
     useEffect(() =>
     {
         if (isFocused)
         {
-            getMachines();
+            // getMachines();
             getCurrentSession();
             getSessionNumber();
         }
