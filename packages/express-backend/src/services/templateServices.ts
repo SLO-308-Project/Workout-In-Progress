@@ -72,9 +72,12 @@ function addTemplate(
         .findById(userId, null, options)
         .then((user) =>
         {
-            console.log(user);
+            if (user == null)
+            {
+                throw new Error("Unable to find user");
+            }
             return templateListModel.findByIdAndUpdate(
-                user?.templateListId,
+                user.templateListId,
                 {$push: {templateIds: templateToAdd._id}},
                 options,
             );
@@ -140,8 +143,12 @@ function deleteTemplate(id: string, userId: string)
         .findOne({_id: userId})
         .then((user) =>
         {
-            templateListModel.findOneAndUpdate(
-                {_id: user?.templateListId},
+            if (user == null)
+            {
+                throw new Error("Unable to find user");
+            }
+            return templateListModel.findOneAndUpdate(
+                {_id: user.templateListId},
                 {$pull: {templateIds: id}},
             );
         })
@@ -152,6 +159,7 @@ function deleteTemplate(id: string, userId: string)
         .catch((error) =>
         {
             console.log(error);
+            return null;
         });
 }
 

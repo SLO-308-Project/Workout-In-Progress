@@ -3,7 +3,7 @@ import machineLogModel from "../../src/data/machineLog";
 import sessionTemplateModel from "../../src/data/sessionTemplate";
 import userModel from "../../src/data/user";
 import machineServices from "../../src/services/machineServices";
-import {Types} from "mongoose";
+import mongoose, {Types} from "mongoose";
 
 describe("Machine Services Tests", () =>
 {
@@ -46,6 +46,33 @@ describe("Machine Services Tests", () =>
         expect(result.length).toBe(1);
         expect(result[0].name).toBe(name);
         expect(result[0].muscle).toBe(muscle);
+    });
+
+    test("Fetch multiple machines --- successful", async () =>
+    {
+        const stubUserId = "66561f94a8c2f9d4c4b9e31a";
+        const mockSession = {} as mongoose.ClientSession;
+        const machines = [
+            new machineModel(),
+            new machineModel(),
+            new machineModel(),
+        ];
+        const machineIds: string[] = machines.map(
+            (machine) => machine._id?.toString() as string,
+        );
+        userModel.aggregate = jest.fn().mockReturnValue({
+            exec: jest.fn().mockResolvedValue(machines),
+            session: jest.fn().mockResolvedValue(null),
+        });
+        machineModel.find = jest.fn().mockResolvedValue(machines);
+
+        const result = await machineServices.getMachinesByIds(
+            machineIds,
+            stubUserId,
+            {session: mockSession},
+        );
+        expect(result).toBeTruthy();
+        expect(result?.length).toBe(3);
     });
 
     test("Fetch saved machiens --- successful", async () =>
@@ -240,6 +267,39 @@ describe("Machine Services Tests", () =>
         );
         expect(result).toBeTruthy();
         expect(result?.machines[0]._id?.toString()).toBe(newMachineId);
+    });
+
+    test("Save machine from template -- successful", async () =>
+    {
+        const machine = new machineModel({
+            attributes: [{name: "attr1"}, {name: "attr2"}],
+        });
+        const copyMachine = new machineModel({
+            attributes: [{name: "attr1"}, {name: "attr2"}],
+        });
+        const sourceTemplate = new sessionTemplateModel({
+            machines: [machine],
+        });
+        const destTemplate = new sessionTemplateModel({
+            machines: [copyMachine],
+        });
+        const machineId = machine._id?.toString() || "";
+        const sourceTemplateId = sourceTemplate._id?.toString() || "";
+        const destTemplateId = destTemplate._id?.toString() || "";
+
+        sessionTemplateModel.findById = jest
+            .fn()
+            .mockResolvedValue(sourceTemplate);
+        sessionTemplateModel.findByIdAndUpdate = jest
+            .fn()
+            .mockResolvedValue(destTemplate);
+        const result = await machineServices.saveMachineFromTemplate(
+            machineId,
+            destTemplateId,
+            sourceTemplateId,
+        );
+        expect(result).toBeTruthy();
+        expect(result?.machines[0]._id?.toString()).not.toEqual(machineId);
     });
 
     test("Remove machine --- successful", async () =>
@@ -447,15 +507,66 @@ describe("Machine Services Tests", () =>
             ],
         });
         const machineId = newMachine?._id?.toString() || "";
-        const stubId = "1";
-        sessionTemplateModel.findByIdAndUpdate = jest
-            .fn()
-            .mockResolvedValue(null);
+        const stubId = "";
+        machineModel.findById = jest.fn().mockResolvedValue(null);
         const result = await machineServices.saveMachine(machineId, stubId);
         expect(result).toBeFalsy();
     });
 
-    test("Remove machine --- unsuccessful", async () =>
+    test("Save machine from template -- failure no template", async () =>
+    {
+        const machineId = "";
+        const sourceTemplateId = "";
+        const destTemplateId = "";
+
+        sessionTemplateModel.findById = jest.fn().mockResolvedValue(null);
+        const result = await machineServices.saveMachineFromTemplate(
+            machineId,
+            destTemplateId,
+            sourceTemplateId,
+        );
+        expect(result).toBeFalsy();
+    });
+
+    test("Save machine from template -- failure no machine", async () =>
+    {
+        const machine = new machineModel();
+        const sourceTemplate = new sessionTemplateModel({
+            machines: [machine],
+        });
+        const machineId = "";
+        const sourceTemplateId = sourceTemplate._id?.toString() || "";
+        const destTemplateId = "";
+
+        sessionTemplateModel.findById = jest
+            .fn()
+            .mockResolvedValue(sourceTemplate);
+        const result = await machineServices.saveMachineFromTemplate(
+            machineId,
+            destTemplateId,
+            sourceTemplateId,
+        );
+        expect(result).toBeFalsy();
+    });
+
+    test("Fetch multiple machines --- failure", async () =>
+    {
+        const stubUserId = "66561f94a8c2f9d4c4b9e31a";
+        const machineIds: string[] = [];
+        userModel.aggregate = jest.fn().mockReturnValue({
+            exec: jest.fn().mockImplementation(async () =>
+            {
+                await Promise.reject(new Error("boom"));
+            }),
+        });
+        const result = await machineServices.getMachinesByIds(
+            machineIds,
+            stubUserId,
+        );
+        expect(result).toBeFalsy();
+    });
+
+    test("Remove machine --- failure", async () =>
     {
         const template = new sessionTemplateModel({
             workout: [],

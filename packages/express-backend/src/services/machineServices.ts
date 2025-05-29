@@ -140,20 +140,24 @@ async function saveMachineFromTemplate(
         .findById(sourceTemplateId, null, options)
         .then((template) =>
         {
-            const machine = template?.machines.filter((mach) =>
+            if (template == null)
             {
-                return mach._id?.toString() !== machineId;
+                throw new Error("Unable to find source template");
+            }
+            const machine = template.machines.find((mach) =>
+            {
+                return mach._id?.toString() === machineId;
             });
             if (!machine)
             {
-                return null;
+                throw new Error("Unable to find machine in template");
             }
-            machine[0]._id = new Types.ObjectId();
-            machine[0].attributes.map((attribute) =>
+            machine._id = new Types.ObjectId();
+            machine.attributes.map((attribute) =>
             {
                 attribute._id = new Types.ObjectId();
             });
-            return machine[0];
+            return machine;
         })
         .then((machine) =>
         {
