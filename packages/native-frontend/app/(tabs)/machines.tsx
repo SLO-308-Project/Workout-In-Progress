@@ -19,6 +19,9 @@ import {Machine} from "@/types/machine";
 import MachineSlide from "@/components/machines/machineEditSlide";
 import {useMachineContext} from "@/util/machineContext";
 
+const isCypress =
+    typeof window !== "undefined" && window.__IS_CYPRESS__ === true;
+
 function MachinePage()
 {
     const {machines, setMachines} = useMachineContext();
@@ -160,18 +163,21 @@ function MachinePage()
             <FlatList
                 data={filterMachines()}
                 renderItem={({item, index}) => (
-                    <MachineComponent
-                        onPress={() => handleOpenSheet(item)}
-                        key={index}
-                        machine={item}
-                        handleDelete={removeOneMachine}
-                    />
+                    <View testID={`machine-item`} key={index}>
+                        <MachineComponent
+                            onPress={() => handleOpenSheet(item)}
+                            key={index}
+                            machine={item}
+                            handleDelete={removeOneMachine}
+                        />
+                    </View>
                 )}
                 ListEmptyComponent={<Empty />}
                 showsVerticalScrollIndicator={false}
                 className="flex-1"
                 onRefresh={handleRefresh}
                 refreshing={isRefreshing}
+                initialNumToRender={isCypress ? 10000 : 10}
             />
             <BottomSheetModal
                 ref={bottomSheetModalRef}
