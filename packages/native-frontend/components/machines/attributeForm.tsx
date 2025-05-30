@@ -1,10 +1,11 @@
 import {Unit} from "@/types/unit";
 import {Attribute} from "@/types/attribute";
 import {useState} from "react";
-import {View, TextInput, Pressable, Text, Modal} from "react-native";
+import {View, TextInput, Pressable, Text, Platform} from "react-native";
 import {Picker} from "@react-native-picker/picker";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {validateAttributeName} from "@/util/machineValidator";
+import WheelPicker from "@quidone/react-native-wheel-picker";
 
 type Props = {
     handleAddAttribute: (attribute: Attribute) => boolean;
@@ -16,6 +17,12 @@ function AttributeForm({handleAddAttribute}: Props)
         name: "",
         unit: Unit.LBS, // default is the first unit in the enum. which is lbs
     });
+
+    const unitData = Object.entries(Unit).map(([value, label]) => ({
+        value: label,
+        label: label,
+    }));
+
     const [showError, setShowError] = useState(false);
 
     function handleUnitChange(unit: Unit)
@@ -73,18 +80,37 @@ function AttributeForm({handleAddAttribute}: Props)
                     placeholderTextColor="#A0A0A0"
                     onChangeText={(name) => handleNameChange(name)}
                 />
-                <Picker
-                    className="w-20 bg-gray-100 px-4 py-3 border-gray-200 rounded-xl text-base 900 items-center"
-                    prompt="Units"
-                    onValueChange={(value: Unit) =>
-                    {
-                        handleUnitChange(value);
-                    }}
-                >
-                    {Object.values(Unit).map((unit, index) => (
-                        <Picker.Item key={index} label={unit} value={unit} />
-                    ))}
-                </Picker>
+                {Platform.OS !== "web" && (
+                    <WheelPicker
+                        data={unitData}
+                        value={attribute.unit}
+                        onValueChanged={({item: {value}}) =>
+                            handleUnitChange(value)
+                        }
+                        itemHeight={27}
+                        visibleItemCount={3}
+                        width={64}
+                        itemTextStyle={{fontSize: 16}}
+                    />
+                )}
+                {Platform.OS === "web" && (
+                    <Picker
+                        className="w-20 bg-gray-100 px-4 py-3 border-gray-200 rounded-xl text-base 900 items-center"
+                        prompt="Units"
+                        onValueChange={(value: Unit) =>
+                        {
+                            handleUnitChange(value);
+                        }}
+                    >
+                        {Object.values(Unit).map((unit, index) => (
+                            <Picker.Item
+                                key={index}
+                                label={unit}
+                                value={unit}
+                            />
+                        ))}
+                    </Picker>
+                )}
                 <Pressable
                     onPress={handleAdd}
                     className="p-2 rounded-full active:scale-90"
