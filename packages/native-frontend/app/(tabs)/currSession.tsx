@@ -1,13 +1,16 @@
 import {View, Text, Pressable, FlatList} from "react-native";
-import {useState, useEffect} from "react";
+import {useRef, useState, useEffect, useCallback} from "react";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useIsFocused} from "@react-navigation/native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {useRouter, useLocalSearchParams} from "expo-router";
+import {BottomSheetModal} from "@gorhom/bottom-sheet";
 
 import {Machine} from "@/types/machine";
 import {Session} from "@/types/session";
 import {Workout} from "@/types/workout";
+import {AttributeValue} from "@/types/attributeValue";
+import {Set} from "@/types/set";
 
 import WorkoutComponent, {
     Empty,
@@ -17,7 +20,10 @@ import {
     fetchGetWorkouts,
     fetchPostWorkout,
     fetchDeleteWorkout,
+    fetchPostSet,
+    fetchDeleteSet,
 } from "@/fetchers/workoutFetchers";
+import WorkoutSlide from "@/components/currSession/workoutSetsSlide";
 
 import {fetchGetMachine} from "@/fetchers/machineFetchers";
 
@@ -44,6 +50,12 @@ export default function CurrentSessionPage()
 
     // Receives machineId passed from workout select
     let {machineId} = useLocalSearchParams<{machineId?: string}>();
+
+    // State for Workout Bototm Sheet Modal
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+    const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(
+        null,
+    );
 
     useEffect(() =>
     {
@@ -87,6 +99,13 @@ export default function CurrentSessionPage()
             return () => clearInterval(interval);
         }
     }, [sessions]);
+
+    // Called when a workout card is tapped
+    const handleOpenSheet = useCallback((workout: Workout) =>
+    {
+        setSelectedWorkout(workout); // Set the workout to be rendered
+        bottomSheetModalRef.current?.present(); // Render the selected workout's card
+    }, []);
 
     function startSession(): void
     {
@@ -295,6 +314,94 @@ export default function CurrentSessionPage()
         }
     }
 
+    function addSet(workoutId: string, attributeValues: AttributeValue[])
+    {
+        if (!sessions)
+        {
+            throw new Error("Can't find a session to add set to.");
+        }
+
+        for (const attributeValue of attributeValues)
+        {
+            if (attributeValue.value === -1)
+            {
+                console.log("Attempted to add set with missing value(s)");
+                return;
+            }
+        }
+        fetchPostSet(sessions._id, workoutId, attributeValues)
+            .then((res) =>
+            {
+                if (res.ok)
+                {
+                    return res.text();
+                }
+            })
+            .then((dbSetId) =>
+            {
+                if (!dbSetId)
+                {
+                    throw new Error(
+                        "Database successfully updated but didnt return set id.",
+                    );
+                }
+                const newSet: Set = {
+                    _id: dbSetId,
+                    attributeValues: attributeValues,
+                };
+                // Add the set to the workout locally
+                setWorkouts(
+                    workouts.map((oldWorkout) =>
+                        oldWorkout._id === workoutId
+                            ? {
+                                  ...oldWorkout,
+                                  sets: [...oldWorkout.sets, newSet],
+                              }
+                            : oldWorkout,
+                    ),
+                );
+            })
+            .catch((error: unknown) =>
+            {
+                console.log(error);
+            });
+    }
+
+    function deleteSet(workoutId: string, setId: string)
+    {
+        if (!sessions)
+        {
+            throw new Error("Can't find a session to delete set.");
+        }
+
+        fetchDeleteSet(sessions._id, workoutId, setId)
+            .then((res) =>
+            {
+                if (res.ok)
+                {
+                    // Remove the set from the workout locally
+                    setWorkouts(
+                        workouts.map((oldWorkout) =>
+                            oldWorkout._id === workoutId
+                                ? {
+                                      ...oldWorkout,
+                                      sets: [
+                                          ...oldWorkout.sets.filter(
+                                              (set) => set._id !== setId,
+                                          ),
+                                      ],
+                                  }
+                                : oldWorkout,
+                        ),
+                    );
+                }
+            })
+            .catch((error: unknown) =>
+            {
+                console.log(error);
+            });
+    }
+
     const machineIdToName = (machineId: string) =>
     {
         if (machines)
@@ -343,6 +450,7 @@ export default function CurrentSessionPage()
                         data={workouts}
                         renderItem={({item, index}) => (
                             <WorkoutComponent
+                                onPress={() => handleOpenSheet(item)}
                                 key={index}
                                 workoutId={item._id}
                                 machineId={item.machineId}
@@ -367,6 +475,24 @@ export default function CurrentSessionPage()
                             </Text>
                         </Pressable>
                     </View>
+                    <BottomSheetModal
+                        ref={bottomSheetModalRef}
+                        backgroundStyle={{
+                            backgroundColor: "#F9F9F9",
+                        }}
+                        index={0}
+                        snapPoints={["90%"]}
+                        enableDynamicSizing={false}
+                        enableHandlePanningGesture={true}
+                        enableContentPanningGesture={false}
+                        enablePanDownToClose={true}
+                    >
+                        <WorkoutSlide
+                            currWorkout={selectedWorkout}
+                            addSet={addSet}
+                            deleteSet={deleteSet}
+                        />
+                    </BottomSheetModal>
                 </>
             )}
         </SafeAreaView>

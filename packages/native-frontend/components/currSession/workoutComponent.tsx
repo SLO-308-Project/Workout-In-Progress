@@ -21,6 +21,7 @@ type Props = {
     handleDelete: (workoutId: string) => void;
     sets: Set[];
     sessionId: string | undefined;
+    onPress: () => void;
 };
 
 export default function Workout({
@@ -30,78 +31,9 @@ export default function Workout({
     handleDelete,
     sets,
     sessionId,
+    onPress,
 }: Props)
 {
-    const [showSets, setShowSets] = useState(false);
-    const [allSets, setSets] = useState<Set[]>(sets);
-
-    function addSet(attributeValues: AttributeValue[])
-    {
-        if (!sessionId)
-        {
-            throw new Error("Can't find a session to add set to.");
-        }
-
-        for (const attributeValue of attributeValues)
-        {
-            if (attributeValue.value === -1)
-            {
-                console.log("Attempted to add set with missing value(s)");
-                return;
-            }
-        }
-        console.log(`attributeValues=${attributeValues}`);
-        fetchPostSet(sessionId, workoutId, attributeValues)
-            .then((res) =>
-            {
-                if (res.ok)
-                {
-                    return res.text();
-                }
-            })
-            .then((dbSetId) =>
-            {
-                if (!dbSetId)
-                {
-                    throw new Error(
-                        "Database successfully updated but didnt return set id.",
-                    );
-                }
-                const newSet: Set = {
-                    _id: dbSetId,
-                    attributeValues: attributeValues,
-                };
-                setSets([...allSets, newSet]);
-            })
-            .catch((error: unknown) =>
-            {
-                console.log(error);
-            });
-    }
-
-    function deleteSet(_id: string)
-    {
-        if (!sessionId)
-        {
-            throw new Error("Can't find a session to delete set.");
-        }
-
-        fetchDeleteSet(sessionId, workoutId, _id)
-            .then((res) =>
-            {
-                if (res.ok)
-                {
-                    setSets(allSets.filter((set) => set._id !== _id));
-                }
-            })
-            .catch((error: unknown) =>
-            {
-                console.log(error);
-            });
-        // console.log(`deleteSet: _id=${_id} set._id=`)
-        // allSets.map((set) => console.log(set._id));
-    }
-
     function RightSwipeDelete(
         prog: SharedValue<number>,
         drag: SharedValue<number>,
@@ -135,16 +67,6 @@ export default function Workout({
         );
     }
 
-    const setList = () =>
-        allSets.map((set: Set, index) => (
-            <SetComponent
-                key={set._id}
-                set={set}
-                index={index + 1}
-                handleDelete={deleteSet}
-            />
-        ));
-
     return (
         <ReanimatedSwipeable
             friction={2}
@@ -152,16 +74,18 @@ export default function Workout({
             renderRightActions={RightSwipeDelete}
             overshootFriction={8}
         >
-            <View className="p-4 bg-white shadow-sm border border-neutral-200">
-                <View className="mb-1">
-                    <Text className="text-2xl font-bold text-gray-900">
-                        {machineName}
-                    </Text>
-                    <Text className="text-base text-gray-600">
-                        {sets.length} Sets
-                    </Text>
+            <Pressable onPress={onPress}>
+                <View className="p-4 bg-white shadow-sm border border-neutral-200">
+                    <View className="mb-1">
+                        <Text className="text-2xl font-bold text-gray-900">
+                            {machineName}
+                        </Text>
+                        <Text className="text-base text-gray-600">
+                            {sets.length} Sets
+                        </Text>
+                    </View>
                 </View>
-            </View>
+            </Pressable>
         </ReanimatedSwipeable>
     );
 }
