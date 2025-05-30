@@ -15,3 +15,7 @@
 
 // Import commands.js using ES2015 syntax:
 import "./commands";
+Cypress.on("window:before:load", (win) =>
+{
+    (win as any).__IS_CYPRESS__ = true;
+});

@@ -15,6 +15,9 @@ import {
 import ImportAsTemplate from "@/components/templates/ImportAsTemplate";
 import {useTemplateContext} from "@/util/templateContext";
 
+const isCypress =
+    typeof window !== "undefined" && window.__IS_CYPRESS__ === true;
+
 export default function TemplatesPage()
 {
     const {templates, setTemplates} = useTemplateContext(); //useState<Template[]>([]);
@@ -132,15 +135,18 @@ export default function TemplatesPage()
             <FlatList
                 data={filterTemplates()}
                 renderItem={({item, index}) => (
-                    <TemplateComponent
-                        key={index}
-                        template={item}
-                        handleDelete={removeOneTemplate}
-                    />
+                    <View testID={`template-item`} key={index}>
+                        <TemplateComponent
+                            key={index}
+                            template={item}
+                            handleDelete={removeOneTemplate}
+                        />
+                    </View>
                 )}
                 ListEmptyComponent={<Empty />}
                 showsVerticalScrollIndicator={false}
                 className="flex-1"
+                initialNumToRender={isCypress ? 10000 : 10}
             />
         </SafeAreaView>
     );
