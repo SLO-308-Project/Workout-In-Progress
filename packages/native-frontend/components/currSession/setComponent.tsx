@@ -1,7 +1,15 @@
 import {View, Text, Pressable} from "react-native";
 import {useState} from "react";
+import EvilIcons from "@expo/vector-icons/EvilIcons";
+import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
+import Reanimated, {
+    SharedValue,
+    useAnimatedStyle,
+} from "react-native-reanimated";
+
 import {AttributeValue} from "@/types/attributeValue";
 import {Set} from "@/types/set";
+
 import AttributeValueComponent from "@/components/currSession/attributeValue";
 
 type Props = {
@@ -30,30 +38,69 @@ export default function SetComponent({
         ),
     );
 
-    return (
-        <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 m-2">
-            <Pressable onPress={() => setShowAV(!showAV)}>
-                <View className="flex-row justify-between">
-                    <Text className="text-lg font-medium text-gray-900">
-                        Set {index}
-                    </Text>
-                    <Pressable
-                        onPress={(event) =>
+    function RightSwipeDelete(
+        prog: SharedValue<number>,
+        drag: SharedValue<number>,
+        swipeableMethods: {
+            openLeft: () => void;
+            openRight: () => void;
+            close: () => void;
+        },
+    )
+    {
+        const styleAnimation = useAnimatedStyle(() =>
+        {
+            return {
+                transform: [{translateX: drag.value + 140}],
+            };
+        });
+
+        return (
+            <Reanimated.View style={styleAnimation}>
+                <Pressable
+                    onPress={() =>
+                    {
+                        swipeableMethods.close();
+                        if (workoutId)
                         {
-                            event.stopPropagation();
-                            if (workoutId)
-                            {
-                                handleDelete(workoutId, set._id);
-                            }
-                        }}
-                        className="bg-red-50 px-3 py-1 rounded-full"
-                    >
-                        <Text className="text-sm text-red-600">Delete</Text>
-                    </Pressable>
-                </View>
-                {showAV && <View className="mt-3">{listAttributeValues}</View>}
-            </Pressable>
-        </View>
+                            handleDelete(workoutId, set._id);
+                        }
+                        else
+                        {
+                            console.log("Failed to delete workoutId");
+                        }
+                    }}
+                    className="bg-red-500 w-40 h-full flex items-center justify-center"
+                >
+                    <EvilIcons name="trash" size={36} color="white" />
+                </Pressable>
+            </Reanimated.View>
+        );
+    }
+
+    // Set # starts from 1 instead of 0
+    index = index + 1;
+
+    return (
+        <ReanimatedSwipeable
+            friction={2}
+            rightThreshold={20}
+            renderRightActions={RightSwipeDelete}
+            overshootFriction={8}
+        >
+            <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 m-2">
+                <Pressable onPress={() => setShowAV(!showAV)}>
+                    <View className="flex-row justify-between">
+                        <Text className="text-lg font-medium text-gray-900">
+                            Set {index}
+                        </Text>
+                    </View>
+                    {showAV && (
+                        <View className="mt-3">{listAttributeValues}</View>
+                    )}
+                </Pressable>
+            </View>
+        </ReanimatedSwipeable>
     );
 }
 
