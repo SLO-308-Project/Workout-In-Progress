@@ -57,6 +57,13 @@ export default function CurrentSessionPage()
         null,
     );
 
+    // Called when a workout card is tapped
+    const handleOpenSheet = useCallback((workout: Workout) =>
+    {
+        setSelectedWorkout(workout); // Set the workout to be rendered
+        bottomSheetModalRef.current?.present(); // Render the selected workout's card
+    }, []);
+
     useEffect(() =>
     {
         if (machineId)
@@ -69,9 +76,8 @@ export default function CurrentSessionPage()
     {
         if (isFocused)
         {
-            // getMachines();
             getCurrentSession();
-            getSessionNumber();
+            // getSessionNumber();
         }
     }, [isFocused]);
 
@@ -99,13 +105,6 @@ export default function CurrentSessionPage()
             return () => clearInterval(interval);
         }
     }, [sessions]);
-
-    // Called when a workout card is tapped
-    const handleOpenSheet = useCallback((workout: Workout) =>
-    {
-        setSelectedWorkout(workout); // Set the workout to be rendered
-        bottomSheetModalRef.current?.present(); // Render the selected workout's card
-    }, []);
 
     function startSession(): void
     {
@@ -160,16 +159,16 @@ export default function CurrentSessionPage()
             });
     }
 
-    function getMachines(): void
-    {
-        fetchGetMachine()
-            .then((res: Response) => res.json())
-            .then((json) =>
-            {
-                setMachines(json);
-            })
-            .catch((error: unknown) => console.log(error));
-    }
+    // function getMachines(): void
+    // {
+    //     fetchGetMachine()
+    //         .then((res: Response) => res.json())
+    //         .then((json) =>
+    //         {
+    //             setMachines(json);
+    //         })
+    //         .catch((error: unknown) => console.log(error));
+    // }
 
     /*
      * Dispatches the request to get the current session, sets the current session.
@@ -209,30 +208,30 @@ export default function CurrentSessionPage()
             });
     }
 
-    function getSessionNumber(): void
-    {
-        fetchGetSessions()
-            .then((res) =>
-            {
-                if (res.status === 200)
-                {
-                    return res.json();
-                }
-                else
-                {
-                    throw new Error("No sessions found");
-                }
-            })
-            .then((json: Session[]) =>
-            {
-                console.log(`session number: ${json.length}`);
-                setSessionNum(json.length);
-            })
-            .catch((err: unknown) =>
-            {
-                console.log("Error getting session number ", err);
-            });
-    }
+    // function getSessionNumber(): void
+    // {
+    //     fetchGetSessions()
+    //         .then((res) =>
+    //         {
+    //             if (res.status === 200)
+    //             {
+    //                 return res.json();
+    //             }
+    //             else
+    //             {
+    //                 throw new Error("No sessions found");
+    //             }
+    //         })
+    //         .then((json: Session[]) =>
+    //         {
+    //             console.log(`session number: ${json.length}`);
+    //             setSessionNum(json.length);
+    //         })
+    //         .catch((err: unknown) =>
+    //         {
+    //             console.log("Error getting session number ", err);
+    //         });
+    // }
 
     function getWorkouts(session: Session): void
     {
@@ -402,12 +401,11 @@ export default function CurrentSessionPage()
             });
     }
 
-    const machineIdToName = (machineId: string) =>
+    const machineIdToMachine = (machineId?: string) =>
     {
         if (machines)
         {
-            return machines.filter((machine) => machine._id === machineId)[0]
-                .name;
+            return machines.filter((machine) => machine._id === machineId)[0];
         }
     };
 
@@ -453,8 +451,7 @@ export default function CurrentSessionPage()
                                 onPress={() => handleOpenSheet(item)}
                                 key={index}
                                 workoutId={item._id}
-                                machineId={item.machineId}
-                                machineName={machineIdToName(item.machineId)}
+                                machine={machineIdToMachine(item.machineId)}
                                 handleDelete={removeWorkout}
                                 sessionId={sessions?._id}
                                 sets={item.sets}
@@ -488,7 +485,10 @@ export default function CurrentSessionPage()
                         enablePanDownToClose={true}
                     >
                         <WorkoutSlide
-                            currWorkout={selectedWorkout}
+                            machine={machineIdToMachine(
+                                selectedWorkout?.machineId,
+                            )}
+                            workout={selectedWorkout}
                             addSet={addSet}
                             deleteSet={deleteSet}
                         />

@@ -7,10 +7,16 @@ import AttributeValueComponent from "@/components/currSession/attributeValue";
 type Props = {
     set: Set;
     index: number;
-    handleDelete: (_id: string) => void;
+    handleDelete: (workoutId: string, setId: string) => void;
+    workoutId: string | undefined;
 };
 
-export default function SetComponent({set, index, handleDelete}: Props)
+export default function SetComponent({
+    set,
+    index,
+    workoutId,
+    handleDelete,
+}: Props)
 {
     const [showAV, setShowAV] = useState(false);
 
@@ -35,7 +41,10 @@ export default function SetComponent({set, index, handleDelete}: Props)
                         onPress={(event) =>
                         {
                             event.stopPropagation();
-                            handleDelete(set._id);
+                            if (workoutId)
+                            {
+                                handleDelete(workoutId, set._id);
+                            }
                         }}
                         className="bg-red-50 px-3 py-1 rounded-full"
                     >

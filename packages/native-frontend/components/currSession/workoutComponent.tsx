@@ -9,29 +9,27 @@ import Reanimated, {
 
 import {AttributeValue} from "@/types/attributeValue";
 import {Set} from "@/types/set";
+import {Machine} from "@/types/machine";
 
 import {fetchDeleteSet, fetchPostSet} from "@/fetchers/workoutFetchers";
 import SetComponent from "@/components/currSession/setComponent";
 import SetForm from "@/components/currSession/setForm";
 
 type Props = {
-    machineName: string | undefined;
-    machineId: string;
     workoutId: string;
     handleDelete: (workoutId: string) => void;
     sets: Set[];
     sessionId: string | undefined;
     onPress: () => void;
+    machine: Machine | undefined;
 };
 
 export default function Workout({
-    machineName,
-    machineId,
     workoutId,
     handleDelete,
     sets,
-    sessionId,
     onPress,
+    machine,
 }: Props)
 {
     function RightSwipeDelete(
@@ -78,7 +76,7 @@ export default function Workout({
                 <View className="p-4 bg-white shadow-sm border border-neutral-200">
                     <View className="mb-1">
                         <Text className="text-2xl font-bold text-gray-900">
-                            {machineName}
+                            {machine?.name}
                         </Text>
                         <Text className="text-base text-gray-600">
                             {sets.length} Sets
