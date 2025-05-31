@@ -56,3 +56,14 @@ export default function SetComponent({
         </View>
     );
 }
+
+export function Empty()
+{
+    return (
+        <View className="flex-1 items-center pt-16">
+            <Text className="text-2xl text-gray-300 font-semibold">
+                Tap + to add a set
+            </Text>
+        </View>
+    );
+}

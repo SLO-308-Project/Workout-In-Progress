@@ -5,6 +5,10 @@ import {useIsFocused} from "@react-navigation/native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {useRouter, useLocalSearchParams} from "expo-router";
 import {BottomSheetModal} from "@gorhom/bottom-sheet";
+import {
+    configureReanimatedLogger,
+    ReanimatedLogLevel,
+} from "react-native-reanimated";
 
 import {Machine} from "@/types/machine";
 import {Session} from "@/types/session";
@@ -34,6 +38,12 @@ import {
     fetchGetSessions,
 } from "@/fetchers/currentSessionFetchers";
 import {useMachineContext} from "@/util/machineContext";
+
+// Configure logger to disable warning due to clock
+configureReanimatedLogger({
+    level: ReanimatedLogLevel.warn,
+    strict: false, // Reanimated runs in strict mode by default
+});
 
 const clockSpeed = 200;
 
@@ -159,17 +169,6 @@ export default function CurrentSessionPage()
             });
     }
 
-    // function getMachines(): void
-    // {
-    //     fetchGetMachine()
-    //         .then((res: Response) => res.json())
-    //         .then((json) =>
-    //         {
-    //             setMachines(json);
-    //         })
-    //         .catch((error: unknown) => console.log(error));
-    // }
-
     /*
      * Dispatches the request to get the current session, sets the current session.
      * */
@@ -208,31 +207,6 @@ export default function CurrentSessionPage()
             });
     }
 
-    // function getSessionNumber(): void
-    // {
-    //     fetchGetSessions()
-    //         .then((res) =>
-    //         {
-    //             if (res.status === 200)
-    //             {
-    //                 return res.json();
-    //             }
-    //             else
-    //             {
-    //                 throw new Error("No sessions found");
-    //             }
-    //         })
-    //         .then((json: Session[]) =>
-    //         {
-    //             console.log(`session number: ${json.length}`);
-    //             setSessionNum(json.length);
-    //         })
-    //         .catch((err: unknown) =>
-    //         {
-    //             console.log("Error getting session number ", err);
-    //         });
-    // }
-
     function getWorkouts(session: Session): void
     {
         fetchGetWorkouts(session._id)
@@ -261,7 +235,6 @@ export default function CurrentSessionPage()
 
     function addWorkout(machineId: string): void
     {
-        console.log("inside of add workout");
         if (sessions === null)
         {
             throw new Error("Could not get session. Session does not exist.");
@@ -313,7 +286,10 @@ export default function CurrentSessionPage()
         }
     }
 
-    function addSet(workoutId: string, attributeValues: AttributeValue[])
+    function addSet(
+        workoutId: string,
+        attributeValues: AttributeValue[],
+    ): Promise<Set | undefined>
     {
         if (!sessions)
         {
@@ -325,10 +301,10 @@ export default function CurrentSessionPage()
             if (attributeValue.value === -1)
             {
                 console.log("Attempted to add set with missing value(s)");
-                return;
+                return Promise.resolve(undefined);
             }
         }
-        fetchPostSet(sessions._id, workoutId, attributeValues)
+        return fetchPostSet(sessions._id, workoutId, attributeValues)
             .then((res) =>
             {
                 if (res.ok)
@@ -359,21 +335,26 @@ export default function CurrentSessionPage()
                             : oldWorkout,
                     ),
                 );
+                return newSet;
             })
             .catch((error: unknown) =>
             {
                 console.log(error);
+                return undefined;
             });
     }
 
-    function deleteSet(workoutId: string, setId: string)
+    function deleteSet(
+        workoutId: string,
+        setId: string,
+    ): Promise<boolean | undefined>
     {
         if (!sessions)
         {
             throw new Error("Can't find a session to delete set.");
         }
 
-        fetchDeleteSet(sessions._id, workoutId, setId)
+        return fetchDeleteSet(sessions._id, workoutId, setId)
             .then((res) =>
             {
                 if (res.ok)
@@ -393,11 +374,13 @@ export default function CurrentSessionPage()
                                 : oldWorkout,
                         ),
                     );
+                    return true;
                 }
             })
             .catch((error: unknown) =>
             {
                 console.log(error);
+                return false;
             });
     }
 
@@ -413,14 +396,18 @@ export default function CurrentSessionPage()
         <SafeAreaView edges={["top"]} className="flex-1 bg-white">
             {!sessions && (
                 <View className="flex-1 items-center bg-white">
-                    <Text className="text-3xl font-semibold text-black tracking-tight pb-16 pt-4 px-4">
+                    <Text className="text-3xl font-semibold text-black tracking-tight pb-48 pt-4 px-4">
                         No Active Session
                     </Text>
                     <Pressable
                         onPress={startSession}
-                        className="w-60 h-60 bg-green-100 rounded-full justify-center items-center active:opacity-80 transition-all duration-200"
+                        style={{backgroundColor: "#34C759FF"}}
+                        className="w-60 h-60 rounded-full justify-center items-center active:opacity-80 transition-all duration-200"
                     >
-                        <Text className="text-green-600 text-xl font-semibold">
+                        <Text
+                            style={{fontSize: 24}}
+                            className="text-xl text-white font-semibold"
+                        >
                             Start Session
                         </Text>
                     </Pressable>

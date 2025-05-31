@@ -44,7 +44,6 @@ function fetchPostSet(
     attributeValues: AttributeValue[],
 ): Promise<Response>
 {
-    console.log(`in workoutFetchers: ${JSON.stringify(attributeValues)}`);
     return fetch(`${BACKEND_URL}/workouts/${session_id}/${workout_id}`, {
         method: "POST",
         headers: {

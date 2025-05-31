@@ -70,7 +70,6 @@ function MachinePage()
             })
             .then((res_data) =>
             {
-                console.log(`GETMACHINES RES_DATA=${JSON.stringify(res_data)}`);
                 setMachines(res_data);
                 setIsRefreshing(false);
             })
