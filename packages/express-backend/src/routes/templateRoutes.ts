@@ -12,7 +12,7 @@ router.delete("/:id", (req: Request, res: Response) =>
         .deleteTemplate(req.params.id, req.sub?.toString() as string)
         .then((result) =>
         {
-            if (result == null)
+            if (result === null)
             {
                 return res.status(404).send("Session not found");
             }
@@ -35,7 +35,7 @@ router.get("/search", (_req: Request, res: Response) =>
         .getTemplates()
         .then((result) =>
         {
-            if (result == null)
+            if (result === null)
             {
                 return res.status(204).send("No Templates At This Time");
             }
@@ -58,7 +58,7 @@ router.get("/search/:id", (req: Request, res: Response) =>
         .getTemplateById(req.params.id)
         .then((result) =>
         {
-            if (result == null)
+            if (result === null)
             {
                 return res.status(204).send("No Template Found With This Id");
             }
@@ -81,7 +81,7 @@ router.get("/", (req: Request, res: Response) =>
         .getUserTemplates(req.sub?.toString() as string)
         .then((result) =>
         {
-            if (result == null)
+            if (result === null)
             {
                 return res.status(204).send("No user templates");
             }
@@ -133,7 +133,7 @@ router.post("/", (req: Request, res: Response) =>
             .saveSession(templateData.id, templateData.name, userId)
             .then((result) =>
             {
-                if (result == null)
+                if (result === null)
                 {
                     return res.status(400).send("No user session");
                 }
@@ -154,7 +154,7 @@ router.post("/", (req: Request, res: Response) =>
             .copyTemplate(templateData.id, userId)
             .then((result) =>
             {
-                if (result == null)
+                if (result === null)
                 {
                     return res.status(400).send("No user templates");
                 }
@@ -175,7 +175,7 @@ router.post("/", (req: Request, res: Response) =>
             .addTemplate(req.body as sessionTemplateType, userId)
             .then((result) =>
             {
-                if (result == null)
+                if (result === null)
                 {
                     return res.status(400).send("No user templates");
                 }
@@ -196,4 +196,40 @@ router.post("/", (req: Request, res: Response) =>
     }
 });
 
+// Updates a template
+// Requires
+// {
+//      template: sessionTemplateType
+//      id: templateId for template to update
+// }
+router.put("/", (req: Request, res: Response) =>
+{
+    const templateData = req.body as templateDataType;
+    const userId = req.sub?.toString() as string;
+    if (templateData.id && templateData.template)
+    {
+        templateServices
+            .updateTemplate(userId, templateData.id, templateData.template)
+            .then((result) =>
+            {
+                if (result === null)
+                {
+                    return res.status(404).send("No resource found");
+                }
+                else
+                {
+                    return res.status(201).send(result);
+                }
+            })
+            .catch((error) =>
+            {
+                console.log(error);
+                return res.status(400).send("Bad request: " + error);
+            });
+    }
+    else
+    {
+        res.status(400).send("Bad request");
+    }
+});
 export default router;
