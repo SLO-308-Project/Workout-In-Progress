@@ -10,7 +10,6 @@ import {
     ReanimatedLogLevel,
 } from "react-native-reanimated";
 
-import {Machine} from "@/types/machine";
 import {Session} from "@/types/session";
 import {Workout} from "@/types/workout";
 import {AttributeValue} from "@/types/attributeValue";
@@ -29,13 +28,10 @@ import {
 } from "@/fetchers/workoutFetchers";
 import WorkoutSlide from "@/components/currSession/workoutSetsSlide";
 
-import {fetchGetMachine} from "@/fetchers/machineFetchers";
-
 import {
     fetchStartSessions,
     fetchEndSession,
     fetchCurrentSession,
-    fetchGetSessions,
 } from "@/fetchers/currentSessionFetchers";
 import {useMachineContext} from "@/util/machineContext";
 
@@ -45,7 +41,9 @@ configureReanimatedLogger({
     strict: false, // Reanimated runs in strict mode by default
 });
 
-const clockSpeed = 200;
+// NOTE: Because we want an updating clock, this page will re-render once every 1000ms.
+// Note that
+const clockSpeed = 1000;
 
 export default function CurrentSessionPage()
 {
@@ -90,6 +88,28 @@ export default function CurrentSessionPage()
             // getSessionNumber();
         }
     }, [isFocused]);
+
+    // TODO: Required for future scroll picker.
+    /* Values from 0 to 999 in increments of 0.5
+    This is passed all the way down to the set attribute value component
+    For the sake of performance (it really does slow down), this
+    computation is done once on the current session page and
+    is propogated to the attribute value component.
+    
+    The value is cached so this is only done once
+    */
+    // const valueListMap = useMemo(() => {
+    //     const list = [];
+    //     for (let i = 0; i <= 1000; i += 1) {
+    //         list.push(i);
+    //     }
+    //     const valueListMap = list.map((value) => ({
+    //         value: value,
+    //         label: value.toString(),
+    //     }))
+    //     return valueListMap;
+    //
+    // }, []);
 
     // Helper function for duration formatting
     // Converts database time which is stored in seconds to hours and minutes

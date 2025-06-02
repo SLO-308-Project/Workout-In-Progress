@@ -9,6 +9,7 @@ import Reanimated, {
 
 import {AttributeValue} from "@/types/attributeValue";
 import {Set} from "@/types/set";
+import {Attribute} from "@/types/attribute";
 
 import AttributeValueComponent from "@/components/currSession/attributeValue";
 
@@ -17,6 +18,7 @@ type Props = {
     index: number;
     handleDelete: (workoutId: string, setId: string) => void;
     workoutId: string | undefined;
+    attributes: Attribute[] | undefined;
 };
 
 export default function SetComponent({
@@ -24,6 +26,7 @@ export default function SetComponent({
     index,
     workoutId,
     handleDelete,
+    attributes,
 }: Props)
 {
     const [showAV, setShowAV] = useState(false);
@@ -34,9 +37,36 @@ export default function SetComponent({
                 key={idx}
                 name={attributeValue.name}
                 value={attributeValue.value}
+                unit={attrNameToUnit(attributeValue.name)}
+                handleValueChange={changeAttributeValue}
             />
         ),
     );
+
+    function changeAttributeValue(name: string, newValue: number)
+    {
+        // TODO: This doesn't actually update the sets value on the backend.
+        console.log(`Received Value: ${newValue} but didnt update db`);
+        set.attributeValues.map((attributeValue) =>
+            attributeValue.name === name
+                ? {
+                      ...attributeValue,
+                      value: newValue,
+                  }
+                : attributeValue,
+        );
+    }
+
+    // Helper function to get the unit for an attribute
+    // Realistically, a unit should have been stored with each attribute value
+    // Instead, we match against the machines attributes
+    function attrNameToUnit(name: string)
+    {
+        const attr: Attribute | undefined = attributes?.filter(
+            (attribute) => attribute.name === name,
+        )[0];
+        return attr?.unit;
+    }
 
     function RightSwipeDelete(
         prog: SharedValue<number>,
@@ -80,24 +110,21 @@ export default function SetComponent({
 
     // Set # starts from 1 instead of 0
     index = index + 1;
-
     return (
         <ReanimatedSwipeable
-            friction={2}
+            friction={4}
             rightThreshold={20}
             renderRightActions={RightSwipeDelete}
             overshootFriction={8}
         >
-            <View className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 m-2">
+            <View className="p-4 bg-gray-100 shadow-sm border border-neutral-200">
                 <Pressable onPress={() => setShowAV(!showAV)}>
-                    <View className="flex-row justify-between">
-                        <Text className="text-lg font-medium text-gray-900">
-                            Set {index}
-                        </Text>
+                    <Text className="text-lg font-semibold font-medium text-gray-900 pb-4">
+                        Set {index}
+                    </Text>
+                    <View className="flex-row gap-x-12">
+                        {listAttributeValues}
                     </View>
-                    {showAV && (
-                        <View className="mt-3">{listAttributeValues}</View>
-                    )}
                 </Pressable>
             </View>
         </ReanimatedSwipeable>

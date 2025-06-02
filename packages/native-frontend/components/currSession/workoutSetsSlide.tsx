@@ -1,13 +1,5 @@
 import {useState} from "react";
-import {
-    Pressable,
-    View,
-    Text,
-    Button,
-    FlatList,
-    TextInput,
-    Alert,
-} from "react-native";
+import {Pressable, View, Text} from "react-native";
 import {BottomSheetView} from "@gorhom/bottom-sheet";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
@@ -91,46 +83,60 @@ export default function WorkoutSlide({
         }
     }
 
+    const setsWord = () =>
+    {
+        if (sets.length === 1)
+        {
+            return "Set";
+        }
+        return "Sets";
+    };
+
+    const listSets = sets.map((set, index) => (
+        <SetComponent
+            key={index}
+            set={set}
+            index={index}
+            handleDelete={() => handleDeleteSet(set._id)}
+            workoutId={workout?._id}
+            attributes={machine?.attributes}
+        />
+    ));
+
     return (
-        <BottomSheetView className="flex-1 pl-4 pr-4">
-            <View className="flex-row justify-between">
+        <BottomSheetView className="flex-1">
+            <View className="pl-4 pr-4">
+                <View className="flex-row justify-between">
+                    <Text
+                        className="w-80 px-4 py-3 rounded-lg text-base font-bold text-black"
+                        style={{fontSize: 28}}
+                    >
+                        {machine?.name}
+                    </Text>
+                    <Pressable
+                        className="active:opacity-60 transition-all duration-200"
+                        onPress={() => handleAddSet()}
+                    >
+                        <AntDesign name="plus" size={32} color="black" />
+                    </Pressable>
+                </View>
                 <Text
-                    className="w-80 px-4 py-3 rounded-lg text-base font-bold text-black"
-                    style={{fontSize: 28}}
+                    className="w-40 px-4 rounded-lg text-base text-black"
+                    style={{fontSize: 16}}
                 >
-                    {machine?.name}
+                    {machine?.muscle}
                 </Text>
-                <Pressable
-                    className="active:opacity-60 transition-all duration-200"
-                    onPress={() => handleAddSet()}
+                <Text
+                    className="w-40 px-4 rounded-lg text-base text-black italic"
+                    style={{fontSize: 16}}
                 >
-                    <AntDesign name="plus" size={32} color="black" />
-                </Pressable>
+                    {sets.length} {setsWord()}
+                </Text>
             </View>
-            <Text
-                className="w-40 px-4 rounded-lg text-base text-black"
-                style={{fontSize: 16}}
-            >
-                {machine?.muscle}
-            </Text>
-            <Text
-                className="w-40 px-4 rounded-lg text-base text-black italic"
-                style={{fontSize: 16}}
-            >
-                {sets.length} Sets
-            </Text>
-            <FlatList
-                data={sets}
-                renderItem={({item, index}) => (
-                    <SetComponent
-                        set={item}
-                        index={index}
-                        handleDelete={() => handleDeleteSet(item._id)}
-                        workoutId={workout?._id}
-                    />
-                )}
-                ListEmptyComponent={<Empty />}
-            />
+            <View className="pt-4 flex-1">
+                {sets.length === 0 && <Empty />}
+                {sets.length !== 0 && listSets}
+            </View>
         </BottomSheetView>
     );
 }
