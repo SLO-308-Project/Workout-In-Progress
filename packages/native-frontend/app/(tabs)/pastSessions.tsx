@@ -237,11 +237,6 @@ export default function PastSessionsPage()
         router.push("../settings");
     };
 
-    const openStatisticsStack = () =>
-    {
-        router.push("../statistics");
-    };
-
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
             <View className="flex-row justify-between items-center px-4 pt-4 pb-2">
@@ -255,16 +250,6 @@ export default function PastSessionsPage()
                         size={34}
                         color="black"
                     />
-                </Pressable>
-            </View>
-            <View className="flex-row justify-center py-2">
-                <Pressable
-                    className=" w-3/5 rounded-lg border bg-gray-100 border-gray-300 flex-row justify-center"
-                    onPress={openStatisticsStack}
-                >
-                    <Text className="text-2xl font-semibold text-black tracking-tight py-1">
-                        Statistics
-                    </Text>
                 </Pressable>
             </View>
             <FlatList

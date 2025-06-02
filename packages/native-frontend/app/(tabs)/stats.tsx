@@ -8,7 +8,7 @@ export default function statistics()
         <ProtectedRoute>
             <SafeAreaView>
                 <View>
-                    <Text>Hi</Text>
+                    <Text>This is Statistics</Text>
                 </View>
             </SafeAreaView>
         </ProtectedRoute>
