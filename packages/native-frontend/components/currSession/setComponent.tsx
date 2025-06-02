@@ -11,6 +11,8 @@ import {AttributeValue} from "@/types/attributeValue";
 import {Set} from "@/types/set";
 import {Attribute} from "@/types/attribute";
 
+import {fetchPatchSet} from "@/fetchers/workoutFetchers";
+
 import AttributeValueComponent from "@/components/currSession/attributeValue";
 
 type Props = {
@@ -45,16 +47,32 @@ export default function SetComponent({
 
     function changeAttributeValue(name: string, newValue: number)
     {
-        // TODO: This doesn't actually update the sets value on the backend.
-        console.log(`Received Value: ${newValue} but didnt update db`);
-        set.attributeValues.map((attributeValue) =>
-            attributeValue.name === name
-                ? {
-                      ...attributeValue,
-                      value: newValue,
-                  }
-                : attributeValue,
+        const newAttributeValues: AttributeValue[] = set.attributeValues.map(
+            (attributeValue) =>
+                attributeValue.name === name
+                    ? {
+                          ...attributeValue,
+                          value: newValue,
+                      }
+                    : attributeValue,
         );
+
+        if (!workoutId)
+        {
+            throw new Error("Workout ID NULL or undefined when updating set");
+        }
+        fetchPatchSet(workoutId, set._id, newAttributeValues)
+            .then((res) =>
+            {
+                if (res.ok)
+                {
+                    set.attributeValues = newAttributeValues;
+                }
+            })
+            .catch((err: unknown) =>
+            {
+                console.log("Error updating set: ", err);
+            });
     }
 
     // Helper function to get the unit for an attribute
