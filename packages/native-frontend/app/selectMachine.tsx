@@ -9,15 +9,15 @@ import {useIsFocused} from "@react-navigation/native";
 
 import MachineComponent, {Empty} from "@/components/machines/machineComponent";
 import {fetchGetMachine, fetchDeleteMachine} from "@/fetchers/machineFetchers";
+import {useMachineContext} from "@/util/machineContext";
 
 import {Machine} from "@/types/machine";
 
 export default function SelectMachine()
 {
-    const [machines, setMachine] = useState<Machine[]>([]);
+    const {machines, setMachines} = useMachineContext();
     const [search, setSearch] = useState<string>("");
     const router = useRouter();
-    const isFocused = useIsFocused();
     const navigation = useNavigation();
 
     useLayoutEffect(() =>
@@ -49,11 +49,6 @@ export default function SelectMachine()
         setSearch(search);
     };
 
-    useEffect(() =>
-    {
-        if (isFocused) getMachines();
-    }, [isFocused]);
-
     function getMachines(): void
     {
         fetchGetMachine()
@@ -67,7 +62,7 @@ export default function SelectMachine()
             .then((res_data) =>
             {
                 console.log(`GETMACHINES RES_DATA=${JSON.stringify(res_data)}`);
-                setMachine(res_data);
+                setMachines(res_data);
                 setIsRefreshing(false);
             })
             .catch((error: unknown) => console.log(error));
@@ -80,7 +75,7 @@ export default function SelectMachine()
             {
                 if (res.ok)
                 {
-                    setMachine(
+                    setMachines(
                         machines.filter((machine) => machine.name !== name),
                     );
                 }

@@ -255,6 +255,7 @@ export default function CurrentSessionPage()
 
     function addWorkout(machineId: string): void
     {
+        console.log(`machineId=${machineId}`);
         if (sessions === null)
         {
             throw new Error("Could not get session. Session does not exist.");
