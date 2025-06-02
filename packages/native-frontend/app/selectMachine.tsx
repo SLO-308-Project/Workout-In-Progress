@@ -1,11 +1,9 @@
 import "@/global.css";
-import {Text, FlatList, Pressable, View, StyleSheet} from "react-native";
-import {SafeAreaView} from "react-native-safe-area-context";
-import {useState, useEffect, useCallback, useRef, useLayoutEffect} from "react";
+import {FlatList, Pressable, View, StyleSheet} from "react-native";
+import {useState, useLayoutEffect} from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {SearchBar} from "@rneui/themed";
 import {useRouter, useNavigation} from "expo-router";
-import {useIsFocused} from "@react-navigation/native";
 
 import MachineComponent, {Empty} from "@/components/machines/machineComponent";
 import {fetchGetMachine, fetchDeleteMachine} from "@/fetchers/machineFetchers";
