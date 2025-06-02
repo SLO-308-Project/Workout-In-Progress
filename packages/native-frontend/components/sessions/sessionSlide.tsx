@@ -41,7 +41,9 @@ export default function SessionSlide({
                             workout={item}
                         />
                     )}
-                    ListEmptyComponent={<Text>No Machines</Text>}
+                    ListEmptyComponent={
+                        <Text className="text-2xl">Empty Session</Text>
+                    }
                 />
             </View>
         </View>
