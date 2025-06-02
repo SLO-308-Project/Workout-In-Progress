@@ -10,7 +10,9 @@
         "format": "npx prettier . --write",
         "frontdev": "npm run -w native-frontend start",
         "backdev": "npm run -w express-backend dev",
-        "prepare": "husky"
+        "prepare": "husky",
+        "test-e2e-interactive": "npx cypress open",
+        "test-e2e": "npx cypress run --record --key 09f38ae7-23af-4cf6-9ab8-e1abe5cdb303"
     },
     "repository": {
         "type": "git",
@@ -26,6 +28,7 @@
     },
     "homepage": "https://github.com/SLO-308-Project/Workout-In-Progress#readme",
     "devDependencies": {
+        "cypress": "^14.4.0",
         "husky": "^9.1.7"
     }
 }

@@ -191,12 +191,14 @@ export default function MachineForm()
             <FlatList
                 data={machine.attributes}
                 renderItem={({item, index}) => (
-                    <AttributeComponent
-                        key={index}
-                        name={item.name}
-                        unit={item.unit}
-                        handleDelete={deleteAttribute}
-                    />
+                    <View testID={`attribute-item`} key={index}>
+                        <AttributeComponent
+                            key={index}
+                            name={item.name}
+                            unit={item.unit}
+                            handleDelete={deleteAttribute}
+                        />
+                    </View>
                 )}
                 ListEmptyComponent={<Empty />}
                 showsVerticalScrollIndicator={false}

@@ -22,6 +22,7 @@ export default function Attribute({name, unit, handleDelete}: Props)
             </View>
             {handleDelete && (
                 <Pressable
+                    testID={`attribute-delete`}
                     onPress={() => handleDelete(name)}
                     className="p-2 rounded-full active:scale-90"
                 >
