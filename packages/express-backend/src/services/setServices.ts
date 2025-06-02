@@ -107,8 +107,20 @@ async function removeSet(sessionId: string, workoutId: string, setId: string)
     );
 }
 
+async function updateSet(setId: string, newAttributeValues: AttributeValue[])
+{
+    if (!setId)
+    {
+        throw new Error("Provided set id was null or undefined.");
+    }
+    const filter = {_id: setId};
+    const update = {attributeValues: newAttributeValues};
+    return sessionModel.findOneAndUpdate(filter, update);
+}
+
 export default {
     getSets,
     addSet,
     removeSet,
+    updateSet,
 };

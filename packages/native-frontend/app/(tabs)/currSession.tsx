@@ -1,32 +1,49 @@
-import {View, Text, Pressable, ScrollView} from "react-native";
-import {useState, useEffect} from "react";
+import {View, Text, Pressable, FlatList} from "react-native";
+import {useRef, useState, useEffect, useCallback} from "react";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useIsFocused} from "@react-navigation/native";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import {useRouter, useLocalSearchParams} from "expo-router";
+import {BottomSheetModal} from "@gorhom/bottom-sheet";
+import {
+    configureReanimatedLogger,
+    ReanimatedLogLevel,
+} from "react-native-reanimated";
 
-import {Machine} from "@/types/machine";
 import {Session} from "@/types/session";
 import {Workout} from "@/types/workout";
+import {AttributeValue} from "@/types/attributeValue";
+import {Set} from "@/types/set";
 
-import WorkoutComponent from "@/components/currSession/workoutComponent";
-import WorkoutForm from "@/components/currSession/workoutForm";
+import WorkoutComponent, {
+    Empty,
+} from "@/components/currSession/workoutComponent";
 
 import {
     fetchGetWorkouts,
     fetchPostWorkout,
     fetchDeleteWorkout,
+    fetchPostSet,
+    fetchDeleteSet,
 } from "@/fetchers/workoutFetchers";
-
-import {fetchGetMachine} from "@/fetchers/machineFetchers";
+import WorkoutSlide from "@/components/currSession/workoutSetsSlide";
 
 import {
     fetchStartSessions,
     fetchEndSession,
     fetchCurrentSession,
-    fetchGetSessions,
 } from "@/fetchers/currentSessionFetchers";
 import {useMachineContext} from "@/util/machineContext";
 
-const clockSpeed = 200;
+// Configure logger to disable warning due to clock
+configureReanimatedLogger({
+    level: ReanimatedLogLevel.warn,
+    strict: false, // Reanimated runs in strict mode by default
+});
+
+// NOTE: Because we want an updating clock, this page will re-render once every 1000ms.
+// Note that
+const clockSpeed = 1000;
 
 export default function CurrentSessionPage()
 {
@@ -36,25 +53,63 @@ export default function CurrentSessionPage()
     const [workouts, setWorkouts] = useState<Workout[]>([]);
 
     const isFocused = useIsFocused();
-    // State for the users currently selected machine
+    const router = useRouter();
     const {machines, setMachines} = useMachineContext();
-    // const [machines, setMachines] = useState<Machine[]>([]);
+
+    // Receives machineId passed from workout select
+    let {machineId} = useLocalSearchParams<{machineId?: string}>();
+
+    // State for Workout Bototm Sheet Modal
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+    const [selectedWorkout, setSelectedWorkout] = useState<Workout | null>(
+        null,
+    );
+
+    // Called when a workout card is tapped
+    const handleOpenSheet = useCallback((workout: Workout) =>
+    {
+        setSelectedWorkout(workout); // Set the workout to be rendered
+        bottomSheetModalRef.current?.present(); // Render the selected workout's card
+    }, []);
+
+    useEffect(() =>
+    {
+        if (machineId)
+        {
+            addWorkout(machineId);
+        }
+    }, [machineId]);
 
     useEffect(() =>
     {
         if (isFocused)
         {
-            // getMachines();
             getCurrentSession();
-            getSessionNumber();
+            // getSessionNumber();
         }
     }, [isFocused]);
 
-    // Helper function for date formatting
-    function formatDate(dateString: string): string
-    {
-        return new Date(dateString).toLocaleDateString();
-    }
+    // TODO: Required for future scroll picker.
+    /* Values from 0 to 999 in increments of 0.5
+    This is passed all the way down to the set attribute value component
+    For the sake of performance (it really does slow down), this
+    computation is done once on the current session page and
+    is propogated to the attribute value component.
+    
+    The value is cached so this is only done once
+    */
+    // const valueListMap = useMemo(() => {
+    //     const list = [];
+    //     for (let i = 0; i <= 1000; i += 1) {
+    //         list.push(i);
+    //     }
+    //     const valueListMap = list.map((value) => ({
+    //         value: value,
+    //         label: value.toString(),
+    //     }))
+    //     return valueListMap;
+    //
+    // }, []);
 
     // Helper function for duration formatting
     // Converts database time which is stored in seconds to hours and minutes
@@ -134,17 +189,6 @@ export default function CurrentSessionPage()
             });
     }
 
-    function getMachines(): void
-    {
-        fetchGetMachine()
-            .then((res: Response) => res.json())
-            .then((json) =>
-            {
-                setMachines(json);
-            })
-            .catch((error: unknown) => console.log(error));
-    }
-
     /*
      * Dispatches the request to get the current session, sets the current session.
      * */
@@ -183,31 +227,6 @@ export default function CurrentSessionPage()
             });
     }
 
-    function getSessionNumber(): void
-    {
-        fetchGetSessions()
-            .then((res) =>
-            {
-                if (res.status === 200)
-                {
-                    return res.json();
-                }
-                else
-                {
-                    throw new Error("No sessions found");
-                }
-            })
-            .then((json: Session[]) =>
-            {
-                console.log(`session number: ${json.length}`);
-                setSessionNum(json.length);
-            })
-            .catch((err: unknown) =>
-            {
-                console.log("Error getting session number ", err);
-            });
-    }
-
     function getWorkouts(session: Session): void
     {
         fetchGetWorkouts(session._id)
@@ -236,13 +255,11 @@ export default function CurrentSessionPage()
 
     function addWorkout(machineId: string): void
     {
+        console.log(`machineId=${machineId}`);
         if (sessions === null)
         {
             throw new Error("Could not get session. Session does not exist.");
         }
-        console.log(
-            `trying to add a workout. sessions=${sessions} machineId=${machineId}`,
-        );
         if (sessions && machineId)
         {
             fetchPostWorkout(sessions._id, machineId)
@@ -250,18 +267,17 @@ export default function CurrentSessionPage()
                 {
                     if (res.ok)
                     {
+                        router.setParams({machineId: undefined});
                         return res.json();
                     }
                     else
                     {
+                        router.setParams({machineId: undefined});
                         throw new Error();
                     }
                 })
                 .then((res_data: Session) =>
                 {
-                    console.log(`RES_DATA: ${res_data._id}`);
-                    console.log(`MachineId: ${machineId}`);
-                    console.log(`SessionId: ${sessions._id}`);
                     setWorkouts(res_data.workout);
                 })
                 .catch((error: unknown) => console.log(error));
@@ -291,89 +307,202 @@ export default function CurrentSessionPage()
         }
     }
 
-    const machineIdToName = (machineId: string) =>
+    function addSet(
+        workoutId: string,
+        attributeValues: AttributeValue[],
+    ): Promise<Set | undefined>
+    {
+        if (!sessions)
+        {
+            throw new Error("Can't find a session to add set to.");
+        }
+
+        for (const attributeValue of attributeValues)
+        {
+            if (attributeValue.value === -1)
+            {
+                console.log("Attempted to add set with missing value(s)");
+                return Promise.resolve(undefined);
+            }
+        }
+        return fetchPostSet(sessions._id, workoutId, attributeValues)
+            .then((res) =>
+            {
+                if (res.ok)
+                {
+                    return res.text();
+                }
+            })
+            .then((dbSetId) =>
+            {
+                if (!dbSetId)
+                {
+                    throw new Error(
+                        "Database successfully updated but didnt return set id.",
+                    );
+                }
+                const newSet: Set = {
+                    _id: dbSetId,
+                    attributeValues: attributeValues,
+                };
+                // Add the set to the workout locally
+                setWorkouts(
+                    workouts.map((oldWorkout) =>
+                        oldWorkout._id === workoutId
+                            ? {
+                                  ...oldWorkout,
+                                  sets: [...oldWorkout.sets, newSet],
+                              }
+                            : oldWorkout,
+                    ),
+                );
+                return newSet;
+            })
+            .catch((error: unknown) =>
+            {
+                console.log(error);
+                return undefined;
+            });
+    }
+
+    function deleteSet(
+        workoutId: string,
+        setId: string,
+    ): Promise<boolean | undefined>
+    {
+        if (!sessions)
+        {
+            throw new Error("Can't find a session to delete set.");
+        }
+
+        return fetchDeleteSet(sessions._id, workoutId, setId)
+            .then((res) =>
+            {
+                if (res.ok)
+                {
+                    // Remove the set from the workout locally
+                    setWorkouts(
+                        workouts.map((oldWorkout) =>
+                            oldWorkout._id === workoutId
+                                ? {
+                                      ...oldWorkout,
+                                      sets: [
+                                          ...oldWorkout.sets.filter(
+                                              (set) => set._id !== setId,
+                                          ),
+                                      ],
+                                  }
+                                : oldWorkout,
+                        ),
+                    );
+                    return true;
+                }
+            })
+            .catch((error: unknown) =>
+            {
+                console.log(error);
+                return false;
+            });
+    }
+
+    const machineIdToMachine = (machineId?: string) =>
     {
         if (machines)
         {
-            return machines.filter((machine) => machine._id === machineId)[0]
-                .name;
+            return machines.filter((machine) => machine._id === machineId)[0];
         }
     };
 
-    const listWorkouts = workouts.map((workout: Workout, idx: number) => (
-        <WorkoutComponent
-            key={idx}
-            workoutId={workout._id}
-            machineId={workout.machineId}
-            machineName={machineIdToName(workout.machineId)}
-            handleDelete={removeWorkout}
-            sessionId={sessions?._id}
-            sets={workout.sets}
-        />
-    ));
-
-    function sessionData()
-    {
-        return (
-            <View className="bg-white rounded-2xl space-y-1 mt-4">
-                <Text className="text-base text-black font-semibold">
-                    Session: {sessionNum}
-                </Text>
-                <Text className="text-sm text-neutral-700">
-                    Start Date: {formatDate(sessions!.date)}
-                </Text>
-                <Text className="text-sm text-neutral-700">
-                    Duration:{" "}
-                    {formatDuration(
-                        Date.now() - new Date(sessions!.date).getTime(),
-                    )}
-                </Text>
-            </View>
-        );
-    }
-
     return (
-        <SafeAreaView edges={["top"]} className="flex-1 bg-white px-4 pt-4">
-            <Text className="text-3xl font-semibold text-black tracking-tight pt-4">
-                Current Session
-            </Text>
+        <SafeAreaView edges={["top"]} className="flex-1 bg-white">
             {!sessions && (
-                <View className="flex-1 justify-center items-center bg-white">
+                <View className="flex-1 items-center bg-white">
+                    <Text className="text-3xl font-semibold text-black tracking-tight pb-48 pt-4 px-4">
+                        No Active Session
+                    </Text>
                     <Pressable
                         onPress={startSession}
-                        className="w-60 h-60 bg-green-100 rounded-full justify-center items-center active:opacity-80 transition-all duration-200"
+                        style={{backgroundColor: "#34C759FF"}}
+                        className="w-60 h-60 shadow-md rounded-full justify-center items-center active:opacity-80 transition-all duration-200"
                     >
-                        <Text className="text-green-600 text-xl font-semibold">
-                            Start
+                        <Text
+                            style={{fontSize: 24}}
+                            className="text-xl text-white font-semibold"
+                        >
+                            Start Session
                         </Text>
                     </Pressable>
                 </View>
             )}
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                className="container"
-            >
-                {sessions && sessionData()}
-                {sessions && listWorkouts}
-                {sessions && (
-                    <WorkoutForm
-                        handleSubmit={addWorkout}
-                        machineOptions={machines}
+            {sessions && (
+                <>
+                    <View className="flex-row justify-between items-center px-4 pt-4">
+                        <Text className="text-3xl font-semibold text-black tracking-tight">
+                            Current Session
+                        </Text>
+                        <Pressable
+                            className=""
+                            onPress={() => router.push("/selectMachine")}
+                        >
+                            <AntDesign name="plus" size={32} color="black" />
+                        </Pressable>
+                    </View>
+                    <Text className="text-lg font-bold text-neutral-700 px-4">
+                        {formatDuration(
+                            Date.now() - new Date(sessions!.date).getTime(),
+                        )}
+                    </Text>
+                    <FlatList
+                        data={workouts}
+                        renderItem={({item, index}) => (
+                            <WorkoutComponent
+                                onPress={() => handleOpenSheet(item)}
+                                key={index}
+                                workoutId={item._id}
+                                machine={machineIdToMachine(item.machineId)}
+                                handleDelete={removeWorkout}
+                                sessionId={sessions?._id}
+                                sets={item.sets}
+                            />
+                        )}
+                        ListEmptyComponent={<Empty />}
+                        showsVerticalScrollIndicator={false}
+                        className="flex-1"
                     />
-                )}
-                {sessions && (
-                    <View className="items-center mt-8">
+                    <View className="absolute bottom-4 left-0 right-0 items-center mb-4">
                         <Pressable
                             onPress={endSession}
-                            className="bg-red-100 px-9 py-3 rounded-full active:opacity-80 transition-all duration-200"
+                            className="bg-red-100 px-9 py-3 rounded-full active:opacity-60 transition-all duration-300"
+                            style={{backgroundColor: "#FF3B30"}}
                         >
-                            <Text className="text-red-600 text-base font-semibold text-center">
+                            <Text className="text-base text-white font-semibold text-center">
                                 End
                             </Text>
                         </Pressable>
                     </View>
-                )}
-            </ScrollView>
+                    <BottomSheetModal
+                        ref={bottomSheetModalRef}
+                        backgroundStyle={{
+                            backgroundColor: "#F9F9F9",
+                        }}
+                        index={0}
+                        snapPoints={["90%"]}
+                        enableDynamicSizing={false}
+                        enableHandlePanningGesture={true}
+                        enableContentPanningGesture={false}
+                        enablePanDownToClose={true}
+                    >
+                        <WorkoutSlide
+                            machine={machineIdToMachine(
+                                selectedWorkout?.machineId,
+                            )}
+                            workout={selectedWorkout}
+                            addSet={addSet}
+                            deleteSet={deleteSet}
+                        />
+                    </BottomSheetModal>
+                </>
+            )}
         </SafeAreaView>
     );
 }

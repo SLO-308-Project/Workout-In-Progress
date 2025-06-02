@@ -3,9 +3,6 @@ import workoutServices from "../services/workoutServices";
 import setServices from "../services/setServices";
 import {WorkoutRequest, SetRequest} from "../types/express";
 
-// import {sessionType} from "../data/session";
-// import {machineType} from "../data/machine";
-
 const router = Router();
 
 // Get all workouts for a session and passes it along to the client
@@ -94,7 +91,7 @@ router.post("/:sessionId/:workoutId", (req: SetRequest, res: Response) =>
         .then((result) =>
         {
             // result contains the new setId
-            return res.status(201).send(result);
+            return res.status(201).send(result?.toString());
         })
         .catch((err) =>
         {
@@ -125,5 +122,21 @@ router.delete(
             });
     },
 );
+
+// Update a set
+router.patch("/:workoutId/:setId", (req: SetRequest, res: Response) =>
+{
+    setServices
+        .updateSet(req.params.setId, req.body.attributeValues)
+        .then((result) =>
+        {
+            return res.status(200).send(result);
+        })
+        .catch((err) =>
+        {
+            console.log(err);
+            return res.send(err);
+        });
+});
 
 export default router;
