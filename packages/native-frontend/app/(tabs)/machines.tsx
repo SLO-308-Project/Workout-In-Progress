@@ -53,9 +53,6 @@ function MachinePage()
     const handleOpenSheet = useCallback((machine: Machine) =>
     {
         setSelectedMachine(machine);
-        console.log(
-            `passing machine: machine.name=${machine.name} machine.muscle=${machine.muscle} machine.attributes=${JSON.stringify(machine.attributes)}`,
-        );
         bottomSheetModalRef.current?.present();
     }, []);
 
@@ -76,7 +73,6 @@ function MachinePage()
             })
             .then((res_data) =>
             {
-                console.log(`GETMACHINES RES_DATA=${JSON.stringify(res_data)}`);
                 setMachines(res_data);
                 setIsRefreshing(false);
             })

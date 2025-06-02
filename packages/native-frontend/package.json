@@ -54,7 +54,8 @@
         "react-native-wheel-scrollview-picker": "^2.0.9",
         "react-router-dom": "^7.5.3",
         "tailwindcss": "^3.4.17",
-        "expo-clipboard": "~7.0.1"
+        "expo-clipboard": "~7.0.1",
+        "expo-dev-client": "~5.0.20"
     },
     "devDependencies": {
         "@babel/core": "^7.25.2",
