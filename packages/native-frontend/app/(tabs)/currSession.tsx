@@ -442,7 +442,12 @@ export default function CurrentSessionPage()
                         </Text>
                         <Pressable
                             className=""
-                            onPress={() => router.push("/selectMachine")}
+                            onPress={() =>
+                                router.push({
+                                    pathname: "/selectMachine",
+                                    params: {returnPath: "/(tabs)/currSession"},
+                                })
+                            }
                         >
                             <AntDesign name="plus" size={32} color="black" />
                         </Pressable>
