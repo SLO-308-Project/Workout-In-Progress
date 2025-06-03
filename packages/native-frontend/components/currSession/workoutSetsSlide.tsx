@@ -21,6 +21,7 @@ type Props = {
         setId: string,
     ) => Promise<boolean | undefined>;
     machine: Machine | undefined;
+    sessionId: string;
 };
 
 export default function WorkoutSlide({
@@ -28,6 +29,7 @@ export default function WorkoutSlide({
     addSet,
     deleteSet,
     machine,
+    sessionId,
 }: Props)
 {
     const [sets, setSets] = useState<Set[]>(workout?.sets ?? []);
@@ -95,6 +97,7 @@ export default function WorkoutSlide({
     const listSets = sets.map((set, index) => (
         <SetComponent
             key={index}
+            sessionId={sessionId}
             set={set}
             index={index}
             handleDelete={() => handleDeleteSet(set._id)}
