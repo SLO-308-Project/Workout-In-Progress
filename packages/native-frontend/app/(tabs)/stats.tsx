@@ -4,8 +4,9 @@ import {useIsFocused} from "@react-navigation/native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {useRouter, useLocalSearchParams} from "expo-router";
 import WheelPicker from "@quidone/react-native-wheel-picker";
-import {CartesianChart, Line} from "victory-native";
-import {useFont} from "@shopify/react-native-skia";
+import {CartesianChart, Line, useChartPressState} from "victory-native";
+import {useFont, Circle} from "@shopify/react-native-skia";
+import {SharedValue, useDerivedValue, runOnJS} from "react-native-reanimated";
 
 import {Machine} from "@/types/machine";
 import {Session} from "@/types/session";
@@ -22,7 +23,15 @@ interface StatsData
     }[];
 }
 
-const inter = require("@/assets/fonts/Inter.ttf");
+interface ChartPadding
+{
+    left: number;
+    right: number;
+    bottom: number;
+    top: number;
+}
+
+const roboto = require("@/assets/fonts/Roboto.ttf");
 
 export default function Statistics()
 {
@@ -30,6 +39,12 @@ export default function Statistics()
     const [machine, setMachine] = useState<Machine>();
     const [attrName, setAttrName] = useState<string>("weight");
     const [statsData, setStatsData] = useState<StatsData>();
+
+    // Necessary for the values to change when dragging on graph
+    const [yVal, setYVal] = useState<string>();
+    const [xVal, setXVal] = useState<string>();
+
+    const {state, isActive} = useChartPressState({x: "", y: {value: 0}});
     const {machines, setMachines} = useMachineContext();
     const router = useRouter();
     const isFocused = useIsFocused();
@@ -37,7 +52,16 @@ export default function Statistics()
     // Receives machineId passed from workout select
     let {machineId} = useLocalSearchParams<{machineId?: string}>();
 
-    const font = useFont(inter, 12);
+    // Font for axis labels
+    const font12 = useFont(roboto, 12);
+
+    // Define chart padding
+    const chartPadding: ChartPadding = {
+        left: 16,
+        right: 18,
+        bottom: 64,
+        top: 32,
+    };
 
     useEffect(() =>
     {
@@ -60,7 +84,7 @@ export default function Statistics()
         }
     };
 
-    // Harvets all relevant data points from all of users sessions
+    // Harvests all relevant data points from all of users sessions
     // X -> date, Y -> value
     // If multiple workouts on the same day, give the max for the day
     const harvestDataPoints = (): StatsData =>
@@ -121,6 +145,17 @@ export default function Statistics()
             .catch((error: unknown) => console.log(error));
     }
 
+    // Updates the value of xVal and yVal on graph drag
+    useDerivedValue(() =>
+    {
+        runOnJS(setXVal)(state.x.value.value.toString());
+    }, [state.x.value]);
+
+    useDerivedValue(() =>
+    {
+        runOnJS(setYVal)(state.y.value.value.value.toString());
+    }, [state.y.value]);
+
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
             <View className="flex-row">
@@ -145,36 +180,81 @@ export default function Statistics()
             </View>
             {machine && statsData && (
                 <>
-                    <WheelPicker
-                        data={machine?.attributes.map((attribute) => ({
-                            value: attribute.name,
-                            label: attribute.name,
-                        }))}
-                        value={attrName}
-                        onValueChanged={({item: {value}}) => setAttrName(value)}
-                        itemHeight={27}
-                        visibleItemCount={3}
-                        width={64}
-                        itemTextStyle={{fontSize: 16}}
-                    />
-                    <View className="flex-1" style={{height: 500, width: 500}}>
-                        <Text>
-                            Progress on {attrName} for {machine.name}
-                        </Text>
-                        <Text>{JSON.stringify(statsData.data)}</Text>
+                    <View className="flex-1">
+                        <View className="flex-row items-center">
+                            <Text className="text-xl font-bold pl-4 pr-2">
+                                {machine.name}
+                            </Text>
+                            <WheelPicker
+                                data={machine?.attributes.map((attribute) => ({
+                                    value: attribute.name,
+                                    label: attribute.name,
+                                }))}
+                                value={attrName}
+                                onValueChanged={({item: {value}}) =>
+                                    setAttrName(value)
+                                }
+                                itemHeight={27}
+                                visibleItemCount={3}
+                                width={86}
+                                itemTextStyle={{fontSize: 18}}
+                            />
+                            <Text className="text-xl font-bold pl-2 pr-2">
+                                Progression
+                            </Text>
+                        </View>
+                        <View className="items-center">
+                            {isActive ? (
+                                <Text className="text-lg font-semibold">
+                                    {yVal} on {xVal}
+                                </Text>
+                            ) : (
+                                <Text className="text-lg font-semibold">
+                                    - on -
+                                </Text>
+                            )}
+                        </View>
                         <CartesianChart
                             data={statsData.data}
                             xKey="date"
                             yKeys={["value"]}
-                            axisOptions={{font}}
+                            yAxis={[{font: font12}]}
+                            axisOptions={{lineColor: "transparent"}}
+                            chartPressState={state}
+                            padding={{
+                                left: chartPadding.left,
+                                right: chartPadding.right,
+                                top: chartPadding.top,
+                                bottom: chartPadding.bottom,
+                            }}
+                            domainPadding={{
+                                top: 16,
+                                bottom: 10,
+                                left: 10,
+                                right: 10,
+                            }}
+                            frame={{lineColor: "transparent"}}
                         >
                             {({points}) => (
-                                <Line
-                                    points={points.value}
-                                    color="orange"
-                                    strokeWidth={4}
-                                    animate={{type: "timing", duration: 300}}
-                                />
+                                <>
+                                    <Line
+                                        points={points.value}
+                                        color="orange"
+                                        strokeWidth={5}
+                                        animate={{
+                                            type: "spring",
+                                            duration: 100,
+                                        }}
+                                    />
+                                    {isActive && (
+                                        <>
+                                            <ToolTip
+                                                xpos={state.x.position}
+                                                ypos={state.y.value.position}
+                                            />
+                                        </>
+                                    )}
+                                </>
                             )}
                         </CartesianChart>
                     </View>
@@ -188,5 +268,20 @@ export default function Statistics()
                 </View>
             )}
         </SafeAreaView>
+    );
+}
+
+function ToolTip({
+    xpos,
+    ypos,
+}: {
+    xpos: SharedValue<number>;
+    ypos: SharedValue<number>;
+})
+{
+    return (
+        <>
+            <Circle cx={xpos} cy={ypos} r={8} color="orange" />
+        </>
     );
 }
