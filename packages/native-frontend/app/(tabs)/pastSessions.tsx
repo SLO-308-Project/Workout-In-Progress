@@ -54,18 +54,13 @@ export default function PastSessionsPage()
     }, [isFocused]);
 
     // Function to fetch sessions
-    // Sorts data by date so that most recent is first
     function loadSessions(): void
     {
         fetchGetSessions()
             .then((res: Response) => res.json())
             .then((data: Session[]) =>
             {
-                const sortedSessions = [...data].sort(
-                    (sessionA, sessionB) =>
-                        new Date(sessionA.date).getTime() -
-                        new Date(sessionB.date).getTime(),
-                );
+                const sortedSessions = data.sort(sortComparisonFn);
                 setSessions(sortedSessions);
             })
             .catch((error: unknown) => console.log(error));
@@ -90,6 +85,10 @@ export default function PastSessionsPage()
     {
         return new Date(dateString).toLocaleDateString();
     }
+
+    // Function for comparing dates for sessions
+    const sortComparisonFn = (sessionA: Session, sessionB: Session) =>
+        new Date(sessionB.date).getTime() - new Date(sessionA.date).getTime();
 
     // Helper function for duration formatting
     // Converts database time which is stored in seconds to hours and minutes
@@ -253,7 +252,7 @@ export default function PastSessionsPage()
                 </Pressable>
             </View>
             <FlatList
-                data={sessions.reverse()}
+                data={sessions.sort(sortComparisonFn)}
                 renderItem={({item, index}) => (
                     <SessionComponent
                         onPress={() => handleOpenSheet(item)}
