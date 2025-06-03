@@ -41,6 +41,14 @@ export default function RootLayout()
                                         headerBackTitle: "Back",
                                     }}
                                 />
+                                <Stack.Screen
+                                    name="selectMachine"
+                                    options={{
+                                        title: "Select Machine",
+                                        headerBackTitle: "Back",
+                                        contentStyle: {paddingTop: 0},
+                                    }}
+                                />
                             </Stack>
                         </BottomSheetModalProvider>
                     </GestureHandlerRootView>

@@ -44,7 +44,6 @@ function fetchPostSet(
     attributeValues: AttributeValue[],
 ): Promise<Response>
 {
-    console.log(`in workoutFetchers: ${JSON.stringify(attributeValues)}`);
     return fetch(`${BACKEND_URL}/workouts/${session_id}/${workout_id}`, {
         method: "POST",
         headers: {
@@ -71,10 +70,26 @@ function fetchDeleteSet(
     );
 }
 
+function fetchPatchSet(
+    workout_id: string,
+    set_id: string,
+    attributeValues: AttributeValue[],
+): Promise<Response>
+{
+    return fetch(`${BACKEND_URL}/workouts/${workout_id}/${set_id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({attributeValues}),
+    });
+}
+
 export {
     fetchGetWorkouts,
     fetchPostWorkout,
     fetchDeleteWorkout,
     fetchPostSet,
     fetchDeleteSet,
+    fetchPatchSet,
 };

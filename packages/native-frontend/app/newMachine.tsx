@@ -15,6 +15,7 @@ import {
     validateAttributeName,
 } from "@/util/machineValidator";
 
+import {useMachineContext} from "@/util/machineContext";
 const defaultAttributes: Attribute[] = [
     {
         name: "Weight",
@@ -41,6 +42,8 @@ export default function MachineForm()
     const navigation = useNavigation();
     const router = useRouter();
 
+    const {machines, setMachines} = useMachineContext();
+
     async function addOneMachine(machine: Machine)
     {
         console.log(`${machine.name} ${machine.muscle}`);
@@ -54,6 +57,7 @@ export default function MachineForm()
             })
             .then((res_data) =>
             {
+                setMachines([...machines, res_data]);
                 console.log(`RES_DATA=${JSON.stringify(res_data)}`);
             })
             .catch((error: unknown) =>
@@ -191,12 +195,14 @@ export default function MachineForm()
             <FlatList
                 data={machine.attributes}
                 renderItem={({item, index}) => (
-                    <AttributeComponent
-                        key={index}
-                        name={item.name}
-                        unit={item.unit}
-                        handleDelete={deleteAttribute}
-                    />
+                    <View testID={`attribute-item`} key={index}>
+                        <AttributeComponent
+                            key={index}
+                            name={item.name}
+                            unit={item.unit}
+                            handleDelete={deleteAttribute}
+                        />
+                    </View>
                 )}
                 ListEmptyComponent={<Empty />}
                 showsVerticalScrollIndicator={false}

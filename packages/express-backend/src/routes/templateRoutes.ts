@@ -135,7 +135,7 @@ router.post("/", (req: Request, res: Response) =>
             {
                 if (result === null)
                 {
-                    return res.status(400).send("No user session");
+                    return res.status(404).send("No user session found");
                 }
                 else
                 {
@@ -156,7 +156,7 @@ router.post("/", (req: Request, res: Response) =>
             {
                 if (result === null)
                 {
-                    return res.status(400).send("No user templates");
+                    return res.status(404).send("No user templates found");
                 }
                 else
                 {
@@ -177,7 +177,7 @@ router.post("/", (req: Request, res: Response) =>
             {
                 if (result === null)
                 {
-                    return res.status(400).send("No user templates");
+                    return res.status(424).send("Template save failed");
                 }
                 else
                 {
