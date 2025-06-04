@@ -37,15 +37,17 @@ export default function Statistics()
 {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [machine, setMachine] = useState<Machine>();
-    const [attrName, setAttrName] = useState<string>("weight");
-    const [statsData, setStatsData] = useState<StatsData>();
+    const [attrName, setAttrName] = useState<string>();
+    const [statsData, setStatsData] = useState<StatsData | undefined>();
+    const [notEnoughDataError, setNotEnoughDataError] =
+        useState<boolean>(false);
 
     // Necessary for the values to change when dragging on graph
     const [yVal, setYVal] = useState<string>();
     const [xVal, setXVal] = useState<string>();
 
     const {state, isActive} = useChartPressState({x: "", y: {value: 0}});
-    const {machines, setMachines} = useMachineContext();
+    const {machines} = useMachineContext();
     const router = useRouter();
     const isFocused = useIsFocused();
 
@@ -63,18 +65,46 @@ export default function Statistics()
         top: 32,
     };
 
+    // Chain of use effects ensures that dependencies are ready before attempting to harvest data
     useEffect(() =>
     {
         if (isFocused)
         {
             loadSessions();
         }
-        if (machineId && isFocused)
+    }, [isFocused]);
+
+    useEffect(() =>
+    {
+        if (machineId)
         {
             setMachine(machineIdToMachine(machineId));
-            setStatsData(harvestDataPoints());
         }
-    }, [isFocused, attrName, machineId]);
+    }, [machineId]);
+
+    useEffect(() =>
+    {
+        if (machine)
+        {
+            setAttrName(machine?.attributes[0].name); // Sets the top level attribute will be first to get stats
+        }
+    }, [machine]);
+
+    useEffect(() =>
+    {
+        if (attrName)
+        {
+            const dataPoints = harvestDataPoints();
+            if (dataPoints !== undefined)
+            {
+                setStatsData(dataPoints);
+            }
+            else
+            {
+                setStatsData(undefined);
+            }
+        }
+    }, [attrName]);
 
     const machineIdToMachine = (machineId?: string) =>
     {
@@ -87,51 +117,83 @@ export default function Statistics()
     // Harvests all relevant data points from all of users sessions
     // X -> date, Y -> value
     // If multiple workouts on the same day, give the max for the day
-    const harvestDataPoints = (): StatsData =>
+    const harvestDataPoints = (): StatsData | undefined =>
     {
+        setNotEnoughDataError(false);
+        let internalError: boolean = false; // need an internal flag as well. Can't rely on notEnoughDataError state
         // Retrieves all the data points
-        const sessionData = sessions.map((session) =>
-        {
-            // Match relevant workouts
-            const relevantWO = session.workout.filter(
-                (workout) =>
-                    workout.machineId === machineId && workout.sets.length > 0,
-            );
-
-            // Sessions with no relevant workouts have no value
-            if (relevantWO.length === 0)
+        const sessionData = sessions
+            .map((session) =>
             {
-            }
+                // Match relevant workouts
+                const relevantWO = session.workout.filter(
+                    (workout) =>
+                        workout.machineId === machineId &&
+                        workout.sets.length > 0,
+                );
 
-            const WOAttrValue = relevantWO.map((workout) =>
-            {
-                return workout.sets.map((set) =>
+                // Need at least 2 points to plot a line
+
+                const WOAttrValue = relevantWO.map((workout) =>
                 {
-                    return set.attributeValues.filter((attr) =>
+                    return workout.sets.map((set) =>
                     {
-                        return (
-                            attr.name.toLowerCase() === attrName.toLowerCase()
-                        );
+                        return set.attributeValues.filter((attr) =>
+                        {
+                            return (
+                                attr.name.toLowerCase() ===
+                                attrName?.toLowerCase()
+                            );
+                        });
                     });
                 });
-            });
 
-            // Only return the maximum value if multiple workouts for the same session
-            const largestValue: number = Math.max(
-                ...WOAttrValue[0][0].map((attrValue) => attrValue.value),
-            );
-            return {
-                date: new Date(session.date).toLocaleDateString().toString(),
-                value: largestValue,
-            };
-        });
+                if (WOAttrValue.length === 0)
+                {
+                    return {
+                        date: "",
+                        value: NaN,
+                    };
+                }
+
+                // Only return the maximum value if multiple workouts for the same session
+                const largestValue: number = Math.max(
+                    ...WOAttrValue[0][0].map((attrValue) => attrValue.value),
+                );
+                return {
+                    date: new Date(session.date)
+                        .toLocaleDateString()
+                        .toString(),
+                    value: largestValue,
+                };
+            })
+            // filter out any null sessions (sessions that didn't have any relevant sets)
+            .filter((session) => session)
+            // filter out any values that had the machineid but not any sets
+            .filter((session) =>
+            {
+                return session.date !== "" && !isNaN(session.value);
+            });
 
         const numberOfWorkouts = sessionData.length;
 
-        return {
-            numberOfWorkouts: numberOfWorkouts,
-            data: sessionData,
-        };
+        if (numberOfWorkouts <= 1)
+        {
+            internalError = true;
+            setNotEnoughDataError(true);
+        }
+
+        if (internalError)
+        {
+            return undefined;
+        }
+        else
+        {
+            return {
+                numberOfWorkouts: numberOfWorkouts,
+                data: sessionData,
+            };
+        }
     };
 
     function loadSessions(): void
@@ -158,26 +220,36 @@ export default function Statistics()
 
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
-            <View className="flex-row">
-                <View className="pl-4 pt-4 pb-2">
-                    <Text className="text-3xl font-semibold text-black tracking-tight">
-                        Statistics
-                    </Text>
+            <>
+                <View className="flex-row">
+                    <View className="pl-4 pt-4 pb-2">
+                        <Text className="text-3xl font-semibold text-black tracking-tight">
+                            Statistics
+                        </Text>
+                    </View>
+                    <Pressable
+                        className="flex-1 shadow-sm p-4 mt-2 mb-2 ml-8 mr-8 rounded-md bg-yellow-400 items-center active:opacity-80 transition-all duration-200"
+                        onPress={() =>
+                            router.push({
+                                pathname: "/selectMachine",
+                                params: {returnPath: "/(tabs)/stats"},
+                            })
+                        }
+                    >
+                        <Text className="color-white font-semibold">
+                            Select Machine
+                        </Text>
+                    </Pressable>
                 </View>
-                <Pressable
-                    className="flex-1 shadow-sm p-4 mt-2 mb-2 ml-8 mr-8 rounded-md bg-yellow-400 items-center active:opacity-80 transition-all duration-200"
-                    onPress={() =>
-                        router.push({
-                            pathname: "/selectMachine",
-                            params: {returnPath: "/(tabs)/stats"},
-                        })
-                    }
-                >
-                    <Text className="color-white font-semibold">
-                        Select Machine
-                    </Text>
-                </Pressable>
-            </View>
+                {notEnoughDataError && (
+                    <View className="items-center pt-16">
+                        <Text className="text-xl text-red-500 font-bold ">
+                            Not Enough Data on Machine
+                        </Text>
+                    </View>
+                )}
+                ;
+            </>
             {machine && statsData && (
                 <>
                     <View className="flex-1">
@@ -203,7 +275,10 @@ export default function Statistics()
                                 Progression
                             </Text>
                         </View>
-                        <View className="items-center">
+                        <Text className="text-lg pl-4 font-semibold text-gray-400 italic">
+                            {statsData.numberOfWorkouts} workouts found
+                        </Text>
+                        <View className="items-center top-8">
                             {isActive ? (
                                 <Text className="text-lg font-semibold">
                                     {yVal} on {xVal}
@@ -242,7 +317,7 @@ export default function Statistics()
                                         color="orange"
                                         strokeWidth={5}
                                         animate={{
-                                            type: "spring",
+                                            type: "timing",
                                             duration: 100,
                                         }}
                                     />
