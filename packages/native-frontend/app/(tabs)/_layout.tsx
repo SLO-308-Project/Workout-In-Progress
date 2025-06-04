@@ -1,8 +1,6 @@
 import {MaterialCommunityIcons, AntDesign} from "@expo/vector-icons";
 import {Tabs} from "expo-router";
 import ProtectedRoute from "@/components/auth/protectedRoute";
-import {TemplateProvider} from "@/util/templateContext";
-import {MachineProvider} from "@/util/machineContext";
 
 export default function TabLayout()
 {

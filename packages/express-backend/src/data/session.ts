@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const sessionSchema = new mongoose.Schema(
     {
+        template_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "sessionTemplate",
+            required: false,
+        },
         _id: {
             type: mongoose.Schema.Types.ObjectId,
             auto: true,

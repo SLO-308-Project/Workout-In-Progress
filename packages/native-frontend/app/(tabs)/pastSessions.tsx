@@ -22,6 +22,7 @@ import SessionSlide from "@/components/sessions/sessionSlide";
 import {useTemplateContext} from "@/util/templateContext";
 import {useMachineContext} from "@/util/machineContext";
 import {Machine} from "@/types/machine";
+import {useCurrentSessionStatusContext} from "@/util/currentSessionContext";
 
 export default function PastSessionsPage()
 {
@@ -40,6 +41,8 @@ export default function PastSessionsPage()
     const [allMachines, setAllMachines] = useState<Machine[]>([]);
 
     const isFocused = useIsFocused();
+
+    const {currentSessionStatus} = useCurrentSessionStatusContext();
 
     useEffect(() =>
     {
@@ -321,6 +324,16 @@ export default function PastSessionsPage()
                     deleteSession={deleteSession}
                 />
             </BottomSheetModal>
+            <Pressable
+                onPress={() =>
+                {
+                    console.log(sessions);
+                    console.log(templates);
+                    console.log(currentSessionStatus);
+                }}
+            >
+                <Text className="bg-green-700">PRESS</Text>
+            </Pressable>
         </SafeAreaView>
     );
 }

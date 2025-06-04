@@ -1,6 +1,7 @@
 import {Router, Request, Response} from "express";
 import sessionServices from "../services/sessionServices";
 import {SessionType} from "../data/session";
+import {SessionRequest} from "../types/express";
 //import {authToken} from "../util/jwt";
 
 const router = Router();
@@ -118,6 +119,21 @@ router.delete("/:id", (req: Request, res: Response) =>
         {
             console.log(err);
             return res.status(400).send("Bad Request: " + err);
+        });
+});
+
+router.patch("/:id", (req: SessionRequest, res: Response) =>
+{
+    sessionServices
+        .patchSession(req.params.id, req.body.session)
+        .then((result) =>
+        {
+            return res.status(200).send(result);
+        })
+        .catch((err) =>
+        {
+            console.log(err);
+            return res.send(err);
         });
 });
 
