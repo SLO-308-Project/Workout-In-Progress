@@ -1,4 +1,4 @@
-import {MaterialCommunityIcons, AntDesign} from "@expo/vector-icons";
+import {MaterialCommunityIcons, AntDesign, Entypo} from "@expo/vector-icons";
 import {Tabs} from "expo-router";
 import ProtectedRoute from "@/components/auth/protectedRoute";
 import {TemplateProvider} from "@/util/templateContext";
@@ -34,9 +34,18 @@ export default function TabLayout()
                     }}
                 />
                 <Tabs.Screen
+                    name="stats"
+                    options={{
+                        title: "Stats",
+                        tabBarIcon: ({color}) => (
+                            <Entypo name="bar-graph" size={28} color={color} />
+                        ),
+                    }}
+                />
+                <Tabs.Screen
                     name="currSession"
                     options={{
-                        title: "Current Session",
+                        title: "",
                         tabBarIcon: ({color}) => (
                             <AntDesign
                                 size={28}

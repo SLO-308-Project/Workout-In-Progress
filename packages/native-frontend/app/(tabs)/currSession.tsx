@@ -74,7 +74,7 @@ export default function CurrentSessionPage()
 
     useEffect(() =>
     {
-        if (machineId)
+        if (machineId !== "undefined" && machineId)
         {
             addWorkout(machineId);
         }
@@ -199,12 +199,10 @@ export default function CurrentSessionPage()
             {
                 if (res.status === 200)
                 {
-                    console.log("200");
                     return res.json();
                 }
                 else if (res.status === 204)
                 {
-                    console.log("204");
                     return null;
                 }
             })
@@ -232,11 +230,9 @@ export default function CurrentSessionPage()
         fetchGetWorkouts(session._id)
             .then((res) =>
             {
-                console.log(res);
                 if (res.status === 201)
                 {
                     const text = res.text();
-                    console.log(text);
                     return text;
                 }
                 else
@@ -247,7 +243,6 @@ export default function CurrentSessionPage()
             .then((json) =>
             {
                 const newJson = JSON.parse(json);
-                console.log(newJson);
                 setWorkouts(newJson);
             })
             .catch((x) => console.log(x));
@@ -255,7 +250,6 @@ export default function CurrentSessionPage()
 
     function addWorkout(machineId: string): void
     {
-        console.log(`machineId=${machineId}`);
         if (sessions === null)
         {
             throw new Error("Could not get session. Session does not exist.");
@@ -280,7 +274,9 @@ export default function CurrentSessionPage()
                 {
                     setWorkouts(res_data.workout);
                 })
-                .catch((error: unknown) => console.log(error));
+                .catch((error: unknown) =>
+                    console.log(`Backend Threw: ${error}`),
+                );
         }
     }
 
@@ -423,7 +419,7 @@ export default function CurrentSessionPage()
                     <Pressable
                         onPress={startSession}
                         style={{backgroundColor: "#34C759FF"}}
-                        className="w-60 h-60 shadow-md rounded-full justify-center items-center active:opacity-80 transition-all duration-200"
+                        className="w-60 h-60 rounded-full justify-center items-center active:opacity-80 transition-all duration-200"
                     >
                         <Text
                             style={{fontSize: 24}}
@@ -442,7 +438,12 @@ export default function CurrentSessionPage()
                         </Text>
                         <Pressable
                             className=""
-                            onPress={() => router.push("/selectMachine")}
+                            onPress={() =>
+                                router.push({
+                                    pathname: "/selectMachine",
+                                    params: {returnPath: "/(tabs)/currSession"},
+                                })
+                            }
                         >
                             <AntDesign name="plus" size={32} color="black" />
                         </Pressable>
@@ -493,6 +494,7 @@ export default function CurrentSessionPage()
                         enablePanDownToClose={true}
                     >
                         <WorkoutSlide
+                            sessionId={sessions._id}
                             machine={machineIdToMachine(
                                 selectedWorkout?.machineId,
                             )}

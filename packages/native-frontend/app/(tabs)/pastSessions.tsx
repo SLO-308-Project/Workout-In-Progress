@@ -54,18 +54,13 @@ export default function PastSessionsPage()
     }, [isFocused]);
 
     // Function to fetch sessions
-    // Sorts data by date so that most recent is first
     function loadSessions(): void
     {
         fetchGetSessions()
             .then((res: Response) => res.json())
             .then((data: Session[]) =>
             {
-                const sortedSessions = [...data].sort(
-                    (sessionA, sessionB) =>
-                        new Date(sessionA.date).getTime() -
-                        new Date(sessionB.date).getTime(),
-                );
+                const sortedSessions = data.sort(sortComparisonFn);
                 setSessions(sortedSessions);
             })
             .catch((error: unknown) => console.log(error));
@@ -90,6 +85,10 @@ export default function PastSessionsPage()
     {
         return new Date(dateString).toLocaleDateString();
     }
+
+    // Function for comparing dates for sessions
+    const sortComparisonFn = (sessionA: Session, sessionB: Session) =>
+        new Date(sessionB.date).getTime() - new Date(sessionA.date).getTime();
 
     // Helper function for duration formatting
     // Converts database time which is stored in seconds to hours and minutes
@@ -237,11 +236,6 @@ export default function PastSessionsPage()
         router.push("../settings");
     };
 
-    const openStatisticsStack = () =>
-    {
-        router.push("../statistics");
-    };
-
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
             <View className="flex-row justify-between items-center px-4 pt-4 pb-2">
@@ -257,18 +251,8 @@ export default function PastSessionsPage()
                     />
                 </Pressable>
             </View>
-            <View className="flex-row justify-center py-2">
-                <Pressable
-                    className=" w-3/5 rounded-lg border bg-gray-100 border-gray-300 flex-row justify-center"
-                    onPress={openStatisticsStack}
-                >
-                    <Text className="text-2xl font-semibold text-black tracking-tight py-1">
-                        Statistics
-                    </Text>
-                </Pressable>
-            </View>
             <FlatList
-                data={sessions.reverse()}
+                data={sessions.sort(sortComparisonFn)}
                 renderItem={({item, index}) => (
                     <SessionComponent
                         onPress={() => handleOpenSheet(item)}

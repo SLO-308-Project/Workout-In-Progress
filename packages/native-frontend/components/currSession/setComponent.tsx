@@ -21,6 +21,7 @@ type Props = {
     handleDelete: (workoutId: string, setId: string) => void;
     workoutId: string | undefined;
     attributes: Attribute[] | undefined;
+    sessionId: string;
 };
 
 export default function SetComponent({
@@ -29,6 +30,7 @@ export default function SetComponent({
     workoutId,
     handleDelete,
     attributes,
+    sessionId,
 }: Props)
 {
     const [showAV, setShowAV] = useState(false);
@@ -61,7 +63,7 @@ export default function SetComponent({
         {
             throw new Error("Workout ID NULL or undefined when updating set");
         }
-        fetchPatchSet(workoutId, set._id, newAttributeValues)
+        fetchPatchSet(sessionId, workoutId, set._id, newAttributeValues)
             .then((res) =>
             {
                 if (res.ok)
