@@ -123,10 +123,10 @@ async function copyTemplateData(
                 );
                 const newId = mapOfMachineIds[1][index];
                 return {
-                    ...machine,
+                    ...machine.toObject(),
                     _id: newId,
                     attributes: machine.attributes.map((attr) => ({
-                        ...attr,
+                        ...attr.toObject(),
                         _id: new Types.ObjectId(),
                     })),
                 };
