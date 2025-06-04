@@ -28,6 +28,8 @@ Workout In Progress is a workout tracking application. It helps keep track of wh
 
 [UML Activity Diagram](https://drive.google.com/file/d/1RCC0hqDVSrnWCDgpppQ3kv7xycMe5lVk/view?usp=sharing)
 
+[UML Sequence Diagram](https://drive.google.com/file/d/1S_xFfHS6SZ_wBLoxX58UuUnBaugZcNzJ/view?usp=sharing)
+
 ## Test Coverage Reports
 Date: 4/15/2025 6pm 
 
@@ -46,11 +48,12 @@ Backend Report: <br />
 3. Create a .env file for both the frontend and backend packages
     - Frontend
       ```
-          VITE_SERVER_URL=<BACKEND_SERVER>
+         EXPO_PUBLIC_API_URL=<BACKEND_SERVER>
       ```
     - Backend
       ```
           DB_URL = <MONGO_URL>
+          JWT_SECRET = <SECRET>
       ```
 4. VScode Extensions:
     - "JavaScript and TypeScript Nightly"
