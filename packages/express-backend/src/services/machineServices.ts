@@ -146,7 +146,7 @@ async function saveMachineFromTemplate(
             }
             const machine = template.machines.find((mach) =>
             {
-                return mach._id?.toString() === machineId;
+                return mach._id!.toString() === machineId;
             });
             if (!machine)
             {

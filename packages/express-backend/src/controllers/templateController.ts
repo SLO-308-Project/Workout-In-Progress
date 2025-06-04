@@ -104,7 +104,6 @@ async function copyTemplateData(
         if (sourceId)
         {
             machines = await machineServices.getSavedMachines(sourceId);
-            console.log(machines);
         }
         else
         {
@@ -116,35 +115,21 @@ async function copyTemplateData(
         }
         if (machines)
         {
-            for (let i = 0; i < mapOfMachineIds[0].length; i++)
-            {
-                const index = machines.findIndex((machine) =>
-                    (machine as MachineType)._id?.equals(mapOfMachineIds[0][i]),
-                );
-                if (index >= 0)
-                {
-                    (machines[index] as MachineType)._id =
-                        mapOfMachineIds[1][i];
-                }
-            }
             const updatedMachines = machines.map((machine) =>
             {
-                const updatedMachine = {
+                const oldId = (machine as MachineType)._id;
+                const index = mapOfMachineIds[0].findIndex((id) =>
+                    id.equals(oldId),
+                );
+                const newId = mapOfMachineIds[1][index];
+                return {
                     ...machine,
-                    _id: mapOfMachineIds[1][
-                        mapOfMachineIds[0].findIndex((id) =>
-                            id.equals(machine._id),
-                        )
-                    ],
-                    attributes: machine.attributes.map((attr) =>
-                    {
-                        return {
-                            ...attr,
-                            _id: new Types.ObjectId(),
-                        };
-                    }),
+                    _id: newId,
+                    attributes: machine.attributes.map((attr) => ({
+                        ...attr,
+                        _id: new Types.ObjectId(),
+                    })),
                 };
-                return updatedMachine;
             });
             template.set("machines", updatedMachines);
         }
