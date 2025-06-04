@@ -17,13 +17,22 @@ import {
 
 import {Machine} from "@/types/machine";
 import MachineSlide from "@/components/machines/machineEditSlide";
+import {useMachineContext} from "@/util/machineContext";
+
+const isCypress =
+    typeof window !== "undefined" && window.__IS_CYPRESS__ === true;
 
 function MachinePage()
 {
-    const [machines, setMachine] = useState<Machine[]>([]);
+    const {machines, setMachines} = useMachineContext();
     const [search, setSearch] = useState<string>("");
     const router = useRouter();
     const isFocused = useIsFocused();
+
+    useEffect(() =>
+    {
+        if (isFocused) getMachines();
+    }, [isFocused]);
 
     // State for Edit Bottom Sheet Modal
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -44,9 +53,6 @@ function MachinePage()
     const handleOpenSheet = useCallback((machine: Machine) =>
     {
         setSelectedMachine(machine);
-        console.log(
-            `passing machine: machine.name=${machine.name} machine.muscle=${machine.muscle} machine.attributes=${JSON.stringify(machine.attributes)}`,
-        );
         bottomSheetModalRef.current?.present();
     }, []);
 
@@ -54,11 +60,6 @@ function MachinePage()
     {
         setSearch(search);
     };
-
-    useEffect(() =>
-    {
-        if (isFocused) getMachines();
-    }, [isFocused]);
 
     function getMachines(): void
     {
@@ -72,8 +73,7 @@ function MachinePage()
             })
             .then((res_data) =>
             {
-                console.log(`GETMACHINES RES_DATA=${JSON.stringify(res_data)}`);
-                setMachine(res_data);
+                setMachines(res_data);
                 setIsRefreshing(false);
             })
             .catch((error: unknown) => console.log(error));
@@ -88,7 +88,7 @@ function MachinePage()
                 if (res.ok)
                 {
                     // Update local list
-                    setMachine(
+                    setMachines(
                         machines.map((oldMachine) =>
                             oldMachine._id === newMachine._id
                                 ? {...oldMachine, ...newMachine}
@@ -110,7 +110,7 @@ function MachinePage()
             {
                 if (res.ok)
                 {
-                    setMachine(
+                    setMachines(
                         machines.filter((machine) => machine.name !== name),
                     );
                 }
@@ -159,18 +159,21 @@ function MachinePage()
             <FlatList
                 data={filterMachines()}
                 renderItem={({item, index}) => (
-                    <MachineComponent
-                        onPress={() => handleOpenSheet(item)}
-                        key={index}
-                        machine={item}
-                        handleDelete={removeOneMachine}
-                    />
+                    <View testID={`machine-item`} key={index}>
+                        <MachineComponent
+                            onPress={() => handleOpenSheet(item)}
+                            key={index}
+                            machine={item}
+                            handleDelete={removeOneMachine}
+                        />
+                    </View>
                 )}
                 ListEmptyComponent={<Empty />}
                 showsVerticalScrollIndicator={false}
                 className="flex-1"
                 onRefresh={handleRefresh}
                 refreshing={isRefreshing}
+                initialNumToRender={isCypress ? 10000 : 10}
             />
             <BottomSheetModal
                 ref={bottomSheetModalRef}

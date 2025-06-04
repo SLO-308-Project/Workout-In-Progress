@@ -131,6 +131,45 @@ function getTemplates()
 }
 
 /**
+ * Update a user template
+ *
+ * @param {string} userId - User associated id
+ * @param {string} templateId - Template associated id
+ * @param {sessionTemplateType} updatedTemplate - New template object
+ * @returns {Promise} - Updated template object
+ */
+function updateTemplate(
+    userId: string,
+    templateId: string,
+    updatedTemplate: sessionTemplateType,
+)
+{
+    const listOfTemplates: PipelineStage[] = aggregateUserTemplates(userId);
+    listOfTemplates.push({$match: {_id: new Types.ObjectId(templateId)}});
+    return userModel
+        .aggregate(listOfTemplates)
+        .then((templates) =>
+        {
+            if (templates.length == 0)
+            {
+                throw new Error("No template found");
+            }
+            const templateToUpdate = templates[0] as sessionTemplateType;
+            templateToUpdate._id = new Types.ObjectId(templateId);
+            return sessionTemplateModel.findByIdAndUpdate(
+                templateToUpdate._id,
+                updatedTemplate,
+                {new: true},
+            );
+        })
+        .catch((error) =>
+        {
+            console.log(error);
+            return null;
+        });
+}
+
+/**
  * Deletes a Template By id
  *
  * @param {string} userId - User associated id
@@ -169,4 +208,5 @@ export default {
     getTemplateById,
     getTemplates,
     getUserTemplates,
+    updateTemplate,
 };
