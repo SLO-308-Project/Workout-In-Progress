@@ -107,7 +107,7 @@ function removeSet(sessionId: string, workoutId: string, setId: string)
     );
 }
 
-async function updateSet(
+function updateSet(
     sessionId: string,
     workoutId: string,
     setId: string,
@@ -127,7 +127,7 @@ async function updateSet(
         throw new Error("No workoutId provided");
     }
 
-    await sessionModel.updateOne(
+    return sessionModel.updateOne(
         {
             _id: sessionId,
             "workout._id": workoutId,

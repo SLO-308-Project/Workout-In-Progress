@@ -368,9 +368,16 @@ describe("Session Services Tests", () =>
         });
 
         const setsId = sets[0]._id.toString();
-        sessionModel.findOneAndUpdate = jest.fn().mockResolvedValue(session);
+        const sessionId = session._id?.toString() || "";
+        const workoutId = workout._id.toString();
+        sessionModel.updateOne = jest.fn().mockResolvedValue(session);
 
-        const result = await setServices.updateSet(setsId, attributeValue);
+        const result = await setServices.updateSet(
+            sessionId,
+            workoutId,
+            setsId,
+            attributeValue,
+        );
         expect(result).toBeTruthy();
     });
 
@@ -383,11 +390,101 @@ describe("Session Services Tests", () =>
             },
         ];
 
+        const workout = {
+            _id: new Types.ObjectId(),
+            sets: [],
+        };
+        const session = new sessionModel({
+            _id: new Types.ObjectId(),
+            workout: [workout],
+        });
+
         const setsId = "";
+        const sessionId = session._id?.toString() || "";
+        const workoutId = workout._id.toString();
 
         try
         {
-            await setServices.updateSet(setsId, attributeValue);
+            await setServices.updateSet(
+                sessionId,
+                workoutId,
+                setsId,
+                attributeValue,
+            );
+            fail("Test should not reach here");
+        }
+        catch (error)
+        {
+            expect(error).toBeTruthy();
+        }
+    });
+
+    test("Update set --- failure no session", async () =>
+    {
+        const attributeValue: AttributeValue[] = [
+            {
+                name: "test",
+                value: 1,
+            },
+        ];
+
+        const sets = [
+            {_id: new Types.ObjectId(), attributeValues: [attributeValue]},
+        ];
+        const workout = {
+            _id: new Types.ObjectId(),
+            sets: [sets],
+        };
+
+        const setsId = sets[0]._id.toString();
+        const sessionId = "";
+        const workoutId = workout._id.toString();
+
+        try
+        {
+            await setServices.updateSet(
+                sessionId,
+                workoutId,
+                setsId,
+                attributeValue,
+            );
+            fail("Test should not reach here");
+        }
+        catch (error)
+        {
+            expect(error).toBeTruthy();
+        }
+    });
+
+    test("Update set --- failure no workout", async () =>
+    {
+        const attributeValue: AttributeValue[] = [
+            {
+                name: "test",
+                value: 1,
+            },
+        ];
+
+        const sets = [
+            {_id: new Types.ObjectId(), attributeValues: [attributeValue]},
+        ];
+        const session = new sessionModel({
+            _id: new Types.ObjectId(),
+            workout: [],
+        });
+
+        const setsId = sets[0]._id.toString();
+        const sessionId = session._id?.toString() || "";
+        const workoutId = "";
+
+        try
+        {
+            await setServices.updateSet(
+                sessionId,
+                workoutId,
+                setsId,
+                attributeValue,
+            );
             fail("Test should not reach here");
         }
         catch (error)
