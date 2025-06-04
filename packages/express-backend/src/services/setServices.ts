@@ -79,7 +79,7 @@ async function addSet(
     return newSet._id;
 }
 
-async function removeSet(sessionId: string, workoutId: string, setId: string)
+function removeSet(sessionId: string, workoutId: string, setId: string)
 {
     if (!sessionId)
     {
@@ -94,7 +94,7 @@ async function removeSet(sessionId: string, workoutId: string, setId: string)
         throw new Error("No setId provided");
     }
 
-    await sessionModel.updateOne(
+    return sessionModel.updateOne(
         {
             _id: sessionId,
             "workout._id": workoutId,
