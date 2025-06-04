@@ -419,7 +419,7 @@ export default function CurrentSessionPage()
                     <Pressable
                         onPress={startSession}
                         style={{backgroundColor: "#34C759FF"}}
-                        className="w-60 h-60 shadow-md rounded-full justify-center items-center active:opacity-80 transition-all duration-200"
+                        className="w-60 h-60 rounded-full justify-center items-center active:opacity-80 transition-all duration-200"
                     >
                         <Text
                             style={{fontSize: 24}}

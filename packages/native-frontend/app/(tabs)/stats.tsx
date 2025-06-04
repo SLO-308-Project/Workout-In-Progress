@@ -1,4 +1,4 @@
-import {View, Text, Pressable} from "react-native";
+import {View, Text, Pressable, Platform} from "react-native";
 import {useState, useEffect} from "react";
 import {useIsFocused} from "@react-navigation/native";
 import {SafeAreaView} from "react-native-safe-area-context";
@@ -220,127 +220,142 @@ export default function Statistics()
 
     return (
         <SafeAreaView edges={["top"]} className="flex-1 bg-white pt-4">
-            <>
-                <View className="flex-row">
-                    <View className="pl-4 pt-4 pb-2">
-                        <Text className="text-3xl font-semibold text-black tracking-tight">
-                            Statistics
-                        </Text>
-                    </View>
-                    <Pressable
-                        className="flex-1 shadow-sm p-4 mt-2 mb-2 ml-8 mr-8 rounded-md bg-yellow-400 items-center active:opacity-80 transition-all duration-200"
-                        onPress={() =>
-                            router.push({
-                                pathname: "/selectMachine",
-                                params: {returnPath: "/(tabs)/stats"},
-                            })
-                        }
-                    >
-                        <Text className="color-white font-semibold">
-                            Select Machine
-                        </Text>
-                    </Pressable>
-                </View>
-                {notEnoughDataError && (
-                    <View className="items-center pt-16">
-                        <Text className="text-xl text-red-500 font-bold ">
-                            Not Enough Data on Machine
-                        </Text>
-                    </View>
-                )}
-                ;
-            </>
-            {machine && statsData && (
-                <>
-                    <View className="flex-1">
-                        <View className="flex-row items-center">
-                            <Text className="text-xl font-bold pl-4 pr-2">
-                                {machine.name}
-                            </Text>
-                            <WheelPicker
-                                data={machine?.attributes.map((attribute) => ({
-                                    value: attribute.name,
-                                    label: attribute.name,
-                                }))}
-                                value={attrName}
-                                onValueChanged={({item: {value}}) =>
-                                    setAttrName(value)
-                                }
-                                itemHeight={27}
-                                visibleItemCount={3}
-                                width={86}
-                                itemTextStyle={{fontSize: 18}}
-                            />
-                            <Text className="text-xl font-bold pl-2 pr-2">
-                                Progression
-                            </Text>
-                        </View>
-                        <Text className="text-lg pl-4 font-semibold text-gray-400 italic">
-                            {statsData.numberOfWorkouts} workouts found
-                        </Text>
-                        <View className="items-center top-8">
-                            {isActive ? (
-                                <Text className="text-lg font-semibold">
-                                    {yVal} on {xVal}
-                                </Text>
-                            ) : (
-                                <Text className="text-lg font-semibold">
-                                    - on -
-                                </Text>
-                            )}
-                        </View>
-                        <CartesianChart
-                            data={statsData.data}
-                            xKey="date"
-                            yKeys={["value"]}
-                            yAxis={[{font: font12}]}
-                            axisOptions={{lineColor: "transparent"}}
-                            chartPressState={state}
-                            padding={{
-                                left: chartPadding.left,
-                                right: chartPadding.right,
-                                top: chartPadding.top,
-                                bottom: chartPadding.bottom,
-                            }}
-                            domainPadding={{
-                                top: 16,
-                                bottom: 10,
-                                left: 10,
-                                right: 10,
-                            }}
-                            frame={{lineColor: "transparent"}}
-                        >
-                            {({points}) => (
-                                <>
-                                    <Line
-                                        points={points.value}
-                                        color="orange"
-                                        strokeWidth={5}
-                                        animate={{
-                                            type: "timing",
-                                            duration: 100,
-                                        }}
-                                    />
-                                    {isActive && (
-                                        <>
-                                            <ToolTip
-                                                xpos={state.x.position}
-                                                ypos={state.y.value.position}
-                                            />
-                                        </>
-                                    )}
-                                </>
-                            )}
-                        </CartesianChart>
-                    </View>
-                </>
-            )}
-            {!machine && (
+            {Platform.OS === "web" && (
                 <View className="flex-1 items-center bg-white pt-16">
                     <Text className="text-2xl text-gray-300 font-semibold">
-                        Select a Machine
+                        Statistics are not supported on web.
                     </Text>
                 </View>
+            )}
+            {Platform.OS !== "web" && (
+                <>
+                    <>
+                        <View className="flex-row">
+                            <View className="pl-4 pt-4 pb-2">
+                                <Text className="text-3xl font-semibold text-black tracking-tight">
+                                    Statistics
+                                </Text>
+                            </View>
+                            <Pressable
+                                className="flex-1 p-4 mt-2 mb-2 ml-8 mr-8 rounded-md bg-yellow-400 items-center active:opacity-80 transition-all duration-200"
+                                onPress={() =>
+                                    router.push({
+                                        pathname: "/selectMachine",
+                                        params: {returnPath: "/(tabs)/stats"},
+                                    })
+                                }
+                            >
+                                <Text className="color-white font-semibold">
+                                    Select Machine
+                                </Text>
+                            </Pressable>
+                        </View>
+                        {notEnoughDataError && (
+                            <View className="items-center pt-16">
+                                <Text className="text-xl text-red-500 font-bold ">
+                                    Not Enough Data on Machine
+                                </Text>
+                            </View>
+                        )}
+                    </>
+                    {machine && statsData && (
+                        <>
+                            <View className="flex-1">
+                                <View className="flex-row items-center">
+                                    <Text className="text-xl font-bold pl-4 pr-2">
+                                        {machine.name}
+                                    </Text>
+                                    <WheelPicker
+                                        data={machine?.attributes.map(
+                                            (attribute) => ({
+                                                value: attribute.name,
+                                                label: attribute.name,
+                                            }),
+                                        )}
+                                        value={attrName}
+                                        onValueChanged={({item: {value}}) =>
+                                            setAttrName(value)
+                                        }
+                                        itemHeight={27}
+                                        visibleItemCount={3}
+                                        width={86}
+                                        itemTextStyle={{fontSize: 18}}
+                                    />
+                                    <Text className="text-xl font-bold pl-2 pr-2">
+                                        Progression
+                                    </Text>
+                                </View>
+                                <Text className="text-lg pl-4 font-semibold text-gray-400 italic">
+                                    {statsData.numberOfWorkouts} workouts found
+                                </Text>
+                                <View className="items-center top-8">
+                                    {isActive ? (
+                                        <Text className="text-lg font-semibold">
+                                            {yVal} on {xVal}
+                                        </Text>
+                                    ) : (
+                                        <Text className="text-lg font-semibold">
+                                            - on -
+                                        </Text>
+                                    )}
+                                </View>
+                                <CartesianChart
+                                    data={statsData.data}
+                                    xKey="date"
+                                    yKeys={["value"]}
+                                    yAxis={[{font: font12}]}
+                                    axisOptions={{lineColor: "transparent"}}
+                                    chartPressState={state}
+                                    padding={{
+                                        left: chartPadding.left,
+                                        right: chartPadding.right,
+                                        top: chartPadding.top,
+                                        bottom: chartPadding.bottom,
+                                    }}
+                                    domainPadding={{
+                                        top: 16,
+                                        bottom: 10,
+                                        left: 10,
+                                        right: 10,
+                                    }}
+                                    frame={{lineColor: "transparent"}}
+                                >
+                                    {({points}) => (
+                                        <>
+                                            <Line
+                                                points={points.value}
+                                                color="orange"
+                                                strokeWidth={5}
+                                                animate={{
+                                                    type: "timing",
+                                                    duration: 100,
+                                                }}
+                                            />
+                                            {isActive && (
+                                                <>
+                                                    <ToolTip
+                                                        xpos={state.x.position}
+                                                        ypos={
+                                                            state.y.value
+                                                                .position
+                                                        }
+                                                    />
+                                                </>
+                                            )}
+                                        </>
+                                    )}
+                                </CartesianChart>
+                            </View>
+                        </>
+                    )}
+                    {!machine && (
+                        <View className="flex-1 items-center bg-white pt-16">
+                            <Text className="text-2xl text-gray-300 font-semibold">
+                                Select a Machine
+                            </Text>
+                        </View>
+                    )}
+                </>
             )}
         </SafeAreaView>
     );
