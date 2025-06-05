@@ -44,7 +44,7 @@ Date: 6/4/2025 11pm
 
 
 ### Backend Report: <br />
-<img width="616" alt="image" src="https://github.com/user-attachments/assets/f96416a1-bed2-4bf6-a136-80844bc18f0c" />
+![image](https://github.com/user-attachments/assets/d2dc468f-6317-4e39-aa99-676a5d35f6c4)
 
 
 ## Setup for dev
