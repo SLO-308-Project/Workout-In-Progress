@@ -31,8 +31,9 @@ function MachinePage()
 
     useEffect(() =>
     {
+        console.log("Machines is Focused");
         if (isFocused) getMachines();
-    }, [isFocused, machines]);
+    }, [isFocused, router]);
 
     // State for Edit Bottom Sheet Modal
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
