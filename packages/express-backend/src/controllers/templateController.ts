@@ -93,12 +93,14 @@ async function copyTemplateData(
         {
             throw new Error("Unable to create template");
         }
-        const mapOfMachineIds: [Types.ObjectId[], Types.ObjectId[]] = [[], []];
+        const mapOfMachineIds = new Map<string, Types.ObjectId>();
         // GET ALL MACHINES AND PORT INFO INTO TEMPLATE
         uniqueMachineIds.forEach((id) =>
         {
-            mapOfMachineIds[0].push(id);
-            mapOfMachineIds[1].push(new Types.ObjectId());
+            if (!mapOfMachineIds.has(id.toString()))
+            {
+                mapOfMachineIds.set(id.toString(), new Types.ObjectId());
+            }
         });
         let machines;
         if (sourceId)
@@ -117,11 +119,10 @@ async function copyTemplateData(
         {
             const updatedMachines = machines.map((machine) =>
             {
-                const oldId = (machine as MachineType)._id;
-                const index = mapOfMachineIds[0].findIndex((id) =>
-                    id.equals(oldId),
-                );
-                const newId = mapOfMachineIds[1][index];
+                const oldId = (
+                    machine as MachineType
+                )._id?.toString() as string;
+                const newId = mapOfMachineIds.get(oldId);
                 return {
                     ...machine.toObject(),
                     _id: newId,
@@ -136,13 +137,11 @@ async function copyTemplateData(
 
         const updatedWorkouts = workoutData.map((workout) =>
         {
+            console.log(mapOfMachineIds);
             const mappedWorkout = {
                 ...workout,
                 _id: new Types.ObjectId(),
-                machineId:
-                    mapOfMachineIds[1][
-                        mapOfMachineIds[0].indexOf(workout.machineId)
-                    ],
+                machineId: mapOfMachineIds.get(workout.machineId.toString()),
                 sets: workout.sets.map((set) =>
                 {
                     return {

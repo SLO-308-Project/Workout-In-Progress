@@ -46,8 +46,10 @@ Backend Report: <br />
 1. Clone entire repo.
 2. Run ```npm install``` in the main directory to install all current dependencies.
 3. Create a .env file for both the frontend and backend packages
+    - NOTE: Saving and Copying Templates are unable to run on local databases due to Transactions requiring replicas
     - Frontend
       ```
+        # Use http://10.0.2.2:8000 when running android simulator
          EXPO_PUBLIC_API_URL=<BACKEND_SERVER>
       ```
     - Backend
@@ -64,12 +66,6 @@ Backend Report: <br />
         4. Search "Default Formatter" And Set It To Prettier Code Formatter
     - "ESLint"
     - "Babel JavaScript"
-    - "JavaScript Debugger"
-        1. Open Debugger Menu On VS Code
-        2. Run The Frontend With ```npm run frontdev```
-        3. Click Debug URL
-        4. Paste URL For Local Vite Instance (http://localhost:5173/)
-        5. Note The Frontend Must Already Be Running To Launch The Debug Window
     - "Tailwind CSS IntelliSense" This will add autocomplete to tailwind CSS classNames.
        1. Open VScode settings to "file association" and add the item "*css" and value "tailwindcss". 
        2. Open VScode settings to "editor quick suggestions" and change strings to on.
@@ -78,7 +74,10 @@ Backend Report: <br />
 - ```npm run backdev``` Runs the dev environment for the backend.
 - ```npm run frontdev``` Runs the dev environment for the frontend.
 - ```npm run test``` Runs jest tests for all workspaces or the current workspace.
+- ```npm run test-e2e``` Runs cypress e2e tests for API and UI
+- ```npm run test-e2e-interactive``` Run cypress e2e tests interactively
 - ```npm run coverage``` Runs jest tests with coverage report for all workspaces or the current workspace.
+- ```npm run prepare``` Runs husky pre commit checks
 - ```npm run format``` Runs the prettier formatter for all files.
 - ```npm run lint``` Runs the ESlint for all workspaces.
 
