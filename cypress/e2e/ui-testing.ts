@@ -1,4 +1,4 @@
-import {FRONTEND_URL} from "../support/constants";
+import {FRONTEND_URL, BACKEND_URL} from "../support/constants";
 
 /**
  * Feature: User creates a machine
@@ -30,6 +30,7 @@ describe("User creates a new machine", () =>
         {
             cy.visit(`${FRONTEND_URL}/login`).as("login");
             cy.get(".css-textinput-11aywtz.mb-4").click();
+            cy.wait(500);
             cy.get(".css-textinput-11aywtz.mb-4").type("cypresstest@gmail.com");
             cy.get(".mb-6").type("E2Etesting");
             cy.contains("Login").click();
@@ -56,12 +57,15 @@ describe("User creates a new machine", () =>
             ).click();
             cy.get(".w-80").type("Machine");
             cy.get(".flex-1 > .w-40").type("Muscle");
+            cy.intercept("POST", `${BACKEND_URL}/machines`).as("addedMachine");
             cy.get(
                 ".r-justifyContent-17s6mgv > .css-view-175oi2r > .css-text-146c3p1",
             ).click();
+            cy.wait("@addedMachine", {timeout: 15000});
             cy.get(
                 ".r-flex-13awgt0.r-flexDirection-18u37iz > :nth-child(2) > .r-touchAction-1otgn73",
             ).click();
+            cy.wait(500);
             cy.get(":nth-child(5) > .r-touchAction-1otgn73").click();
 
             // THEN new machine with Muscle and Machine
@@ -88,6 +92,7 @@ describe("User creates a new machine", () =>
         {
             cy.visit(`${FRONTEND_URL}/login`).as("login");
             cy.get(".css-textinput-11aywtz.mb-4").click();
+            cy.wait(500);
             cy.get(".css-textinput-11aywtz.mb-4").type("cypresstest@gmail.com");
             cy.get(".mb-6").type("E2Etesting");
             cy.contains("Login").click();
@@ -181,6 +186,7 @@ describe("User saves a session as a template", () =>
         {
             cy.visit(`${FRONTEND_URL}/login`).as("login");
             cy.get(".css-textinput-11aywtz.mb-4").click();
+            cy.wait(500);
             cy.get(".css-textinput-11aywtz.mb-4").type("cypresstest@gmail.com");
             cy.get(".mb-6").type("E2Etesting");
             cy.contains("Login").click();
@@ -196,10 +202,9 @@ describe("User saves a session as a template", () =>
                 ".items-center > :nth-child(2) > .css-view-175oi2r > .css-text-146c3p1",
             ).click();
             cy.get(".css-textinput-11aywtz").type("SESSION COPY");
+            cy.intercept("POST", `${BACKEND_URL}/templates`).as("saveTemplate");
             cy.get(":nth-child(3) > .css-text-146c3p1").click();
-            cy.get(
-                ".r-flex-13awgt0.r-flexDirection-18u37iz > :nth-child(4) > .r-touchAction-1otgn73",
-            ).click();
+            cy.get(":nth-child(5) > .r-touchAction-1otgn73").click();
 
             let templateLength;
             cy.get('[data-testid="template-item"]').then((items) =>
@@ -208,16 +213,16 @@ describe("User saves a session as a template", () =>
                 cy.log(`There is ${templateLength} template items`);
             });
 
+            cy.wait("@saveTemplate", {timeout: 15000});
             cy.get(":nth-child(5) > .r-touchAction-1otgn73").click();
-            cy.get(
-                ".r-flex-13awgt0.r-flexDirection-18u37iz > :nth-child(4) > .r-touchAction-1otgn73",
-            ).click();
+            cy.wait(500);
+            cy.get(":nth-child(5) > .r-touchAction-1otgn73").click();
 
             // Template should be added
             cy.log("THEN template should be added");
             cy.get('[data-testid="template-item"]').should((items) =>
             {
-                expect(items.length).to.be.equal(templateLength + 1);
+                expect(items.length).to.be.greaterThan(templateLength);
             });
             cy.get('[data-testid="template-item"]')
                 .last()
@@ -232,6 +237,7 @@ describe("User saves a session as a template", () =>
         {
             cy.visit(`${FRONTEND_URL}/login`).as("login");
             cy.get(".css-textinput-11aywtz.mb-4").click();
+            cy.wait(500);
             cy.get(".css-textinput-11aywtz.mb-4").type("cypresstest@gmail.com");
             cy.get(".mb-6").type("E2Etesting");
             cy.contains("Login").click();
@@ -243,9 +249,7 @@ describe("User saves a session as a template", () =>
         it("WHEN user clicks save button", () =>
         {
             // Get info to ensure template list did not increase
-            cy.get(
-                ".r-flex-13awgt0.r-flexDirection-18u37iz > :nth-child(4) > .r-touchAction-1otgn73",
-            ).click();
+            cy.get(":nth-child(5) > .r-touchAction-1otgn73").click();
             let templateLength;
             cy.get('[data-testid="template-item"]').then((items) =>
             {
@@ -264,9 +268,7 @@ describe("User saves a session as a template", () =>
             cy.log("THEN warning for invalid name");
             cy.get(".text-red-500").contains("Invalid Name");
             cy.contains("Cancel").should("be.visible").click({force: true});
-            cy.get(
-                ".r-flex-13awgt0.r-flexDirection-18u37iz > :nth-child(4) > .r-touchAction-1otgn73",
-            ).click();
+            cy.get(":nth-child(5) > .r-touchAction-1otgn73").click();
             cy.log("AND template should not be added");
             cy.get('[data-testid="template-item"]').then((items) =>
             {

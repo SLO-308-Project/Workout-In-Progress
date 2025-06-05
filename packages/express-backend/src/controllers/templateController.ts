@@ -162,8 +162,6 @@ async function retrieveMachines(
             templateMachines?.map((m) => m.toObject()) ?? [];
         machines = machines.concat(plainAdditionalMachines);
     }
-    console.log("MARKER");
-    console.log(machines);
     return machines;
 }
 

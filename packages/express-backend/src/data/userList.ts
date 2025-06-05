@@ -7,7 +7,6 @@ const userListSchema = new mongoose.Schema(
             auto: true,
         },
         userId: {
-            //reference to a user._id
             type: mongoose.Schema.Types.ObjectId,
             ref: "user",
         },

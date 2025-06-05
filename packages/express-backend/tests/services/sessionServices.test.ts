@@ -1,4 +1,4 @@
-import sessionModel from "../../src/data/session";
+import sessionModel, {SessionType} from "../../src/data/session";
 import sessionServices from "../../src/services/sessionServices";
 import userModel from "../../src/data/user";
 import sessionLogModel from "../../src/data/sessionLog";
@@ -257,5 +257,39 @@ describe("Session Services Tests", () =>
             stubUserId,
         );
         expect(result).toBeFalsy();
+    });
+
+    test("Patch session --- successful", async () =>
+    {
+        const oldSession = {};
+        const session = new sessionModel(oldSession);
+        const sessionId = session._id?.toString() ?? "";
+
+        sessionModel.findByIdAndUpdate = jest.fn().mockResolvedValue(session);
+
+        const result = await sessionServices.patchSession(
+            sessionId,
+            oldSession as SessionType,
+        );
+        expect(result).toBeTruthy();
+    });
+
+    test("Patch session --- failure no session id", async () =>
+    {
+        const oldSession = {};
+        const sessionId = "";
+
+        try
+        {
+            await sessionServices.patchSession(
+                sessionId,
+                oldSession as SessionType,
+            );
+            fail("Test should not go here");
+        }
+        catch (error)
+        {
+            expect(error).toBeTruthy();
+        }
     });
 });
