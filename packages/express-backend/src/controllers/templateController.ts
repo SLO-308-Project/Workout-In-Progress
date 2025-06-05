@@ -8,14 +8,15 @@ import {sessionTemplateType} from "../data/sessionTemplate";
 import {MachineType} from "../data/machine";
 
 type WorkoutType = sessionTemplateType["workout"];
+type MachineTypeWithId = MachineType & {_id: Types.ObjectId};
 
 /**
  * Save A Session In A Template
  *
  * @param {string} sessionId - id asssociated with session
  * @param {string} templateName - Name of template
- * @param {stirng} userId - Id of session
- * @return {Pomise} - To updated template
+ * @param {string} userId - Id of session
+ * @return {Promise} - To updated template
  */
 async function saveSession(
     sessionId: string,
@@ -33,12 +34,18 @@ async function saveSession(
         return null;
     }
     const sessionData: SessionType = retrievedSession[0];
+    const templateSourceId = sessionData.templateId?.toString();
     // Ensure template exists
-    return await copyTemplateData(sessionData.workout, userId, templateName);
+    return await copyTemplateData(
+        sessionData.workout,
+        userId,
+        templateName,
+        templateSourceId,
+    );
 }
 
 /**
- * Copys an existing template
+ * Copies an existing template
  *
  * @param {stirng} templateId - Id associated with template
  * @param {string} userId - Id associated with user
@@ -104,19 +111,19 @@ function copyWorkoutData(
  * @returns {MachineType[]}
  */
 function copyMachineData(
-    machines: MachineType[],
+    machines: MachineTypeWithId[],
     machineMap: Map<string, Types.ObjectId>,
 )
 {
     return machines.map((machine) =>
     {
-        const oldId = machine._id?.toString() as string;
+        const oldId = machine._id.toString();
         const newId = machineMap.get(oldId);
         return {
             ...machine,
             _id: newId,
             attributes: machine.attributes.map((attr) => ({
-                ...attr.toObject(),
+                ...attr,
                 _id: new Types.ObjectId(),
             })),
         };
@@ -139,25 +146,32 @@ async function retrieveMachines(
     mongoSession: mongoose.mongo.ClientSession,
 )
 {
+    let machines: MachineType[] = [];
+    const userMachines = await machineServices.getMachinesByIds(
+        machineIds.map((id) => id.toString()),
+        userId,
+        {session: mongoSession},
+    );
+    const plainUserMachines = userMachines?.map((m) => m.toObject()) ?? [];
+    machines = machines.concat(plainUserMachines);
     if (sourceId)
     {
-        return await machineServices.getSavedMachines(sourceId);
+        const templateMachines =
+            await machineServices.getSavedMachines(sourceId);
+        const plainAdditionalMachines =
+            templateMachines?.map((m) => m.toObject()) ?? [];
+        machines = machines.concat(plainAdditionalMachines);
     }
-    else
-    {
-        return await machineServices.getMachinesByIds(
-            machineIds.map((id) => id.toString()),
-            userId,
-            {session: mongoSession},
-        );
-    }
+    console.log("MARKER");
+    console.log(machines);
+    return machines;
 }
 
 /**
  * Generate a 1 to 1 mapping of machine ids with new unique ids
  *
  * @param {Types.ObjectId[]} uniqueMachineIds - machine ids to populate map with
- * @return {Map<string, Types.ObjectId>[]}
+ * @return {Map<string, Types.ObjectId>}
  */
 function generateMachineMap(uniqueMachineIds: Types.ObjectId[])
 {
@@ -205,12 +219,12 @@ async function copyTemplateData(
             throw new Error("Unable to create template");
         }
         const mapOfMachineIds = generateMachineMap(uniqueMachineIds);
-        const machines = await retrieveMachines(
+        const machines = (await retrieveMachines(
             sourceId,
             uniqueMachineIds,
             userId,
             mongoSession,
-        );
+        )) as MachineTypeWithId[];
 
         if (machines)
         {
