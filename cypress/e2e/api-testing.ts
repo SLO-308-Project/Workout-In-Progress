@@ -39,18 +39,18 @@ describe("Backend (REST API) is listening", () =>
  * Feature: API allows a user to login and returns appropiate token
  *
  * Scenario: Successful Login
- *      GIVEN user has valid creditionals
+ *      GIVEN user has valid creditials
  *      AND user has filled fields (email and password)
  *      WHEN I attempt to login
  *      THEN I receive a successful response (code 200)
  *      AND the response contains a token
  *
  * Scenario: Unsuccessful Login
- *      GIVEN user has invalid creditionals
+ *      GIVEN user has invalid creditials
  *      AND user has filled fields (email and password)
  *      WHEN I attempt to login
  *      THEN I receive a unsuccessful response (code 401)
- *      AND there unathorized response
+ *      AND there is an unauthorized response
  */
 
 describe("API allows a user to login and returns appropiate token", () =>
