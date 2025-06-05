@@ -6,6 +6,7 @@ import {Types} from "mongoose";
 
 describe("Session Services Tests", () =>
 {
+    const stubUserId = "66563c3f5f1b2c6f9a2e4b17";
     // In memory database setup
     beforeAll(async () =>
     {});
@@ -34,7 +35,6 @@ describe("Session Services Tests", () =>
             new sessionModel(),
             new sessionModel(),
         ];
-        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
         userModel.aggregate = jest.fn().mockResolvedValue(sessions);
         const result = await sessionServices.getAllSessions(stubUserId);
         expect(result.length).toBe(3);
@@ -43,7 +43,6 @@ describe("Session Services Tests", () =>
     // Get current session
     test("Get current session --- successful", async () =>
     {
-        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
         const sessions = [
             new sessionModel({
                 date: new Date("2025-03-10T17:30:00.000Z"),
@@ -77,7 +76,6 @@ describe("Session Services Tests", () =>
     test("End current session --- successful", async () =>
     {
         // Store ID - check if exists or empty for type safety
-        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
         const sessionId = "65f49b7c1d34a2e5f6c89d0a";
         const session = new sessionModel({
             _id: new Types.ObjectId(sessionId),
@@ -95,7 +93,6 @@ describe("Session Services Tests", () =>
     test("End current session --- failure", async () =>
     {
         // Store ID - check if exists or empty for type safety
-        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
         const sessionId = "65f49b7c1d34a2e5f6c89d0a";
 
         userModel.aggregate = jest.fn().mockResolvedValue([]);
@@ -107,7 +104,6 @@ describe("Session Services Tests", () =>
     // Build a new session into the database to extract auto generated ID
     test("Get session by ID --- successful", async () =>
     {
-        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
         const session = new sessionModel({
             date: new Date("2025-01-08T12:45:00.000Z"),
             time: 3246,
@@ -238,9 +234,8 @@ describe("Session Services Tests", () =>
         expect(result).toBeFalsy();
     });
 
-    test("Delete session by id --- failure no session", async () =>
+    test("Delete session by id --- failure no user", async () =>
     {
-        const stubUserId = "66563c3f5f1b2c6f9a2e4b17";
         const session = new sessionModel({
             date: new Date("2025-03-18T12:45:00.000Z"),
             time: 1563,
