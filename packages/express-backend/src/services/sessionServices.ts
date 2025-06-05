@@ -42,6 +42,7 @@ function aggregateUserSession(userId: string)
                 time: "$collectedSessions.time",
                 workout: "$collectedSessions.workout",
                 _id: "$collectedSessions._id",
+                templateId: "$collectedSessions.templateId",
             },
         },
     ];
@@ -149,10 +150,6 @@ function patchSession(
     if (!sessionId)
     {
         throw new Error("No sessionId provided: " + sessionId);
-    }
-    if (!session)
-    {
-        throw new Error("No session provided: " + session);
     }
     return sessionModel.findByIdAndUpdate(sessionId, session, {
         new: true,
