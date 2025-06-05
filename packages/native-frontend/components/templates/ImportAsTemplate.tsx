@@ -1,19 +1,9 @@
 import {fetchCreateTemplate} from "@/fetchers/templateFetchers";
-import {Feather} from "@expo/vector-icons";
 import {useState} from "react";
-import {
-    Modal,
-    Pressable,
-    View,
-    Text,
-    TouchableWithoutFeedback,
-    TextInput,
-} from "react-native";
+import {Pressable, View, Text, TextInput} from "react-native";
 import ModalTemplate from "../UtilComponents/ModalTemplate";
 import {useTemplateContext} from "@/util/templateContext";
 import {Template} from "@/types/template";
-import {useCurrentSessionStatusContext} from "@/util/currentSessionContext";
-import {router} from "expo-router";
 
 type Props = {
     fromSession: boolean;
@@ -27,7 +17,6 @@ export default function ImportAsTemplate({fromSession, Icon}: Props)
     const [id, setId] = useState<string>("");
 
     const {templates, setTemplates} = useTemplateContext();
-    const {currentSessionStatus} = useCurrentSessionStatusContext();
 
     function saveTemplate(setModalVisible: (arg0: boolean) => void)
     {

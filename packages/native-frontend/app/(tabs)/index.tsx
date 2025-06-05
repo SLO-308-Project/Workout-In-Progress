@@ -9,12 +9,11 @@ import {useState} from "react";
 
 export default function Index()
 {
-    const {templates, setTemplates} = useTemplateContext();
-    const {machines, setMachines} = useMachineContext();
+    const {setTemplates} = useTemplateContext();
+    const {setMachines} = useMachineContext();
     const {setCurrentSessionStatus} = useCurrentSessionStatusContext();
     const [hasInitialized, setHasInitialized] = useState<boolean>(false);
 
-    console.log(`Calling Index with hasInitialized: ${hasInitialized}`);
     //Will only run once.
     if (!hasInitialized)
     {
@@ -29,7 +28,6 @@ export default function Index()
                             .then((json) =>
                             {
                                 setTemplates(json);
-                                console.log(`SETUP Templates: ${json}`);
                             })
                             .catch((err) =>
                             {
@@ -53,7 +51,6 @@ export default function Index()
                 .then((res_data) =>
                 {
                     setMachines(res_data);
-                    console.log(`SETUP Machines: ${res_data}`);
                 })
                 .catch((error: unknown) => console.log(error)),
             // Find if there is a current session.
@@ -63,17 +60,11 @@ export default function Index()
                     if (res.status === 200)
                     {
                         // has session
-                        console.log(
-                            "SETUP CurrentSession: Current session present 200",
-                        );
                         setCurrentSessionStatus(1);
                     }
                     else if (res.status === 204)
                     {
                         //No session
-                        console.log(
-                            "SETUP CurrentSession: No Current Session 204",
-                        );
                         setCurrentSessionStatus(0);
                     }
                 })
@@ -85,7 +76,7 @@ export default function Index()
         ])
             .then(() =>
             {
-                console.log(`ALL SETUP:`);
+                // console.log(`ALL SETUP:`);
                 setHasInitialized(true);
                 return <Redirect href="./pastSessions" />;
             })

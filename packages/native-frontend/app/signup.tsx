@@ -25,9 +25,6 @@ export default function Signup()
      */
     function handleSignUp(userName: string, email: string, password: string)
     {
-        console.log(
-            `called handle signup: userName=${userName}, email=${email}, password=${password}`,
-        );
         fetchRegister(userName, email, password)
             .then((res: Response) =>
             {

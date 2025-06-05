@@ -9,7 +9,6 @@ type Props = {
     name: string;
     date: string;
     duration: string;
-    deleteSession: (_id: string) => void;
 };
 
 export default function SessionSlide({
@@ -18,7 +17,6 @@ export default function SessionSlide({
     name,
     date,
     duration,
-    deleteSession,
 }: Props)
 {
     return (

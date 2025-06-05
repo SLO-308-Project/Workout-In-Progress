@@ -8,7 +8,6 @@ import {
     useNavigation,
     useLocalSearchParams,
     RelativePathString,
-    ExternalPathString,
 } from "expo-router";
 
 import MachineComponent, {Empty} from "@/components/machines/machineComponent";
@@ -67,7 +66,6 @@ export default function SelectMachine()
             })
             .then((res_data) =>
             {
-                console.log(`GETMACHINES RES_DATA=${JSON.stringify(res_data)}`);
                 setMachines(res_data);
                 setIsRefreshing(false);
             })

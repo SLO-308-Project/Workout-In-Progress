@@ -11,7 +11,6 @@ import {Feather} from "@expo/vector-icons";
 
 type Props = {
     onPress: () => void;
-    sessionId: string;
     name: string;
     date: string;
     duration: string;
@@ -21,7 +20,6 @@ type Props = {
 
 export default function SessionComponent({
     onPress,
-    sessionId,
     name,
     date,
     duration,

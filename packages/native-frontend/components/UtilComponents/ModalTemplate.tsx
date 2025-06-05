@@ -1,11 +1,5 @@
 import {useState} from "react";
-import {
-    Modal,
-    Pressable,
-    View,
-    Text,
-    TouchableWithoutFeedback,
-} from "react-native";
+import {Modal, Pressable, View, TouchableWithoutFeedback} from "react-native";
 
 type Props = {
     Icon: JSX.Element;

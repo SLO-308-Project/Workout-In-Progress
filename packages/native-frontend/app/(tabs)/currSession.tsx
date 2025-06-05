@@ -20,7 +20,6 @@ import WorkoutComponent, {
 } from "@/components/currSession/workoutComponent";
 
 import {
-    fetchGetWorkouts,
     fetchPostWorkout,
     fetchDeleteWorkout,
     fetchPostSet,
@@ -34,7 +33,6 @@ import {
     fetchCurrentSession,
 } from "@/fetchers/currentSessionFetchers";
 import {useMachineContext} from "@/util/machineContext";
-import {fetchGetTemplates} from "@/fetchers/templateFetchers";
 import {useTemplateContext} from "@/util/templateContext";
 import {Template} from "@/types/template";
 import StartCurrentSession from "@/components/currSession/StartCurrentSession";
@@ -106,49 +104,17 @@ export default function CurrentSessionPage()
     {
         if (isFocused)
         {
-            //give user option of what session to start. currentSessionStatus = 0;
-            //  set currentSessionStatus = 3
-            //  set template param if necessary.
-
-            //start session fresh. currentSessionStatus = 2;
-            //  start session
-            //  get template.
-            //  load template.
-
-            //session already in progress. currentSessionStatus = 1
-            //  get session.
-            //  get template
-            //
-
-            //get session or start session
-            //get template from session or params
-
-            console.log("isFocused or currentSessionStatus:");
             getCurrentSession().then((gottenSession) =>
             {
-                console.log(`GottenSession: ${gottenSession}`);
-                console.log(
-                    `GottenSession template: ${gottenSession?.templateId}`,
-                );
-                console.log(`Passed template: ${startTemplate_id}`);
                 //Whether a session was recovered or not. setup template.
                 const foundTemplate = setupTemplate(gottenSession);
-                console.log(`foundTemplate: ${foundTemplate}`);
-                console.log(
-                    `foundTemplate machines: ${foundTemplate?.machines}`,
-                );
                 //No Current Session
                 if (gottenSession === undefined && currentSessionStatus === 2)
                 {
                     startSession().then((startedSession) =>
                     {
-                        console.log(`startedSession: ${startedSession}`);
-                        console.log(
-                            `startedSession template: ${startedSession.templateId}`,
-                        );
                         loadTemplate(startedSession, foundTemplate);
                     });
-                    console.log("Setting CurrentSessionStatus to 1");
                     setCurrentSessionStatus(1);
                 }
                 //got a Current Session then it should already be setup.
@@ -171,27 +137,6 @@ export default function CurrentSessionPage()
         }
     }, [isFocused, session, updating]);
 
-    // TODO: Required for future scroll picker.
-    /* Values from 0 to 999 in increments of 0.5
-    This is passed all the way down to the set attribute value component
-    For the sake of performance (it really does slow down), this
-    computation is done once on the current session page and
-    is propogated to the attribute value component.
-    
-    The value is cached so this is only done once
-    */
-    // const valueListMap = useMemo(() => {
-    //     const list = [];
-    //     for (let i = 0; i <= 1000; i += 1) {
-    //         list.push(i);
-    //     }
-    //     const valueListMap = list.map((value) => ({
-    //         value: value,
-    //         label: value.toString(),
-    //     }))
-    //     return valueListMap;
-    //
-    // }, []);
     // Helper function for duration formatting
     // Converts database time which is stored in seconds to hours and minutes
     function formatDuration(milliseconds: number): string
@@ -218,12 +163,6 @@ export default function CurrentSessionPage()
     //returns true if there was a template and false for no template.
     function setupTemplate(sess: Session | undefined)
     {
-        // console.log(templates[6].machines)
-        console.log("setupTemplate() var startTemplate_id:" + startTemplate_id);
-        console.log(
-            "setupTemplate() var session.template_id:" + session?.templateId,
-        );
-        // console.log("setupTemplate() var templates:" + templates + "  machiens: " + templates[0].machines);
         var foundTemplate = undefined;
         //if there is a current session and template.
         if (sess !== undefined && sess.templateId !== undefined)
@@ -238,9 +177,6 @@ export default function CurrentSessionPage()
             setTemplate(foundTemplate);
         }
         //Else there is no template and keep startTemplate null.
-        console.log(
-            `setupTemplate() foundTemplate: ${foundTemplate}, name: ${foundTemplate?.name}, machines: ${foundTemplate?.machines}`,
-        );
         return foundTemplate;
     }
 
@@ -257,26 +193,17 @@ export default function CurrentSessionPage()
             time: sess.time,
             workout: temp.workout,
         };
-        console.log(`loadTemplate() template: ${temp}`);
-        console.log("patchSession: ", patchSession);
         fetchPatchSession(patchSession)
             .then((res) =>
             {
                 if (res.ok)
                 {
-                    console.log(`Patch Session res: ${res.status}`);
                     return res.json();
                 }
             })
             .then((res_data: Session) =>
             {
                 setSession(res_data);
-                console.log(res_data);
-                console.log(temp);
-                console.log(`loadTemplate put data: ${res_data.workout}`);
-                console.log(`   : ${res_data.workout[0].machineId}`);
-                console.log(`loadTemplate temp data: ${temp.workout}`);
-                console.log(`   : ${temp.workout[0].machineId}`);
             })
             .catch((err) =>
             {
@@ -287,11 +214,8 @@ export default function CurrentSessionPage()
     //Creates a blank session on the backend.
     function startSession(): Promise<Session>
     {
-        console.log("Entered startSession");
-        console.log(`startSession: ${session}`);
         if (session !== undefined)
         {
-            console.log(`session is undefined throwing error.`);
             throw new Error("Cannot start session. Session in Progress.");
         }
         else
@@ -299,10 +223,8 @@ export default function CurrentSessionPage()
             return fetchStartSessions()
                 .then((res) =>
                 {
-                    console.log(`fetched start session: ${res}`);
                     if (res.status === 201)
                     {
-                        console.log(`Status is 201:`);
                         return res.json();
                     }
                     else
@@ -312,9 +234,6 @@ export default function CurrentSessionPage()
                 })
                 .then((json: Session) =>
                 {
-                    console.log(
-                        `Setting started session: ${json} with template ${json.templateId}`,
-                    );
                     setSession(json);
                     return json;
                 })
@@ -339,7 +258,6 @@ export default function CurrentSessionPage()
                 }
                 else if (res.status === 204)
                 {
-                    console.log("204");
                     return undefined;
                     return null;
                 }
@@ -348,21 +266,17 @@ export default function CurrentSessionPage()
             {
                 if (json === undefined)
                 {
-                    console.log("No session is started");
                     setSession(json);
                     return json;
                 }
                 else
                 {
-                    console.log(json);
-                    console.log(json[0]._id);
                     setSession(json[0]);
                     return json[0];
                 }
             })
             .catch((err: unknown) =>
             {
-                console.log("Error getting current session: ", err);
                 throw new Error(`Error getting current session: ${err}`);
             });
     }
@@ -387,7 +301,6 @@ export default function CurrentSessionPage()
                         if (res.status === 201)
                         {
                             setSession(undefined);
-                            console.log("setting currentSessionStatus to 0");
                             setCurrentSessionStatus(0);
                         }
                         else
@@ -409,36 +322,8 @@ export default function CurrentSessionPage()
         });
     }
 
-    // Unused remove when Done:
-    // function getWorkouts(session: Session): void
-    // {
-    //     fetchGetWorkouts(session._id)
-    //         .then((res) =>
-    //         {
-    //             console.log(res);
-    //             if (res.status === 201)
-    //             {
-    //                 const text = res.text();
-    //                 console.log(text);
-    //                 return text;
-    //             }
-    //             else
-    //             {
-    //                 throw new Error("Failed to get workouts");
-    //             }
-    //         })
-    //         .then((json) =>
-    //         {
-    //             const newJson = JSON.parse(json);
-    //             console.log(newJson);
-    //             setWorkouts(newJson);
-    //         })
-    //         .catch((x) => console.log(x));
-    // }
-
     function addWorkout(machineId: string): void
     {
-        console.log(`machineId=${machineId}`);
         if (session === null)
         {
             throw new Error("Could not get session. Session does not exist.");
@@ -596,20 +481,10 @@ export default function CurrentSessionPage()
 
     function machineIdToMachine(machineId: string | undefined)
     {
-        // console.log(`workouts: ${session?.workout[0].machineId}`)
-        // console.log(`TESTS Template name: ${templates[0]?.name}`);
-        // console.log(`TESTS Template: ${templates[0]?.machines[0]._id}`);
-        // console.log(`Machines: ${machines[0]._id}, ${machines[1]._id}`);
         if (machines)
         {
-            console.log(`MahcineId: ${machineId}`);
-            console.log(`Template: ${template?.name}`);
-            console.log(`Template General: ${template?.machines}`);
             var matches = machines.filter((machine) =>
             {
-                console.log(
-                    `Comparing machines: ${machine._id.toString()} to  ${machineId}`,
-                );
                 return machine._id.toString() === machineId;
             });
             if (template !== undefined)
@@ -617,15 +492,10 @@ export default function CurrentSessionPage()
                 matches = matches.concat(
                     template.machines.filter((machine) =>
                     {
-                        console.log(
-                            `Comparing template: ${machine._id.toString()} to  ${machineId}`,
-                        );
                         return machine._id.toString() === machineId;
                     }),
                 );
             }
-            console.log(`Found Machine: ${matches[0]}`);
-            console.log(`Found Machines length: ${matches.length}`);
             return matches[0];
         }
     }
@@ -649,18 +519,6 @@ export default function CurrentSessionPage()
                             </View>
                         }
                     />
-                    {/* <Pressable
-                        onPress={startSession}
-                        style={{backgroundColor: "#34C759FF"}}
-                        className="w-60 h-60 rounded-full justify-center items-center active:opacity-80 transition-all duration-200"
-                    >
-                        <Text
-                            style={{fontSize: 24}}
-                            className="text-xl text-white font-semibold"
-                        >
-                            Start Session
-                        </Text>
-                    </Pressable> */}
                 </View>
             )}
             {session && (
@@ -692,12 +550,6 @@ export default function CurrentSessionPage()
                             <WorkoutComponent
                                 onPress={() =>
                                 {
-                                    console.log(item._id);
-                                    console.log(item.machineId);
-                                    console.log(
-                                        machineIdToMachine(item.machineId),
-                                    );
-                                    console.log(item.sets);
                                     handleOpenSheet(item);
                                 }}
                                 key={index}
@@ -762,17 +614,6 @@ export default function CurrentSessionPage()
                     </BottomSheetModal>
                 </>
             )}
-            {/* <Pressable
-                onPress={() =>
-                {
-                    getCurrentSession().then((res) =>
-                    {
-                        console.log(res);
-                    });
-                }}
-            >
-                <Text className="bg-green-700">PRESS</Text>
-            </Pressable> */}
         </SafeAreaView>
     );
 }

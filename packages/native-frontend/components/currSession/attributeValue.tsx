@@ -1,7 +1,5 @@
 import {useState} from "react";
 import {View, Text, Platform, TextInput} from "react-native";
-// import { Gesture, GestureDetector, TouchableWithoutFeedback } from "react-native-gesture-handler";
-// import WheelPicker, { withVirtualized } from "@quidone/react-native-wheel-picker";
 
 import {Unit} from "@/types/unit";
 
@@ -23,9 +21,6 @@ export default function AttributeValueComponent({
 }: Props)
 {
     const [localValue, setLocalValue] = useState<string>(value.toString());
-
-    // Couldn't get this to work, but it could save some performance if you use a scroll picker
-    // const VirtualizedWheelPicker = useMemo(() => withVirtualized(WheelPicker), []);
 
     return (
         <View className="flex-row items-center">
@@ -60,22 +55,3 @@ export default function AttributeValueComponent({
         </View>
     );
 }
-// {Platform.OS === "web" && (
-//     )
-// }
-// If you wanted to have a wheel picker show up, use a GestureHandler onLongPress that sets a state var showScroll to true and renders a wheel picker
-// {showScroll && (
-//     <VirtualizedWheelPicker
-//         data={valueListMap}
-//         value={localValue}
-//         onValueChanged={({ item: { value } }) => {
-//             setLocalValue(value);
-//             handleValueChange(name, value);
-//             setShowScroll(false)
-//         }}
-//         itemHeight={ITEM_HEIGHT}
-//         visibleItemCount={VISIBLE_COUNT}
-//         width={PICKER_WIDTH}
-//         itemTextStyle={{ fontSize: 16 }}
-//     />
-// )}
