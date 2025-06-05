@@ -762,7 +762,7 @@ export default function CurrentSessionPage()
                     </BottomSheetModal>
                 </>
             )}
-            <Pressable
+            {/* <Pressable
                 onPress={() =>
                 {
                     getCurrentSession().then((res) =>
@@ -772,7 +772,7 @@ export default function CurrentSessionPage()
                 }}
             >
                 <Text className="bg-green-700">PRESS</Text>
-            </Pressable>
+            </Pressable> */}
         </SafeAreaView>
     );
 }

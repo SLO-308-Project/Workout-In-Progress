@@ -314,7 +314,7 @@ export default function PastSessionsPage()
                     />
                 </BottomSheetScrollView>
             </BottomSheetModal>
-            <Pressable
+            {/* <Pressable
                 onPress={() =>
                 {
                     console.log(sessions);
@@ -323,7 +323,7 @@ export default function PastSessionsPage()
                 }}
             >
                 <Text className="bg-green-700">PRESS</Text>
-            </Pressable>
+            </Pressable> */}
         </SafeAreaView>
     );
 }
