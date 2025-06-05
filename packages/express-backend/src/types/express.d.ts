@@ -1,4 +1,5 @@
 import {ParamsDictionary, Request} from "express-serve-static-core";
+import {SessionType} from "../data/session";
 
 declare global
 {
@@ -45,3 +46,9 @@ export type MachineRequest = Request<
 >;
 
 export type SetRequest = Request<ParamsDictionary, unknown, Set>;
+
+export type SessionRequest = Request<
+    ParamsDictionary,
+    unknown,
+    {session: SessionType}
+>;

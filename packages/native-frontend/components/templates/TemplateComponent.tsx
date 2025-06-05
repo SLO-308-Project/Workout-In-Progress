@@ -10,11 +10,16 @@ import Reanimated, {
 import * as Clipboard from "expo-clipboard";
 
 type Props = {
+    onPress: () => void;
     template: Template;
     handleDelete: (_id: string) => void;
 };
 
-export default function MachineComponent({template, handleDelete}: Props)
+export default function MachineComponent({
+    onPress,
+    template,
+    handleDelete,
+}: Props)
 {
     function copyTemplateToClipboard()
     {
@@ -57,28 +62,30 @@ export default function MachineComponent({template, handleDelete}: Props)
     }
 
     return (
-        <ReanimatedSwipeable
-            friction={2}
-            rightThreshold={20}
-            renderRightActions={RightSwipeDelete}
-            overshootFriction={8}
-        >
-            <View className="p-4 bg-white shadow-sm border border-neutral-200">
-                <View className="flex-row justify-between items-center mb-1">
-                    <Text className="text-2xl font-bold text-gray-900">
-                        {template.name}
-                    </Text>
-                    <Pressable
-                        onPress={() =>
-                        {
-                            copyTemplateToClipboard();
-                        }}
-                    >
-                        <Feather name="copy" size={34}></Feather>
-                    </Pressable>
+        <Pressable onPress={onPress}>
+            <ReanimatedSwipeable
+                friction={2}
+                rightThreshold={20}
+                renderRightActions={RightSwipeDelete}
+                overshootFriction={8}
+            >
+                <View className="p-4 bg-white shadow-sm border border-neutral-200">
+                    <View className="flex-row justify-between items-center mb-1">
+                        <Text className="text-2xl font-bold text-gray-900">
+                            {template.name}
+                        </Text>
+                        <Pressable
+                            onPress={() =>
+                            {
+                                copyTemplateToClipboard();
+                            }}
+                        >
+                            <Feather name="copy" size={34}></Feather>
+                        </Pressable>
+                    </View>
                 </View>
-            </View>
-        </ReanimatedSwipeable>
+            </ReanimatedSwipeable>
+        </Pressable>
     );
 }
 

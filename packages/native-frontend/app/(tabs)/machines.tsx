@@ -6,7 +6,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import {SearchBar} from "@rneui/themed";
 import {useRouter} from "expo-router";
 import {useIsFocused} from "@react-navigation/native";
-import {BottomSheetModal} from "@gorhom/bottom-sheet";
+import {BottomSheetModal, BottomSheetScrollView} from "@gorhom/bottom-sheet";
 
 import MachineComponent, {Empty} from "@/components/machines/machineComponent";
 import {
@@ -31,8 +31,9 @@ function MachinePage()
 
     useEffect(() =>
     {
+        console.log("Machines is Focused");
         if (isFocused) getMachines();
-    }, [isFocused]);
+    }, [isFocused, router]);
 
     // State for Edit Bottom Sheet Modal
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -187,10 +188,12 @@ function MachinePage()
                 enableContentPanningGesture={false}
                 enablePanDownToClose={true}
             >
-                <MachineSlide
-                    currMachine={selectedMachine}
-                    handleUpdate={updateMachine}
-                />
+                <BottomSheetScrollView>
+                    <MachineSlide
+                        currMachine={selectedMachine}
+                        handleUpdate={updateMachine}
+                    />
+                </BottomSheetScrollView>
             </BottomSheetModal>
         </SafeAreaView>
     );
