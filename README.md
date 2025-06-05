@@ -33,6 +33,11 @@ Workout In Progress is a workout tracking application. It helps keep track of wh
 ## Test Coverage Reports
 Date: 6/4/2025 11pm 
 
+## Acceptance Testing
+[Acceptance Criteria](https://docs.google.com/document/d/1ZeTDSAWvSG_OFoRWgSXM6aJ3mfvQuhRCuX34Si96XJc/edit?tab=t.0)
+<img width="739" alt="image" src="https://github.com/user-attachments/assets/0662ffa5-d289-4d01-a121-82056bfe4a43" />
+
+
 Backend Report: <br />
 <img width="616" alt="image" src="https://github.com/user-attachments/assets/f96416a1-bed2-4bf6-a136-80844bc18f0c" />
 
