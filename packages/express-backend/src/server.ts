@@ -48,7 +48,6 @@ function setupAPP(PORT: number)
     // Only run in when directly used in file
     if (require.main === module)
     {
-        //connectDB("mongodb://localhost:27017/Workout_In_Progress");
         const DB: string | undefined = getEnv("DB_URL");
         connectDB(DB);
         app.listen(process.env.PORT || PORT, () =>
@@ -66,10 +65,7 @@ function connectDB(URI: string)
     mongoose.set("debug", true);
 
     mongoose
-        .connect(URI, {
-            //useNewUrlParser: true, //default for mongoose 6+
-            //useUnifiedTopology: true //default for mongoose 6+
-        })
+        .connect(URI, {})
         .then(() => console.log("Connected to MongoDB."))
         .catch((error) => console.log(error));
 }

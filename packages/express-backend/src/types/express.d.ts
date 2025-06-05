@@ -1,5 +1,16 @@
 import {ParamsDictionary, Request} from "express-serve-static-core";
 
+declare global
+{
+    namespace Express
+    {
+        export interface Request
+        {
+            sub?: string | (() => string);
+        }
+    }
+}
+
 // Interfaces for types
 interface WorkoutMachineAttributes
 {
@@ -32,16 +43,5 @@ export type MachineRequest = Request<
     unknown,
     MachineAttributes
 >;
-
-declare global
-{
-    namespace Express
-    {
-        export interface Request
-        {
-            sub?: string | (() => string);
-        }
-    }
-}
 
 export type SetRequest = Request<ParamsDictionary, unknown, Set>;

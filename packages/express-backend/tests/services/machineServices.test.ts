@@ -211,11 +211,97 @@ describe("Machine Services Tests", () =>
         expect(machineLogResult.machineIds).toEqual([]);
     });
 
+    test("Delete machine --- failure no machines found", async () =>
+    {
+        const stubId = "a3f7d2e1b9c8d0a1e4b5f9c3";
+        const name = "Pull Down";
+        const list: {_id: Types.ObjectId; name: string}[] = [];
+        const aggregateMethod = jest.spyOn(userModel, "aggregate");
+
+        aggregateMethod.mockResolvedValue(list);
+
+        try
+        {
+            await machineServices.deleteMachine(stubId, name);
+            fail("Test should not reach here");
+        }
+        catch (error)
+        {
+            expect(error).toBeTruthy();
+        }
+    });
+
+    test("Delete machine --- successful", async () =>
+    {
+        const stubId = "a3f7d2e1b9c8d0a1e4b5f9c3";
+        const name = "Pull Down";
+        const machineId = "mock-machine-id";
+        const machineToDelete = {
+            _id: machineId,
+            name: "Pull Down",
+        };
+        const list = [machineToDelete];
+        const aggregateMethod = jest.spyOn(userModel, "aggregate");
+        const findOneMethod = jest.spyOn(userModel, "findOne");
+
+        aggregateMethod.mockResolvedValue(list);
+        findOneMethod.mockResolvedValue(null);
+        try
+        {
+            await machineServices.deleteMachine(stubId, name);
+            fail("Test should not be here");
+        }
+        catch (error)
+        {
+            expect(error).toBeTruthy();
+        }
+    });
+
+    test("Delete machine --- successful", async () =>
+    {
+        const stubId = "a3f7d2e1b9c8d0a1e4b5f9c3";
+        const name = "Pull Down";
+        const machineId = "mock-machine-id";
+        const machineLogId = "mock-log-id";
+        const machineToDelete = {
+            _id: machineId,
+            name: "Pull Down",
+        };
+        const list = [machineToDelete];
+        const aggregateMethod = jest.spyOn(userModel, "aggregate");
+        const findByIdAndDeleteMethod = jest.spyOn(
+            machineModel,
+            "findByIdAndDelete",
+        );
+        const findOneMethod = jest.spyOn(userModel, "findOne");
+        const findOneAndUpdateMethod = jest.spyOn(
+            machineLogModel,
+            "findOneAndUpdate",
+        );
+
+        aggregateMethod.mockResolvedValue(list);
+        findByIdAndDeleteMethod.mockResolvedValue(machineToDelete);
+        findOneMethod.mockResolvedValue({
+            _id: stubId,
+            machineLogId: machineLogId,
+        });
+        findOneAndUpdateMethod.mockResolvedValue(null);
+        try
+        {
+            await machineServices.deleteMachine(stubId, name);
+            fail("Test should not be here");
+        }
+        catch (error)
+        {
+            expect(error).toBeTruthy();
+        }
+    });
+
     // Add machine
     test("Add machine --- successful", async () =>
     {
         const stubId = "";
-        const machineList: (typeof machineModel)[] = [];
+        const userMachineLog: {machineLogId: boolean} = {machineLogId: true};
         const newMachine = new machineModel({
             name: "Shoulder Press",
             muscle: "Deltoids",
@@ -226,7 +312,7 @@ describe("Machine Services Tests", () =>
                 },
             ],
         });
-        userModel.findOne = jest.fn().mockResolvedValue(machineList);
+        userModel.findById = jest.fn().mockResolvedValue(userMachineLog);
         machineLogModel.findOneAndUpdate = jest
             .fn()
             .mockResolvedValue(newMachine);
@@ -411,7 +497,7 @@ describe("Machine Services Tests", () =>
     // These tests exist to hit the catch blocks
     test("Add machine --- failure save", async () =>
     {
-        userModel.findOne = jest.fn().mockResolvedValue(null);
+        userModel.findById = jest.fn().mockResolvedValue(null);
         jest.spyOn(machineModel.prototype, "save").mockImplementation(
             async () =>
             {
@@ -442,7 +528,7 @@ describe("Machine Services Tests", () =>
     });
 
     // These tests exist to hit the catch blocks
-    test("Add machine --- failure save", async () =>
+    test("Add machine --- failure on update", async () =>
     {
         const stubId = "";
         const newMachine = new machineModel({
@@ -455,7 +541,7 @@ describe("Machine Services Tests", () =>
                 },
             ],
         });
-        userModel.findOne = jest.fn().mockResolvedValue(null);
+        userModel.findById = jest.fn().mockResolvedValue(null);
         jest.spyOn(machineModel.prototype, "save").mockResolvedValue(
             newMachine,
         );
@@ -470,7 +556,7 @@ describe("Machine Services Tests", () =>
     });
 
     // These tests exist to hit the catch blocks
-    test("Add machine --- failure save", async () =>
+    test("Add machine --- failure on user search", async () =>
     {
         const stubId = "";
         const newMachine = new machineModel({
@@ -483,10 +569,31 @@ describe("Machine Services Tests", () =>
                 },
             ],
         });
-        userModel.findOne = jest.fn().mockImplementation(async () =>
+        userModel.findById = jest.fn().mockImplementation(async () =>
         {
             await Promise.reject(new Error("boom"));
         });
+        jest.spyOn(machineModel.prototype, "save").mockResolvedValue(
+            newMachine,
+        );
+        const result = await machineServices.addMachine(newMachine, stubId);
+        expect(result).toBeTruthy();
+    });
+
+    test("Add machine --- failure on user search", async () =>
+    {
+        const stubId = "";
+        const newMachine = new machineModel({
+            name: "Shoulder Press",
+            muscle: "Deltoids",
+            attributes: [
+                {
+                    name: "weight",
+                    unit: "kgs",
+                },
+            ],
+        });
+        userModel.findById = jest.fn().mockResolvedValue({});
         jest.spyOn(machineModel.prototype, "save").mockResolvedValue(
             newMachine,
         );

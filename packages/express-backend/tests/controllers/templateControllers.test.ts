@@ -225,7 +225,126 @@ describe("Template Controllers Test", () =>
         expect(result).toBeFalsy();
     });
 
-    test("Save session --- successful", async () =>
+    test("Save session --- successful with template", async () =>
+    {
+        const sourceTemplate = {};
+        const mockMachines2 = [
+            new machineModel({
+                _id: new Types.ObjectId(),
+                attributes: [
+                    {_id: new Types.ObjectId(), name: "attr4", unit: "lbs"},
+                ],
+            }),
+        ];
+        const mockSession = [
+            {
+                templateId: sourceTemplate,
+                workout: mockWorkouts,
+                set: jest.fn(),
+                save: jest.fn().mockResolvedValue(true),
+            },
+        ];
+
+        const newTemplate = {
+            set: jest.fn(),
+            save: jest.fn().mockResolvedValue(true),
+        };
+
+        (sessionServices.getSessionById as jest.Mock).mockResolvedValue(
+            mockSession,
+        );
+
+        (templateServices.addTemplate as jest.Mock).mockResolvedValue(
+            newTemplate,
+        );
+
+        (machineServices.getSavedMachines as jest.Mock).mockResolvedValue(
+            mockMachines2,
+        );
+
+        (machineServices.getMachinesByIds as jest.Mock).mockResolvedValue(
+            mockMachines,
+        );
+
+        const result = await templateController.saveSession(
+            stubSourceId,
+            stubName,
+            userId,
+        );
+        expect(result).toBeTruthy();
+        expect(newTemplate.set).toHaveBeenCalledWith(
+            "workout",
+            expect.any(Array),
+        );
+        expect(newTemplate.set).toHaveBeenCalledWith(
+            "machines",
+            expect.any(Array),
+        );
+        const callArguments = Object.fromEntries(
+            newTemplate.set.mock.calls as [
+                keyof TemplateCallArgs,
+                TemplateCallArgs[keyof TemplateCallArgs],
+            ][],
+        ) as TemplateCallArgs;
+        const expectedMachines = mockMachines.concat(mockMachines2);
+        verifyDeepCopy(expectedMachines, mockSession[0].workout, callArguments);
+    });
+
+    test("Save session --- successful with template no new machines", async () =>
+    {
+        const sourceTemplate = {};
+        const mockSession = [
+            {
+                templateId: sourceTemplate,
+                workout: mockWorkouts,
+                set: jest.fn(),
+                save: jest.fn().mockResolvedValue(true),
+            },
+        ];
+
+        const newTemplate = {
+            set: jest.fn(),
+            save: jest.fn().mockResolvedValue(true),
+        };
+
+        (sessionServices.getSessionById as jest.Mock).mockResolvedValue(
+            mockSession,
+        );
+
+        (templateServices.addTemplate as jest.Mock).mockResolvedValue(
+            newTemplate,
+        );
+
+        (machineServices.getSavedMachines as jest.Mock).mockResolvedValue(null);
+
+        (machineServices.getMachinesByIds as jest.Mock).mockResolvedValue(
+            mockMachines,
+        );
+
+        const result = await templateController.saveSession(
+            stubSourceId,
+            stubName,
+            userId,
+        );
+        expect(result).toBeTruthy();
+        expect(newTemplate.set).toHaveBeenCalledWith(
+            "workout",
+            expect.any(Array),
+        );
+        expect(newTemplate.set).toHaveBeenCalledWith(
+            "machines",
+            expect.any(Array),
+        );
+        const callArguments = Object.fromEntries(
+            newTemplate.set.mock.calls as [
+                keyof TemplateCallArgs,
+                TemplateCallArgs[keyof TemplateCallArgs],
+            ][],
+        ) as TemplateCallArgs;
+        verifyDeepCopy(mockMachines, mockSession[0].workout, callArguments);
+    });
+
+    test("Save session --- successful without template", async () =>
     {
         const mockSession = [
             {
