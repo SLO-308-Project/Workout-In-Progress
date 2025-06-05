@@ -13,7 +13,7 @@ function login(email: string, password: string): Promise<boolean>
             if (res.ok)
             {
                 // 200s status
-                console.log(`Authorized.`);
+                // console.log(`Authorized.`);
                 return res
                     .text() // get the authorization token.
                     .then(async (res_data) =>

@@ -117,9 +117,6 @@ export default function MachineForm()
 
     function submitForm()
     {
-        console.log(`IN SUBMITFORM: ${JSON.stringify(machine.attributes)}`);
-        console.log(`name: ${machine.name} muscle: ${machine.muscle}`);
-
         const nameValidation = validateMachineName(machine.name);
         if (!nameValidation.isValid)
         {

@@ -31,7 +31,6 @@ function MachinePage()
 
     useEffect(() =>
     {
-        console.log("Machines is Focused");
         if (isFocused) getMachines();
     }, [isFocused, router]);
 

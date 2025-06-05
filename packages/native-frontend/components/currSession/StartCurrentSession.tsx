@@ -3,7 +3,7 @@ import ModalTemplate from "../UtilComponents/ModalTemplate";
 import {useTemplateContext} from "@/util/templateContext";
 import {useState} from "react";
 import {Template} from "@/types/template";
-import {router, useRouter} from "expo-router";
+import {useRouter} from "expo-router";
 import {useCurrentSessionStatusContext} from "@/util/currentSessionContext";
 
 type Props = {
@@ -72,11 +72,6 @@ export default function StartCurrentSession({Icon}: Props)
         }
     }
 
-    // if (currentSessionStatus === 1){
-    //     router.push("/(tabs)/currSession");
-    //     return null;
-    // }
-    // else {
     return (
         <ModalTemplate
             Icon={Icon}
@@ -142,5 +137,4 @@ export default function StartCurrentSession({Icon}: Props)
             )}
         />
     );
-    // }
 }

@@ -41,6 +41,7 @@ export default function MachineForm({handleSubmit}: Props)
             ...machine,
             attributes: [...machine.attributes, attribute],
         });
+        return true;
     }
 
     function deleteAttribute(attributeName: string)

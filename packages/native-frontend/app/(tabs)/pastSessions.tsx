@@ -9,26 +9,22 @@ import Feather from "@expo/vector-icons/Feather";
 import {
     fetchGetSessions,
     fetchDeleteSession,
-    fetchStartSessions,
     fetchCurrentSession,
 } from "@/fetchers/sessionFetchers";
 import {Session} from "@/types/session";
 import SessionComponent, {Empty} from "@/components/sessions/sessionComponent";
 import StartCurrentSession from "@/components/currSession/StartCurrentSession";
-// import {fetchGetTemplates} from "@/fetchers/templateFetchers";
-// import {useTemplateContext} from "@/util/templateContext";
 import {BottomSheetModal, BottomSheetScrollView} from "@gorhom/bottom-sheet";
 import SessionSlide from "@/components/sessions/sessionSlide";
 import {useTemplateContext} from "@/util/templateContext";
 import {useMachineContext} from "@/util/machineContext";
 import {Machine} from "@/types/machine";
-import {useCurrentSessionStatusContext} from "@/util/currentSessionContext";
 
 export default function PastSessionsPage()
 {
     //general Data
     const [sessions, setSessions] = useState<Session[]>([]);
-    const [currSession, setCurrSession] = useState<boolean>();
+    const [currentSession, setCurrSession] = useState<boolean>();
     const router = useRouter();
     //Info for sessionSlide
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -42,17 +38,13 @@ export default function PastSessionsPage()
 
     const isFocused = useIsFocused();
 
-    const {currentSessionStatus} = useCurrentSessionStatusContext();
-
     useEffect(() =>
     {
         if (isFocused)
         {
-            console.log("Before Focus setup");
             getAllMachines();
             loadSessions();
             loadCurrSession();
-            console.log("after Focus setup");
         }
     }, [isFocused]);
 
@@ -188,7 +180,6 @@ export default function PastSessionsPage()
     }
 
     //SessionSlide Functions
-
     const handleOpenSheet = useCallback((session: Session) =>
     {
         setSelectedSession(session);
@@ -205,33 +196,6 @@ export default function PastSessionsPage()
         }
         //Removing duplicates by converting to set and back.
         setAllMachines([...new Set<Machine>(tempMachineArray)]);
-    }
-
-    //Functions that navigate.
-
-    function startSession(): void
-    {
-        if (currSession)
-        {
-            router.navigate("/(tabs)/currSession");
-            return;
-        }
-        fetchStartSessions()
-            .then((res) =>
-            {
-                if (res.status !== 201)
-                {
-                    throw new Error("No content added");
-                }
-                else
-                {
-                    router.navigate("/(tabs)/currSession");
-                }
-            })
-            .catch((err: unknown) =>
-            {
-                console.log("Error creating session: ", err);
-            });
     }
 
     const openSettingsStack = () =>
@@ -260,7 +224,6 @@ export default function PastSessionsPage()
                     <SessionComponent
                         onPress={() => handleOpenSheet(item)}
                         key={index}
-                        sessionId={item._id}
                         name={dateToName(item.date)}
                         date={formatDate(item.date)}
                         duration={formatDuration(item.time)}
@@ -310,20 +273,9 @@ export default function PastSessionsPage()
                                 ? formatDuration(selectedSession.time)
                                 : ""
                         }
-                        deleteSession={deleteSession}
                     />
                 </BottomSheetScrollView>
             </BottomSheetModal>
-            {/* <Pressable
-                onPress={() =>
-                {
-                    console.log(sessions);
-                    console.log(templates);
-                    console.log(currentSessionStatus);
-                }}
-            >
-                <Text className="bg-green-700">PRESS</Text>
-            </Pressable> */}
         </SafeAreaView>
     );
 }

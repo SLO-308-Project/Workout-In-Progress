@@ -8,7 +8,6 @@ type Props = {
 0: No current Session;
 1: Yes current Session;
 2: Start a new current Session
-
 */
 
 type CurrentSessionStatusContextType = {
