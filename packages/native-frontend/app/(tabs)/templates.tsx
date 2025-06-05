@@ -35,7 +35,7 @@ export default function TemplatesPage()
                 console.log(t.name);
             }
         }
-    }, [isFocused]);
+    }, [isFocused, templates]);
 
     // Returns all templates for the authorized user.
     function getTemplates(): void

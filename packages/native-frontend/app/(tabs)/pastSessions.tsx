@@ -198,7 +198,7 @@ export default function PastSessionsPage()
     function getAllMachines()
     {
         //Get all machines in an arryay.
-        var tempMachineArray: Machine[] = machines;
+        var tempMachineArray: Machine[] = [...machines];
         for (const template of templates)
         {
             tempMachineArray.push(...template.machines);

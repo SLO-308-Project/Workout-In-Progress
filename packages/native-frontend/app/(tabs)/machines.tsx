@@ -32,7 +32,7 @@ function MachinePage()
     useEffect(() =>
     {
         if (isFocused) getMachines();
-    }, [isFocused]);
+    }, [isFocused, machines]);
 
     // State for Edit Bottom Sheet Modal
     const bottomSheetModalRef = useRef<BottomSheetModal>(null);
