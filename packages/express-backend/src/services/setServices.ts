@@ -1,4 +1,5 @@
 import sessionModel from "../data/session";
+import mongoose from "mongoose";
 
 type AttributeValue = {
     name: string;
@@ -53,18 +54,19 @@ async function addSet(
         throw new Error("No attribute values for the set provided");
     }
 
+    const newSetId = new mongoose.Types.ObjectId();
+
     const session = await sessionModel.findOneAndUpdate(
         // find the workout in the session
         {_id: sessionId, "workout._id": workoutId},
         {
             // push the new set to the workouts sets
             $push: {
-                "workout.$.sets": {attributeValues: attributeValues},
+                "workout.$.sets": {
+                    _id: newSetId,
+                    attributeValues: attributeValues,
+                },
             },
-        },
-        {
-            new: true, // returns the new document rather than the old one
-            project: {"workout.$": 1}, // with only the one workout entry we found
         },
     );
 
@@ -74,9 +76,7 @@ async function addSet(
     }
 
     // we want to return the id of the set that was just added
-    const sets = session.workout[0].sets;
-    const newSet = sets[sets.length - 1];
-    return newSet._id;
+    return newSetId;
 }
 
 function removeSet(sessionId: string, workoutId: string, setId: string)
@@ -107,7 +107,7 @@ function removeSet(sessionId: string, workoutId: string, setId: string)
     );
 }
 
-function updateSet(
+async function updateSet(
     sessionId: string,
     workoutId: string,
     setId: string,
@@ -130,12 +130,18 @@ function updateSet(
     return sessionModel.updateOne(
         {
             _id: sessionId,
-            "workout._id": workoutId,
         },
         {
             $set: {
-                "workout.$.sets": {attributeValues: newAttributeValues},
+                "workout.$[workoutEl].sets.$[setEl].attributeValues":
+                    newAttributeValues,
             },
+        },
+        {
+            arrayFilters: [
+                {"workoutEl._id": new mongoose.Types.ObjectId(workoutId)},
+                {"setEl._id": new mongoose.Types.ObjectId(setId)},
+            ],
         },
     );
 }
