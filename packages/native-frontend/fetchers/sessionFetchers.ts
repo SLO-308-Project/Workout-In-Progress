@@ -1,3 +1,4 @@
+import {Session} from "@/types/session";
 import Constants from "expo-constants";
 const BACKEND_URL = Constants.expoConfig?.extra?.BACKEND_URL;
 
@@ -31,6 +32,7 @@ function fetchDeleteSession(id: string): Promise<Response>
  */
 function fetchStartSessions(): Promise<Response>
 {
+    console.log(`Fetching start session:`);
     return fetch(`${BACKEND_URL}/sessions`, {
         method: "POST",
         headers: {
@@ -44,11 +46,22 @@ function fetchStartSessions(): Promise<Response>
 }
 
 /**
- *
+ * patches the session._id with the session.
  */
 function fetchCurrentSession(): Promise<Response>
 {
     return fetch(`${BACKEND_URL}/sessions/recent`);
+}
+
+function fetchPatchSession(session: Session): Promise<Response>
+{
+    return fetch(`${BACKEND_URL}/sessions/${session._id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({session}),
+    });
 }
 
 export {
@@ -56,4 +69,5 @@ export {
     fetchDeleteSession,
     fetchStartSessions,
     fetchCurrentSession,
+    fetchPatchSession,
 };
