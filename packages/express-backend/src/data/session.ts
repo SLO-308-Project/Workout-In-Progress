@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const sessionSchema = new mongoose.Schema(
     {
-        template_id: {
+        templateId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "sessionTemplate",
             required: false,

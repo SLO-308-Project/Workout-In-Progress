@@ -128,7 +128,7 @@ export default function CurrentSessionPage()
             {
                 console.log(`GottenSession: ${gottenSession}`);
                 console.log(
-                    `GottenSession template: ${gottenSession?.template_id}`,
+                    `GottenSession template: ${gottenSession?.templateId}`,
                 );
                 console.log(`Passed template: ${startTemplate_id}`);
                 //Whether a session was recovered or not. setup template.
@@ -144,7 +144,7 @@ export default function CurrentSessionPage()
                     {
                         console.log(`startedSession: ${startedSession}`);
                         console.log(
-                            `startedSession template: ${startedSession.template_id}`,
+                            `startedSession template: ${startedSession.templateId}`,
                         );
                         loadTemplate(startedSession, foundTemplate);
                     });
@@ -221,14 +221,14 @@ export default function CurrentSessionPage()
         // console.log(templates[6].machines)
         console.log("setupTemplate() var startTemplate_id:" + startTemplate_id);
         console.log(
-            "setupTemplate() var session.template_id:" + session?.template_id,
+            "setupTemplate() var session.template_id:" + session?.templateId,
         );
         // console.log("setupTemplate() var templates:" + templates + "  machiens: " + templates[0].machines);
         var foundTemplate = undefined;
         //if there is a current session and template.
-        if (sess !== undefined && sess.template_id !== undefined)
+        if (sess !== undefined && sess.templateId !== undefined)
         {
-            foundTemplate = templates.find((t) => t._id === sess.template_id);
+            foundTemplate = templates.find((t) => t._id === sess.templateId);
             setTemplate(foundTemplate);
         }
         //otherwise there might be a startTemplate.
@@ -253,7 +253,7 @@ export default function CurrentSessionPage()
         const patchSession = {
             _id: sess._id,
             date: sess.date,
-            template_id: temp._id,
+            templateId: temp._id,
             time: sess.time,
             workout: temp.workout,
         };
@@ -313,7 +313,7 @@ export default function CurrentSessionPage()
                 .then((json: Session) =>
                 {
                     console.log(
-                        `Setting started session: ${json} with template ${json.template_id}`,
+                        `Setting started session: ${json} with template ${json.templateId}`,
                     );
                     setSession(json);
                     return json;
