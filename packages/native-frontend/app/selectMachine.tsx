@@ -3,7 +3,13 @@ import {FlatList, Pressable, View, StyleSheet} from "react-native";
 import {useState, useLayoutEffect} from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {SearchBar} from "@rneui/themed";
-import {useRouter, useNavigation} from "expo-router";
+import {
+    useRouter,
+    useNavigation,
+    useLocalSearchParams,
+    RelativePathString,
+    ExternalPathString,
+} from "expo-router";
 
 import MachineComponent, {Empty} from "@/components/machines/machineComponent";
 import {fetchGetMachine, fetchDeleteMachine} from "@/fetchers/machineFetchers";
@@ -17,6 +23,8 @@ export default function SelectMachine()
     const [search, setSearch] = useState<string>("");
     const router = useRouter();
     const navigation = useNavigation();
+
+    const {returnPath} = useLocalSearchParams();
 
     useLayoutEffect(() =>
     {
@@ -99,7 +107,7 @@ export default function SelectMachine()
     function handleSelectMachine(machineId: string)
     {
         router.dismissTo({
-            pathname: "/(tabs)/currSession",
+            pathname: returnPath as RelativePathString,
             params: {machineId},
         });
     }

@@ -18,7 +18,7 @@ async function getWorkout(sessionId: string, userId: string)
         {
             if (!verified)
             {
-                throw new Error("No sesison found");
+                throw new Error("No session found");
             }
 
             return sessionModel.findById(sessionId);

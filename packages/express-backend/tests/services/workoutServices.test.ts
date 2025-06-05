@@ -272,9 +272,18 @@ describe("Workout Services Tests", () =>
     });
 
     // These tests exist to hit the catch blocks
-    test("Get workout --- failure (session id not found)", async () =>
+    test("Get workout --- failure (session id not found for user", async () =>
     {
         userModel.aggregate = jest.fn().mockResolvedValue([]);
+        const sessionId = "6458a28d1f3d7c9a8e1b2c46";
+        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
+        const result = await workoutServices.getWorkout(sessionId, stubUserId);
+        expect(result).toBeFalsy();
+    });
+
+    test("Get workout --- failure (session id not found at all)", async () =>
+    {
+        userModel.aggregate = jest.fn().mockResolvedValue([null]);
         sessionModel.findById = jest.fn().mockResolvedValue(null);
         const sessionId = "6458a28d1f3d7c9a8e1b2c46";
         const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
@@ -315,9 +324,23 @@ describe("Workout Services Tests", () =>
         }
     });
 
-    test("Remove workout --- failure (session not found)", async () =>
+    test("Remove workout --- failure (session not found for user)", async () =>
     {
         userModel.aggregate = jest.fn().mockResolvedValue([]);
+        const sessionId = "6458a28d1f3d7c9a8e1b2c46";
+        const workoutId = "6458a28d1f3d7c9a8e1b2c46";
+        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
+        const result = await workoutServices.removeWorkout(
+            sessionId,
+            workoutId,
+            stubUserId,
+        );
+        expect(result).toBeFalsy();
+    });
+
+    test("Remove workout --- failure (session not found at all)", async () =>
+    {
+        userModel.aggregate = jest.fn().mockResolvedValue([null]);
         sessionModel.findOne = jest.fn().mockResolvedValue(null);
         const sessionId = "6458a28d1f3d7c9a8e1b2c46";
         const workoutId = "6458a28d1f3d7c9a8e1b2c46";
@@ -348,9 +371,23 @@ describe("Workout Services Tests", () =>
         expect(result).toBeNull();
     });
 
-    test("Add workout --- failure (session id not found)", async () =>
+    test("Add workout --- failure (session id not found for user)", async () =>
     {
         userModel.aggregate = jest.fn().mockResolvedValue([]);
+        const sessionId = "6458a28d1f3d7c9a8e1b2c46";
+        const machineId = "61f12342cf4b93ee8b0b37d4";
+        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
+        const result = await workoutServices.addWorkout(
+            machineId,
+            sessionId,
+            stubUserId,
+        );
+        expect(result).toBeFalsy();
+    });
+
+    test("Add workout --- failure (session id not found at all)", async () =>
+    {
+        userModel.aggregate = jest.fn().mockResolvedValue([null]);
         sessionModel.findOne = jest.fn().mockResolvedValue(null);
         const sessionId = "6458a28d1f3d7c9a8e1b2c46";
         const machineId = "61f12342cf4b93ee8b0b37d4";
@@ -363,7 +400,7 @@ describe("Workout Services Tests", () =>
         expect(result).toBeFalsy();
     });
 
-    test("Add workout --- failure (session id not found)", async () =>
+    test("Add workout --- failure (session error)", async () =>
     {
         userModel.aggregate = jest.fn().mockResolvedValue([]);
         sessionModel.findOne = jest.fn().mockImplementation(async () =>
@@ -380,18 +417,58 @@ describe("Workout Services Tests", () =>
         );
         expect(result).toBeNull();
     });
-    test("Save workout --- failure (session id not found)", async () =>
+    test("Save workout --- failure (session id not found for user)", async () =>
     {
         const sessionId = "a3f91c7e5d2b48c1e6fa3d09";
         const templateId = "61f12342cf4b93ee8b0b37d4";
         const index = 0;
         const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
         userModel.aggregate = jest.fn().mockResolvedValue([]);
+        const result = await workoutServices.saveWorkout(
+            templateId,
+            sessionId,
+            index,
+            stubUserId,
+        );
+        expect(result).toBeFalsy();
+    });
+
+    test("Save workout --- failure (session id not found at all)", async () =>
+    {
+        const sessionId = "a3f91c7e5d2b48c1e6fa3d09";
+        const templateId = "61f12342cf4b93ee8b0b37d4";
+        const index = 0;
+        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
+        userModel.aggregate = jest.fn().mockResolvedValue([null]);
         sessionModel.findById = jest.fn().mockResolvedValue(null);
         const result = await workoutServices.saveWorkout(
             templateId,
             sessionId,
             index,
+            stubUserId,
+        );
+        expect(result).toBeFalsy();
+    });
+
+    test("Save workout --- failure (workout toObject fails)", async () =>
+    {
+        const sessionId = "65f18f3ac6dc7f8d5a1234ab";
+        const templateId = "61f12342cf4b93ee8b0b37d4";
+        const badIndex = 0;
+        const session = {
+            workout: [
+                {
+                    toObject: jest.fn().mockReturnValue(null),
+                },
+            ],
+        };
+        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
+        userModel.aggregate = jest.fn().mockResolvedValue([session]);
+        sessionModel.findById = jest.fn().mockResolvedValue(session);
+        const result = await workoutServices.saveWorkout(
+            templateId,
+            sessionId,
+            badIndex,
             stubUserId,
         );
         expect(result).toBeFalsy();
@@ -501,6 +578,116 @@ describe("Workout Services Tests", () =>
         const templateId = "";
         sessionTemplateModel.findById = jest.fn().mockResolvedValue(null);
         const result = await workoutServices.getSavedWorkout(templateId);
+        expect(result).toBeFalsy();
+    });
+
+    test("Save workout from template --- successful", async () =>
+    {
+        const workout = {
+            machineId: new Types.ObjectId("6458a28d1f3d7c9a8e1b2c46"),
+            sets: [
+                {
+                    attributeValues: [
+                        {name: "reps", value: 12},
+                        {name: "weight", value: 200},
+                    ],
+                },
+            ],
+        };
+        const sourceTemplate = new sessionTemplateModel({
+            workout: [workout],
+        });
+        const destTemplate = new sessionTemplateModel({
+            workout: [workout],
+        });
+        const index = 0;
+        const destTemplateId = destTemplate._id?.toString() || "";
+        const sourceTemplateId = sourceTemplate._id?.toString() || "";
+        sessionTemplateModel.findById = jest
+            .fn()
+            .mockResolvedValue(sourceTemplate);
+        sessionTemplateModel.findByIdAndUpdate = jest
+            .fn()
+            .mockResolvedValue(destTemplate);
+        const result = await workoutServices.saveWorkoutFromTemplate(
+            destTemplateId,
+            sourceTemplateId,
+            index,
+        );
+        expect(result).toBeTruthy();
+    });
+
+    test("Save workout from template --- failure (no source template found)", async () =>
+    {
+        const index = 0;
+        const destTemplateId = "";
+        const sourceTemplateId = "";
+        sessionTemplateModel.findById = jest.fn().mockResolvedValue(null);
+        const result = await workoutServices.saveWorkoutFromTemplate(
+            destTemplateId,
+            sourceTemplateId,
+            index,
+        );
+        expect(result).toBeFalsy();
+    });
+
+    test("Save workout from template --- failure (no destination template)", async () =>
+    {
+        const sourceTemplate = new sessionTemplateModel({
+            workout: [{id: null}],
+        });
+        const index = 0;
+        const destTemplateId = "";
+        const sourceTemplateId = sourceTemplate._id?.toString() || "";
+        sessionTemplateModel.findById = jest
+            .fn()
+            .mockResolvedValue(sourceTemplate);
+        sessionTemplateModel.findByIdAndUpdate = jest
+            .fn()
+            .mockResolvedValue(null);
+        const result = await workoutServices.saveWorkoutFromTemplate(
+            destTemplateId,
+            sourceTemplateId,
+            index,
+        );
+        expect(result).toBeFalsy();
+    });
+
+    test("Save workout from template --- failure (no workout)", async () =>
+    {
+        const sourceTemplate = new sessionTemplateModel({
+            workout: [null],
+        });
+        const index = 0;
+        const destTemplateId = "";
+        const sourceTemplateId = sourceTemplate._id?.toString() || "";
+        sessionTemplateModel.findById = jest
+            .fn()
+            .mockResolvedValue(sourceTemplate);
+        const result = await workoutServices.saveWorkoutFromTemplate(
+            destTemplateId,
+            sourceTemplateId,
+            index,
+        );
+        expect(result).toBeFalsy();
+    });
+
+    test("Save workout from template --- successful", async () =>
+    {
+        const sourceTemplate = new sessionTemplateModel({
+            workout: [],
+        });
+        const index = -1000;
+        const destTemplateId = "";
+        const sourceTemplateId = sourceTemplate._id?.toString() || "";
+        sessionTemplateModel.findById = jest
+            .fn()
+            .mockResolvedValue(sourceTemplate);
+        const result = await workoutServices.saveWorkoutFromTemplate(
+            destTemplateId,
+            sourceTemplateId,
+            index,
+        );
         expect(result).toBeFalsy();
     });
 });

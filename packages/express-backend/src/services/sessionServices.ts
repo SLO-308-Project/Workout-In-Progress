@@ -69,33 +69,33 @@ function getAllSessions(userId: string)
 function addSession(
     session: SessionType,
     userId: string,
-): Promise<SessionType>
+): Promise<SessionType | null>
 {
     const sessionToAdd = new sessionModel(session);
-    userModel
+    return userModel
         .findOne({_id: userId})
         .then((user) =>
         {
-            sessionLogModel
-                .findOneAndUpdate(
-                    {_id: user?.sessionLogId},
-                    {$push: {sessionIds: sessionToAdd._id}}, //previously added session id.
-                    {new: true},
-                )
-                .then((newLog) =>
-                {
-                    console.log(newLog);
-                })
-                .catch((error) =>
-                {
-                    console.log(error);
-                });
+            if (user == null)
+            {
+                throw new Error("No user found");
+            }
+            return sessionLogModel.findOneAndUpdate(
+                {_id: user.sessionLogId},
+                {$push: {sessionIds: sessionToAdd._id}}, //previously added session id.
+                {new: true},
+            );
+        })
+        .then((newLog) =>
+        {
+            console.log(newLog);
+            return sessionToAdd.save();
         })
         .catch((error) =>
         {
             console.log(error);
+            return null;
         });
-    return sessionToAdd.save();
 }
 
 /**
@@ -202,8 +202,12 @@ async function deleteSession(id: string, userId: string)
         })
         .then((user) =>
         {
+            if (user == null)
+            {
+                throw new Error("No user found");
+            }
             return sessionLogModel.findOneAndUpdate(
-                {_id: user?.sessionLogId},
+                {_id: user.sessionLogId},
                 {$pull: {sessionIds: id}}, //previously added session id.
             );
         })
@@ -214,6 +218,7 @@ async function deleteSession(id: string, userId: string)
         .catch((error) =>
         {
             console.log(error);
+            return null;
         });
 }
 

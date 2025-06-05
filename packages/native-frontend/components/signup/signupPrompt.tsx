@@ -91,7 +91,7 @@ export default function SignupPrompt({
                 className="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"
                 onChangeText={handleUsernameChange}
                 maxLength={20}
-                placeholder="username"
+                placeholder="Username"
                 placeholderTextColor="7A7674"
                 textAlignVertical="center"
                 style={{lineHeight: 16}}
@@ -101,7 +101,7 @@ export default function SignupPrompt({
                 className="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-4"
                 onChangeText={handleEmailChange}
                 maxLength={254}
-                placeholder="email"
+                placeholder="Email"
                 placeholderTextColor="7A7674"
                 textAlignVertical="center"
                 style={{lineHeight: 16}}
@@ -111,7 +111,7 @@ export default function SignupPrompt({
                 className="w-full bg-gray-100 px-4 py-3 border border-gray-300 rounded-lg text-base text-black mb-2"
                 onChangeText={handlePasswordChange}
                 maxLength={128}
-                placeholder="password"
+                placeholder="Password"
                 placeholderTextColor="7A7674"
                 textAlignVertical="center"
                 style={{lineHeight: 16}}
@@ -174,7 +174,7 @@ export default function SignupPrompt({
                 </Text>
                 <Pressable
                     className="items-center"
-                    onPress={() => router.navigate("./login")}
+                    onPress={() => router.dismissTo("./login")}
                 >
                     <Text className="text-black font-semibold">Sign In</Text>
                 </Pressable>

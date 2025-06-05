@@ -92,6 +92,17 @@ describe("Session Services Tests", () =>
         expect(result!.time).toBeGreaterThan(0);
     });
 
+    test("End current session --- failure", async () =>
+    {
+        // Store ID - check if exists or empty for type safety
+        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
+        const sessionId = "65f49b7c1d34a2e5f6c89d0a";
+
+        userModel.aggregate = jest.fn().mockResolvedValue([]);
+        const result = await sessionServices.endSession(sessionId, stubUserId);
+        expect(result).toBeFalsy();
+    });
+
     // Get session by ID
     // Build a new session into the database to extract auto generated ID
     test("Get session by ID --- successful", async () =>
@@ -154,12 +165,32 @@ describe("Session Services Tests", () =>
         jest.spyOn(sessionModel.prototype, "save").mockResolvedValue(session);
         const result = await sessionServices.addSession(session, userId);
         expect(result).toBeTruthy();
-        expect(result.date).toBe(session.date);
-        expect(result.time).toBe(session.time);
+        expect(result!.date).toBe(session.date);
+        expect(result!.time).toBe(session.time);
         expect(result).toHaveProperty("_id");
     });
 
-    // Delete session
+    test("Add session --- failure no user", async () =>
+    {
+        const userId = "";
+        const session = new sessionModel({
+            date: new Date("2025-03-10T15:20:00.000Z"),
+            time: 3900,
+            workout: [
+                {
+                    machineId: new Types.ObjectId("5f4e3d2c1b0a9876543210fe"),
+                    sets: [
+                        {reps: 18, weight: 95},
+                        {reps: 15, weight: 110},
+                    ],
+                },
+            ],
+        });
+        userModel.findOne = jest.fn().mockResolvedValue(null);
+        const result = await sessionServices.addSession(session, userId);
+        expect(result).toBeFalsy();
+    });
+
     test("Delete session by id --- successful", async () =>
     {
         const session = new sessionModel({
@@ -175,18 +206,61 @@ describe("Session Services Tests", () =>
                 },
             ],
         });
+        const sessionLog = new sessionLogModel({});
+        const user = new userModel({});
+
         // Store ID - check if exists or empty for type safety
-        const stubUserId = "a3f7d2e1b9c8d0a1e4b5f9c3";
+        const stubUserId = user._id?.toString() || "";
         const sessionId = session._id?.toString() || "";
         userModel.aggregate = jest.fn().mockResolvedValue([session]);
+        userModel.findOne = jest.fn().mockResolvedValue(user);
+        sessionLogModel.findOneAndUpdate = jest
+            .fn()
+            .mockResolvedValue(sessionLog);
         sessionModel.findByIdAndDelete = jest.fn().mockResolvedValue(session);
         const result = await sessionServices.deleteSession(
             sessionId,
             stubUserId,
         );
         expect(result).toBeTruthy();
-        // ! to assume we are not null for type safety, previous line should guarantee that if we get this far
-        // On successful delete mongoose returns the id
         expect(result!._id!.toString()).toBe(sessionId);
+    });
+
+    test("Delete session by id --- failure no session", async () =>
+    {
+        const stubUserId = "66563c3f5f1b2c6f9a2e4b17";
+        const sessionId = "66563c3f5f1b2c6f9a2e4b17";
+        userModel.aggregate = jest.fn().mockResolvedValue([]);
+        const result = await sessionServices.deleteSession(
+            sessionId,
+            stubUserId,
+        );
+        expect(result).toBeFalsy();
+    });
+
+    test("Delete session by id --- failure no session", async () =>
+    {
+        const stubUserId = "66563c3f5f1b2c6f9a2e4b17";
+        const session = new sessionModel({
+            date: new Date("2025-03-18T12:45:00.000Z"),
+            time: 1563,
+            workout: [
+                {
+                    machineId: new Types.ObjectId("60a9c3d7e6f5b5a3c2d1e0f9"),
+                    sets: [
+                        {reps: 10, weight: 180},
+                        {reps: 15, weight: 295},
+                    ],
+                },
+            ],
+        });
+        const sessionId = session._id?.toString() || "";
+        userModel.aggregate = jest.fn().mockResolvedValue([session]);
+        userModel.findOne = jest.fn().mockResolvedValue(null);
+        const result = await sessionServices.deleteSession(
+            sessionId,
+            stubUserId,
+        );
+        expect(result).toBeFalsy();
     });
 });

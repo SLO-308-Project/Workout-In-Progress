@@ -124,19 +124,27 @@ router.delete(
 );
 
 // Update a set
-router.patch("/:workoutId/:setId", (req: SetRequest, res: Response) =>
-{
-    setServices
-        .updateSet(req.params.setId, req.body.attributeValues)
-        .then((result) =>
-        {
-            return res.status(200).send(result);
-        })
-        .catch((err) =>
-        {
-            console.log(err);
-            return res.send(err);
-        });
-});
+router.patch(
+    "/:sessionId/:workoutId/:setId",
+    (req: SetRequest, res: Response) =>
+    {
+        setServices
+            .updateSet(
+                req.params.sessionId,
+                req.params.workoutId,
+                req.params.setId,
+                req.body.attributeValues,
+            )
+            .then((result) =>
+            {
+                return res.status(200).send(result);
+            })
+            .catch((err) =>
+            {
+                console.log(err);
+                return res.send(err);
+            });
+    },
+);
 
 export default router;
