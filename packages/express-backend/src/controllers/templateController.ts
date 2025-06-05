@@ -103,7 +103,9 @@ async function copyTemplateData(
         let machines;
         if (sourceId)
         {
-            machines = await machineServices.getSavedMachines(sourceId);
+            machines = await machineServices.getSavedMachines(sourceId, {
+                session: mongoSession,
+            });
         }
         else
         {
