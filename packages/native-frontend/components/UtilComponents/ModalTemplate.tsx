@@ -10,9 +10,15 @@ import {
 type Props = {
     Icon: JSX.Element;
     Content: (setModalVisible: (visible: boolean) => void) => JSX.Element;
+    onOpen?: (setModalVisible: (visible: boolean) => void) => void;
 };
 
-export default function ModalTemplate({Icon, Content}: Props)
+export default function ModalTemplate({
+    Icon,
+    Content,
+    onOpen = () =>
+    {},
+}: Props)
 {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
 
@@ -22,6 +28,7 @@ export default function ModalTemplate({Icon, Content}: Props)
                 onPress={() =>
                 {
                     setModalVisible(true);
+                    onOpen(setModalVisible);
                 }}
             >
                 {Icon}

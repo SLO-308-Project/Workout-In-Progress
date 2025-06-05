@@ -2,6 +2,8 @@ import {fetchCreateTemplate} from "@/fetchers/templateFetchers";
 import {useState} from "react";
 import {Pressable, View, Text, TextInput} from "react-native";
 import ModalTemplate from "../UtilComponents/ModalTemplate";
+import {useTemplateContext} from "@/util/templateContext";
+import {Template} from "@/types/template";
 
 type Props = {
     id: string;
@@ -14,6 +16,7 @@ export default function SaveAsTemplate({id, fromSession, Icon}: Props)
     // const [modelVisible, setModelVisible] = useState<boolean>(false);
     const [validName, setValidName] = useState<boolean>(true);
     const [templateName, setTemplateName] = useState<string>("");
+    const {templates, setTemplates} = useTemplateContext();
 
     function saveTemplate(setModalVisible: (arg0: boolean) => void)
     {
@@ -30,6 +33,7 @@ export default function SaveAsTemplate({id, fromSession, Icon}: Props)
                 if (res.status === 201)
                 {
                     setModalVisible(false);
+                    return res.json();
                 }
                 else
                 {
@@ -37,6 +41,10 @@ export default function SaveAsTemplate({id, fromSession, Icon}: Props)
                         `status ${res.status}: Not Created, but okay, ${res.statusText}`,
                     );
                 }
+            })
+            .then((json: Template) =>
+            {
+                setTemplates([json, ...templates]);
             })
             .catch((err) =>
             {

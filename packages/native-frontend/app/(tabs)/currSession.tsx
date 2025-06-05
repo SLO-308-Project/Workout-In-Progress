@@ -40,6 +40,8 @@ import {Template} from "@/types/template";
 import StartCurrentSession from "@/components/currSession/StartCurrentSession";
 import {useCurrentSessionStatusContext} from "@/util/currentSessionContext";
 import {fetchPatchSession} from "@/fetchers/sessionFetchers";
+import SaveAsTemplate from "@/components/templates/SaveAsTemplate";
+import {Feather} from "@expo/vector-icons";
 
 // Configure logger to disable warning due to clock
 configureReanimatedLogger({
@@ -49,7 +51,7 @@ configureReanimatedLogger({
 
 // NOTE: Because we want an updating clock, this page will re-render once every 1000ms.
 // Note that
-const clockSpeed = 5000;
+const clockSpeed = 1000;
 
 export default function CurrentSessionPage()
 {
@@ -146,15 +148,8 @@ export default function CurrentSessionPage()
                         );
                         loadTemplate(startedSession, foundTemplate);
                     });
+                    console.log("Setting CurrentSessionStatus to 1");
                     setCurrentSessionStatus(1);
-                }
-                //No current session but there should be. Correct currentSessionStatus to 0;
-                else if (
-                    gottenSession === undefined &&
-                    currentSessionStatus === 1
-                )
-                {
-                    setCurrentSessionStatus(0);
                 }
                 //got a Current Session then it should already be setup.
             });
@@ -164,7 +159,7 @@ export default function CurrentSessionPage()
     // Getting workouts is triggered whenever the current session is updated
     useEffect(() =>
     {
-        if (session !== null)
+        if (session !== null && isFocused)
         {
             // getWorkouts(session);
             const interval = setInterval(() =>
@@ -174,7 +169,7 @@ export default function CurrentSessionPage()
 
             return () => clearInterval(interval);
         }
-    }, [session, updating]);
+    }, [isFocused, session, updating]);
 
     // TODO: Required for future scroll picker.
     /* Values from 0 to 999 in increments of 0.5
@@ -239,9 +234,7 @@ export default function CurrentSessionPage()
         //otherwise there might be a startTemplate.
         else if (startTemplate_id !== undefined)
         {
-            foundTemplate = templates.find(
-                (t) => t._id === startTemplate_id.toString(),
-            );
+            foundTemplate = templates.find((t) => t._id === startTemplate_id);
             setTemplate(foundTemplate);
         }
         //Else there is no template and keep startTemplate null.
@@ -278,6 +271,8 @@ export default function CurrentSessionPage()
             .then((res_data: Session) =>
             {
                 setSession(res_data);
+                console.log(res_data);
+                console.log(temp);
                 console.log(`loadTemplate put data: ${res_data.workout}`);
                 console.log(`   : ${res_data.workout[0].machineId}`);
                 console.log(`loadTemplate temp data: ${temp.workout}`);
@@ -382,23 +377,36 @@ export default function CurrentSessionPage()
         {
             return;
         }
-        fetchEndSession(session._id)
-            .then((res) =>
+        fetchPatchSession(session).then((res) =>
+        {
+            if (res.ok)
             {
-                if (res.status === 201)
-                {
-                    setSession(undefined);
-                    setCurrentSessionStatus(0);
-                }
-                else
-                {
-                    throw new Error(`No session found`);
-                }
-            })
-            .catch((err: unknown) =>
+                fetchEndSession(session._id)
+                    .then((res) =>
+                    {
+                        if (res.status === 201)
+                        {
+                            setSession(undefined);
+                            console.log("setting currentSessionStatus to 0");
+                            setCurrentSessionStatus(0);
+                        }
+                        else
+                        {
+                            throw new Error(`No session found`);
+                        }
+                    })
+                    .catch((err: unknown) =>
+                    {
+                        throw new Error(`Error ending session: ${err}`);
+                    });
+            }
+            else
             {
-                throw new Error(`Error ending session: ${err}`);
-            });
+                throw new Error(
+                    `Something Went Wrong with Ending Session patch.`,
+                );
+            }
+        });
     }
 
     // Unused remove when Done:
@@ -704,16 +712,31 @@ export default function CurrentSessionPage()
                         showsVerticalScrollIndicator={false}
                         className="flex-1"
                     />
-                    <View className="absolute bottom-4 left-0 right-0 items-center mb-4">
-                        <Pressable
-                            onPress={endSession}
-                            className="bg-red-100 px-9 py-3 rounded-full active:opacity-60 transition-all duration-300"
-                            style={{backgroundColor: "#FF3B30"}}
-                        >
-                            <Text className="text-base text-white font-semibold text-center">
-                                End
-                            </Text>
-                        </Pressable>
+                    <View className="absolute bottom-4 left-0 right-0  items-center mb-4">
+                        <View className="flex-row justify-center items-center space-x-4">
+                            <SaveAsTemplate
+                                id={session._id}
+                                fromSession={true}
+                                Icon={
+                                    <View className="bg-yellow-400 px-3 py-3 rounded-full">
+                                        <Feather
+                                            name="save"
+                                            size={26}
+                                            color={"white"}
+                                        />
+                                    </View>
+                                }
+                            />
+                            <Pressable
+                                onPress={endSession}
+                                className="bg-red-100 px-9 py-3 rounded-full active:opacity-60 transition-all duration-300"
+                                style={{backgroundColor: "#FF3B30"}}
+                            >
+                                <Text className="text-base text-white font-semibold text-center">
+                                    End
+                                </Text>
+                            </Pressable>
+                        </View>
                     </View>
                     <BottomSheetModal
                         ref={bottomSheetModalRef}
@@ -739,6 +762,17 @@ export default function CurrentSessionPage()
                     </BottomSheetModal>
                 </>
             )}
+            <Pressable
+                onPress={() =>
+                {
+                    getCurrentSession().then((res) =>
+                    {
+                        console.log(res);
+                    });
+                }}
+            >
+                <Text className="bg-green-700">PRESS</Text>
+            </Pressable>
         </SafeAreaView>
     );
 }

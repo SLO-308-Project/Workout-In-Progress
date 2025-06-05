@@ -3,7 +3,7 @@ import ModalTemplate from "../UtilComponents/ModalTemplate";
 import {useTemplateContext} from "@/util/templateContext";
 import {useState} from "react";
 import {Template} from "@/types/template";
-import {useRouter} from "expo-router";
+import {router, useRouter} from "expo-router";
 import {useCurrentSessionStatusContext} from "@/util/currentSessionContext";
 
 type Props = {
@@ -72,9 +72,23 @@ export default function StartCurrentSession({Icon}: Props)
         }
     }
 
+    // if (currentSessionStatus === 1){
+    //     router.push("/(tabs)/currSession");
+    //     return null;
+    // }
+    // else {
     return (
         <ModalTemplate
             Icon={Icon}
+            onOpen={(setModalVisible) =>
+            {
+                console.log("CurrentSessionStatus: ", currentSessionStatus);
+                if (currentSessionStatus === 1)
+                {
+                    router.push("/(tabs)/currSession");
+                    setModalVisible(false);
+                }
+            }}
             Content={(setModalVisible) => (
                 <View className="rounded-xl px-4 pt-4 pb-4 bg-white">
                     <Pressable
@@ -128,4 +142,5 @@ export default function StartCurrentSession({Icon}: Props)
             )}
         />
     );
+    // }
 }

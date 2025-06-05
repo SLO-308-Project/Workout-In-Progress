@@ -12,6 +12,8 @@ import {
 import ModalTemplate from "../UtilComponents/ModalTemplate";
 import {useTemplateContext} from "@/util/templateContext";
 import {Template} from "@/types/template";
+import {useCurrentSessionStatusContext} from "@/util/currentSessionContext";
+import {router} from "expo-router";
 
 type Props = {
     fromSession: boolean;
@@ -25,6 +27,7 @@ export default function ImportAsTemplate({fromSession, Icon}: Props)
     const [id, setId] = useState<string>("");
 
     const {templates, setTemplates} = useTemplateContext();
+    const {currentSessionStatus} = useCurrentSessionStatusContext();
 
     function saveTemplate(setModalVisible: (arg0: boolean) => void)
     {
@@ -59,6 +62,8 @@ export default function ImportAsTemplate({fromSession, Icon}: Props)
     return (
         <ModalTemplate
             Icon={Icon}
+            onOpen={() =>
+            {}}
             Content={(setModalVisible) => (
                 <View className="rounded-xl px-4 pt-4 pb-4 bg-white">
                     <TextInput
