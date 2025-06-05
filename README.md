@@ -1,3 +1,7 @@
+![Static Web App Deployment](https://github.com/SLO-308-Project/Workout-In-Progress/actions/workflows/Deploy-Static-WebApp.yml/badge.svg)
+
+![API Deployment](https://github.com/SLO-308-Project/Workout-In-Progress/actions/workflows/Deploy-Backend-API.yml/badge.svg)
+
 # 308-Project
 ### Team
 - Paul Motter
