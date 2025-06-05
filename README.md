@@ -1,3 +1,7 @@
+![Static Web App Deployment](https://github.com/SLO-308-Project/Workout-In-Progress/actions/workflows/Deploy-Static-WebApp.yml/badge.svg)
+
+![API Deployment](https://github.com/SLO-308-Project/Workout-In-Progress/actions/workflows/Deploy-Backend-API.yml/badge.svg)
+
 # 308-Project
 ### Team
 - Paul Motter
@@ -33,21 +37,15 @@ Workout In Progress is a workout tracking application. It helps keep track of wh
 ## Test Coverage Reports
 Date: 6/4/2025 11pm 
 
-## Acceptance Testing
+### Acceptance Testing
 [Acceptance Criteria](https://docs.google.com/document/d/1ZeTDSAWvSG_OFoRWgSXM6aJ3mfvQuhRCuX34Si96XJc/edit?tab=t.0) <br />
 
 <img width="739" alt="image" src="https://github.com/user-attachments/assets/0662ffa5-d289-4d01-a121-82056bfe4a43" />
 
 
-Backend Report: <br />
-<img width="616" alt="image" src="https://github.com/user-attachments/assets/f96416a1-bed2-4bf6-a136-80844bc18f0c" />
+### Backend Report: <br />
+![image](https://github.com/user-attachments/assets/d2dc468f-6317-4e39-aa99-676a5d35f6c4)
 
-
-1. In memory-database tests <br />
-<img width="237" alt="Screenshot 2025-04-15 at 10 17 49 AM" src="https://github.com/user-attachments/assets/a8102b44-051b-403d-bf70-9b6e118166dc" />
-
-3. Mock test <br />
-<img width="240" alt="Screenshot 2025-04-15 at 6 07 36 PM" src="https://github.com/user-attachments/assets/e6578ddd-4b49-461c-8230-762f3b4afcaf" />
 
 ## Setup for dev
 1. Clone entire repo.
