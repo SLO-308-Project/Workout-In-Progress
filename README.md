@@ -28,6 +28,8 @@ Workout In Progress is a workout tracking application. It helps keep track of wh
 
 [UML Activity Diagram](https://drive.google.com/file/d/1RCC0hqDVSrnWCDgpppQ3kv7xycMe5lVk/view?usp=sharing)
 
+[UML Sequence Diagram](https://drive.google.com/file/d/1S_xFfHS6SZ_wBLoxX58UuUnBaugZcNzJ/view?usp=sharing)
+
 ## Test Coverage Reports
 Date: 4/15/2025 6pm 
 
@@ -48,7 +50,7 @@ Backend Report: <br />
     - Frontend
       ```
         # Use http://10.0.2.2:8000 when running android simulator
-        EXPO_PUBLIC_API_URL=http://localhost:8000
+         EXPO_PUBLIC_API_URL=<BACKEND_SERVER>
       ```
     - Backend
       ```
