@@ -70,6 +70,14 @@ Backend Report: <br />
        1. Open VScode settings to "file association" and add the item "*css" and value "tailwindcss". 
        2. Open VScode settings to "editor quick suggestions" and change strings to on.
 
+## CI/CD
+Manage through GitHub Actions
+- Workflows in .github/workflows
+
+- ci-testing.yml -> Automically calls unit test on main branch updates
+- Deploy-Backend-API.yml -> Automically deploys backend
+- Deploy-Static-WebApp.yml -> Automically deploys frontend
+
 ## Scripts
 - ```npm run backdev``` Runs the dev environment for the backend.
 - ```npm run frontdev``` Runs the dev environment for the frontend.
