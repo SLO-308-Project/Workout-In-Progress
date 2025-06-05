@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-// import machineModel from "./machine";
 
 const templateListSchema = new mongoose.Schema(
     {

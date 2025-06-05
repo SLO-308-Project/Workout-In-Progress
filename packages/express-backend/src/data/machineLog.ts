@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-// import machineModel from "./machine";
 
 const machineLogSchema = new mongoose.Schema(
     {
