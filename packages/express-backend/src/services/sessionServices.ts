@@ -42,6 +42,7 @@ function aggregateUserSession(userId: string)
                 time: "$collectedSessions.time",
                 workout: "$collectedSessions.workout",
                 _id: "$collectedSessions._id",
+                templateId: "$collectedSessions.templateId",
             },
         },
     ];
@@ -136,6 +137,26 @@ function getCurrentSession(userId: string): Promise<SessionType[]>
 }
 
 /**
+ * updates the session with sessionId to session and returns the updated session.
+ * @param sessionId
+ * @param session
+ * @returns
+ */
+function patchSession(
+    sessionId: string,
+    session: SessionType,
+): Promise<SessionType | null>
+{
+    if (!sessionId)
+    {
+        throw new Error("No sessionId provided: " + sessionId);
+    }
+    return sessionModel.findByIdAndUpdate(sessionId, session, {
+        new: true,
+    });
+}
+
+/**
  * Ends a session
  *
  * @param {string} userId - User associated id
@@ -227,4 +248,5 @@ export default {
     endSession,
     getSessionById,
     getCurrentSession,
+    patchSession,
 };
