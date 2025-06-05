@@ -1,6 +1,6 @@
 import {Template} from "@/types/template";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {Text, View, StyleSheet, FlatList} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {SearchBar} from "@rneui/themed";
@@ -14,6 +14,8 @@ import {
 } from "@/fetchers/templateFetchers";
 import ImportAsTemplate from "@/components/templates/ImportAsTemplate";
 import {useTemplateContext} from "@/util/templateContext";
+import {BottomSheetModal, BottomSheetScrollView} from "@gorhom/bottom-sheet";
+import TemplateSlide from "@/components/templates/TemplateSlide";
 
 const isCypress =
     typeof window !== "undefined" && window.__IS_CYPRESS__ === true;
@@ -22,6 +24,17 @@ export default function TemplatesPage()
 {
     const {templates, setTemplates} = useTemplateContext(); //useState<Template[]>([]);
     const [search, setSearch] = useState<string>("");
+
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+    const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(
+        null,
+    );
+
+    const handleOpenSheet = useCallback((session: Template) =>
+    {
+        setSelectedTemplate(session);
+        bottomSheetModalRef.current?.present();
+    }, []);
 
     const isFocused = useIsFocused(); // is true if the screen is focused and false if not.
 
@@ -132,6 +145,10 @@ export default function TemplatesPage()
                 renderItem={({item, index}) => (
                     <View testID={`template-item`} key={index}>
                         <TemplateComponent
+                            onPress={() =>
+                            {
+                                handleOpenSheet(item);
+                            }}
                             key={index}
                             template={item}
                             handleDelete={removeOneTemplate}
@@ -143,6 +160,22 @@ export default function TemplatesPage()
                 className="flex-1"
                 initialNumToRender={isCypress ? 10000 : 10}
             />
+            <BottomSheetModal
+                ref={bottomSheetModalRef}
+                backgroundStyle={{
+                    backgroundColor: "#F9F9F9",
+                }}
+                index={0}
+                snapPoints={["90%"]}
+                enableDynamicSizing={false}
+                enableHandlePanningGesture={true}
+                enableContentPanningGesture={false}
+                enablePanDownToClose={true}
+            >
+                <BottomSheetScrollView>
+                    <TemplateSlide template={selectedTemplate} />
+                </BottomSheetScrollView>
+            </BottomSheetModal>
         </SafeAreaView>
     );
 }
