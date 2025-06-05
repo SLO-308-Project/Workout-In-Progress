@@ -44,7 +44,7 @@ export default function ImportAsTemplate({fromSession, Icon}: Props)
                 else
                 {
                     setValidId(false);
-                    console.log(
+                    throw new Error(
                         `status ${res.status}: Not Created, but okay, ${res.statusText}`,
                     );
                 }
@@ -79,14 +79,24 @@ export default function ImportAsTemplate({fromSession, Icon}: Props)
                         </Text>
                     )}
                     <View className="flex-row justify-center items-center">
-                        <Pressable onPress={() => setModalVisible(false)}>
+                        <Pressable
+                            onPress={() =>
+                            {
+                                setId("");
+                                setModalVisible(false);
+                            }}
+                        >
                             <Text className="text-2xl px-3 py-1 rounded-xl outline outline-1 outline-gray-300 bg-gray-200">
                                 Cancel
                             </Text>
                         </Pressable>
                         <View className="px-2" />
                         <Pressable
-                            onPress={() => saveTemplate(setModalVisible)}
+                            onPress={() =>
+                            {
+                                setId("");
+                                saveTemplate(setModalVisible);
+                            }}
                         >
                             <Text className="text-2xl px-3 py-1 rounded-xl outline outline-1 outline-gray-300 bg-gray-200">
                                 Save
