@@ -8,14 +8,15 @@ import {sessionTemplateType} from "../data/sessionTemplate";
 import {MachineType} from "../data/machine";
 
 type WorkoutType = sessionTemplateType["workout"];
+type MachineTypeWithId = MachineType & {_id: Types.ObjectId};
 
 /**
  * Save A Session In A Template
  *
  * @param {string} sessionId - id asssociated with session
  * @param {string} templateName - Name of template
- * @param {stirng} userId - Id of session
- * @return {Pomise} - To updated template
+ * @param {string} userId - Id of session
+ * @return {Promise} - To updated template
  */
 async function saveSession(
     sessionId: string,
@@ -33,12 +34,18 @@ async function saveSession(
         return null;
     }
     const sessionData: SessionType = retrievedSession[0];
+    const templateSourceId = sessionData.templateId?.toString();
     // Ensure template exists
-    return await copyTemplateData(sessionData.workout, userId, templateName);
+    return await copyTemplateData(
+        sessionData.workout,
+        userId,
+        templateName,
+        templateSourceId,
+    );
 }
 
 /**
- * Copys an existing template
+ * Copies an existing template
  *
  * @param {stirng} templateId - Id associated with template
  * @param {string} userId - Id associated with user
@@ -59,6 +66,124 @@ async function copyTemplate(templateId: string, userId: string)
         newTemplateName,
         templateId,
     );
+}
+
+/**
+ * Helper function to copy workout data with new ids
+ *
+ * @param {WorkoutType} workoutData - Source of Workout Data to be mapped
+ * @param {Map<string, Types.ObjectId>()} machineMap - Map to ensure consistent machine ids
+ * @return {WorkoutType[]}
+ */
+function copyWorkoutData(
+    workoutData: WorkoutType,
+    machineMap: Map<string, Types.ObjectId>,
+)
+{
+    return workoutData.map((workout) =>
+    {
+        const mappedWorkout = {
+            ...workout,
+            _id: new Types.ObjectId(),
+            machineId: machineMap.get(workout.machineId.toString()),
+            sets: workout.sets.map((set) =>
+            {
+                return {
+                    ...set,
+                    _id: new Types.ObjectId(),
+                    attributeValues: set.attributeValues.map((attr) => ({
+                        ...attr,
+                        _id: new Types.ObjectId(),
+                    })),
+                };
+            }),
+        };
+
+        return mappedWorkout;
+    });
+}
+
+/**
+ * Helper function to copy machine data with new ids
+ *
+ * @param {MachineType[]} machines - Source of machines to be mapped
+ * @param {Map<string, Types.ObjectId>()} machineMap - Map to ensure consistent machine ids
+ * @returns {MachineType[]}
+ */
+function copyMachineData(
+    machines: MachineTypeWithId[],
+    machineMap: Map<string, Types.ObjectId>,
+)
+{
+    return machines.map((machine) =>
+    {
+        const oldId = machine._id.toString();
+        const newId = machineMap.get(oldId);
+        return {
+            ...machine,
+            _id: newId,
+            attributes: machine.attributes.map((attr) => ({
+                ...attr,
+                _id: new Types.ObjectId(),
+            })),
+        };
+    });
+}
+
+/**
+ * Helper function to retrieve correct machine data
+ *
+ * @param {string} sourceId - template source id
+ * @param {Types.ObjectId[]} machineIds - machines to retrieve via id
+ * @param {string} userId - user associated id
+ * @param {mongoose.mongo.ClientSession} mongoSession - session for transaction
+ * @returns {Promise}
+ */
+async function retrieveMachines(
+    sourceId: string | undefined,
+    machineIds: Types.ObjectId[],
+    userId: string,
+    mongoSession: mongoose.mongo.ClientSession,
+)
+{
+    let machines: MachineType[] = [];
+    const userMachines = await machineServices.getMachinesByIds(
+        machineIds.map((id) => id.toString()),
+        userId,
+        {session: mongoSession},
+    );
+    const plainUserMachines = userMachines?.map((m) => m.toObject()) ?? [];
+    machines = machines.concat(plainUserMachines);
+    if (sourceId)
+    {
+        const templateMachines =
+            await machineServices.getSavedMachines(sourceId);
+        const plainAdditionalMachines =
+            templateMachines?.map((m) => m.toObject()) ?? [];
+        machines = machines.concat(plainAdditionalMachines);
+    }
+    console.log("MARKER");
+    console.log(machines);
+    return machines;
+}
+
+/**
+ * Generate a 1 to 1 mapping of machine ids with new unique ids
+ *
+ * @param {Types.ObjectId[]} uniqueMachineIds - machine ids to populate map with
+ * @return {Map<string, Types.ObjectId>}
+ */
+function generateMachineMap(uniqueMachineIds: Types.ObjectId[])
+{
+    const mapOfMachineIds = new Map<string, Types.ObjectId>();
+    uniqueMachineIds.forEach((id) =>
+    {
+        if (!mapOfMachineIds.has(id.toString()))
+        {
+            mapOfMachineIds.set(id.toString(), new Types.ObjectId());
+        }
+    });
+    return mapOfMachineIds;
 }
 
 /**
@@ -93,70 +218,21 @@ async function copyTemplateData(
         {
             throw new Error("Unable to create template");
         }
-        const mapOfMachineIds = new Map<string, Types.ObjectId>();
-        // GET ALL MACHINES AND PORT INFO INTO TEMPLATE
-        uniqueMachineIds.forEach((id) =>
-        {
-            if (!mapOfMachineIds.has(id.toString()))
-            {
-                mapOfMachineIds.set(id.toString(), new Types.ObjectId());
-            }
-        });
-        let machines;
-        if (sourceId)
-        {
-            machines = await machineServices.getSavedMachines(sourceId);
-        }
-        else
-        {
-            machines = await machineServices.getMachinesByIds(
-                uniqueMachineIds.map((id) => id.toString()),
-                userId,
-                {session: mongoSession},
-            );
-        }
+        const mapOfMachineIds = generateMachineMap(uniqueMachineIds);
+        const machines = (await retrieveMachines(
+            sourceId,
+            uniqueMachineIds,
+            userId,
+            mongoSession,
+        )) as MachineTypeWithId[];
+
         if (machines)
         {
-            const updatedMachines = machines.map((machine) =>
-            {
-                const oldId = (
-                    machine as MachineType
-                )._id?.toString() as string;
-                const newId = mapOfMachineIds.get(oldId);
-                return {
-                    ...machine.toObject(),
-                    _id: newId,
-                    attributes: machine.attributes.map((attr) => ({
-                        ...attr.toObject(),
-                        _id: new Types.ObjectId(),
-                    })),
-                };
-            });
+            const updatedMachines = copyMachineData(machines, mapOfMachineIds);
             template.set("machines", updatedMachines);
         }
 
-        const updatedWorkouts = workoutData.map((workout) =>
-        {
-            console.log(mapOfMachineIds);
-            const mappedWorkout = {
-                ...workout,
-                _id: new Types.ObjectId(),
-                machineId: mapOfMachineIds.get(workout.machineId.toString()),
-                sets: workout.sets.map((set) =>
-                {
-                    return {
-                        ...set,
-                        _id: new Types.ObjectId(),
-                        attributeValues: set.attributeValues.map((attr) => ({
-                            ...attr,
-                            _id: new Types.ObjectId(),
-                        })),
-                    };
-                }),
-            };
-
-            return mappedWorkout;
-        });
+        const updatedWorkouts = copyWorkoutData(workoutData, mapOfMachineIds);
         template.set("workout", updatedWorkouts);
         await template.save({session: mongoSession});
 

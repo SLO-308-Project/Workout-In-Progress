@@ -2,7 +2,6 @@ import {Router, Request, Response} from "express";
 import sessionServices from "../services/sessionServices";
 import {SessionType} from "../data/session";
 import {SessionRequest} from "../types/express";
-//import {authToken} from "../util/jwt";
 
 const router = Router();
 

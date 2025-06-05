@@ -2,7 +2,6 @@ import {Router, Request, Response} from "express";
 import machineServices from "../services/machineServices";
 import {MachineType} from "../data/machine";
 import {MachineRequest} from "../types/express";
-// import { userType } from "../data/user";
 
 // all start with /machines
 const router = Router();
@@ -73,7 +72,22 @@ router.delete("/:name", (req: Request, res: Response) =>
         })
         .catch((err) =>
         {
-            res.status(400).send("Bad Request: " + err);
+            if (err instanceof Error)
+            {
+                const msg = err.message;
+                if (
+                    msg.includes("No machines found") ||
+                    msg.includes("User not found")
+                )
+                {
+                    return res.status(404).send(err.message);
+                }
+                else if (msg.includes("Machine log update failed"))
+                {
+                    return res.status(500).send(err.message);
+                }
+            }
+            return res.status(400).send("Bad Request: " + err);
         });
 });
 

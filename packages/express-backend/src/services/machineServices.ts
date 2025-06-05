@@ -58,23 +58,24 @@ function getListOfMachinesAggregate(userId: string)
  */
 async function addMachine(machine: MachineType, userId: string)
 {
-    //console.log(
-    //    `IN MACHINESERVICES machine: ${JSON.stringify(machine)}, email: ${email}`,
-    //);
-    //console.log(email);
     const machineToAdd = new machineModel(machine);
     const savedMachine = await machineToAdd.save();
 
-    //Second promise to find a machineLogId
-    userModel
-        .findOne({_id: userId})
-        .then((foundUser) =>
-            machineLogModel.findOneAndUpdate(
-                {_id: foundUser?.machineLogId}, //previously queried user.
-                {$push: {machineIds: machineToAdd._id}}, //previously added machine _id.
-            ),
-        )
-        .catch((err) => console.log(err));
+    try
+    {
+        const foundUser = await userModel.findById(userId);
+        if (foundUser?.machineLogId)
+        {
+            await machineLogModel.findOneAndUpdate(
+                {_id: foundUser.machineLogId},
+                {$push: {machineIds: machineToAdd._id}},
+            );
+        }
+    }
+    catch (err)
+    {
+        console.error("Error updating machine log:", err);
+    }
 
     return savedMachine;
 }
@@ -313,27 +314,29 @@ async function deleteMachine(userId: string, machineName: string)
     listOfMachines.push({$match: {name: machineName}}); //match with the correct machine.
     console.log(listOfMachines);
 
-    return userModel
-        .aggregate(listOfMachines) //get the machine that has the Id to remove.
-        .then((machineList) =>
-        {
-            console.log(machineList);
-            const machine = machineList[0] as MachineType;
-            return machineModel
-                .findByIdAndDelete(machine._id) //remove the machine with the found Id
-                .then((deletedMachine) =>
-                {
-                    return userModel.findOne({_id: userId}).then((user) =>
-                    {
-                        return machineLogModel
-                            .findOneAndUpdate(
-                                {_id: user!.machineLogId},
-                                {$pull: {machineIds: machine._id}},
-                            )
-                            .then(() => deletedMachine);
-                    });
-                });
-        });
+    const machines = await userModel.aggregate(listOfMachines);
+    if (machines.length === 0)
+    {
+        throw new Error("No machines found");
+    }
+    const machine = machines[0] as MachineType;
+
+    const user = await userModel.findOne({_id: userId});
+    if (!user)
+    {
+        throw new Error("User not found");
+    }
+
+    const machineLog = await machineLogModel.findOneAndUpdate(
+        {_id: user.machineLogId},
+        {$pull: {machineIds: machine._id}},
+    );
+    if (!machineLog)
+    {
+        throw new Error("Machine log update failed");
+    }
+
+    return await machineModel.findByIdAndDelete(machine._id);
 }
 
 /**
@@ -372,7 +375,7 @@ async function updateMachine(
                 {
                     new: true,
                 },
-            ); //update the machine.
+            );
         });
 }
 
