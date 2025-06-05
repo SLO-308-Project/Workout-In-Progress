@@ -17,7 +17,7 @@ import SessionComponent, {Empty} from "@/components/sessions/sessionComponent";
 import StartCurrentSession from "@/components/currSession/StartCurrentSession";
 // import {fetchGetTemplates} from "@/fetchers/templateFetchers";
 // import {useTemplateContext} from "@/util/templateContext";
-import {BottomSheetModal} from "@gorhom/bottom-sheet";
+import {BottomSheetModal, BottomSheetScrollView} from "@gorhom/bottom-sheet";
 import SessionSlide from "@/components/sessions/sessionSlide";
 import {useTemplateContext} from "@/util/templateContext";
 import {useMachineContext} from "@/util/machineContext";
@@ -291,22 +291,28 @@ export default function PastSessionsPage()
                 enableContentPanningGesture={false}
                 enablePanDownToClose={true}
             >
-                <SessionSlide
-                    allMachines={allMachines}
-                    currentSession={selectedSession}
-                    name={
-                        selectedSession ? dateToName(selectedSession.date) : ""
-                    }
-                    date={
-                        selectedSession ? formatDate(selectedSession.date) : ""
-                    }
-                    duration={
-                        selectedSession
-                            ? formatDuration(selectedSession.time)
-                            : ""
-                    }
-                    deleteSession={deleteSession}
-                />
+                <BottomSheetScrollView>
+                    <SessionSlide
+                        allMachines={allMachines}
+                        currentSession={selectedSession}
+                        name={
+                            selectedSession
+                                ? dateToName(selectedSession.date)
+                                : ""
+                        }
+                        date={
+                            selectedSession
+                                ? formatDate(selectedSession.date)
+                                : ""
+                        }
+                        duration={
+                            selectedSession
+                                ? formatDuration(selectedSession.time)
+                                : ""
+                        }
+                        deleteSession={deleteSession}
+                    />
+                </BottomSheetScrollView>
             </BottomSheetModal>
             <Pressable
                 onPress={() =>
