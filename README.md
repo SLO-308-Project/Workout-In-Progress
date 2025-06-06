@@ -12,6 +12,26 @@
 # Workout In Progress
 Workout In Progress is a workout tracking application. It helps keep track of when and what workouts you have completed, provides statistics on what has been completed, and provides tools for easily inputting workouts. Our goal is to create an app that eliminates a lot of the extra and unnecessary features that most workout apps provide. Trim down these elements into the core functionality that is easy and efficient to use.
 
+# Feature Demos
+
+## Track your progress on a machine
+![CleanShot 2025-06-05 at 17 19 37](https://github.com/user-attachments/assets/e9c09abd-9804-4e4c-91da-a6420dff9890)
+
+## Complete "machine" customization
+![CleanShot 2025-06-05 at 17 21 01](https://github.com/user-attachments/assets/f0a1c904-69cc-44ac-91e3-9eb582f63dfa)
+
+## User authentication
+![CleanShot 2025-06-05 at 17 25 11](https://github.com/user-attachments/assets/758a76f8-e5c1-472d-967c-c97f395f433a)
+
+## Track your workout as you're doing it
+![CleanShot 2025-06-05 at 17 27 44](https://github.com/user-attachments/assets/96f114a3-510e-4fcd-943b-0759af6a8ed8)
+
+## Start a new session from an old one with templates
+![CleanShot 2025-06-05 at 17 29 21](https://github.com/user-attachments/assets/e3727a49-63f3-4d43-a18f-33da8f8b5b1f)
+
+## Share your template with other gym-goers
+![CleanShot 2025-06-05 at 17 33 09](https://github.com/user-attachments/assets/68cbcc61-c5a4-4ec4-b53b-df74f0358bad)
+
 ## Deployment
 [Frontend Link](https://orange-bush-0991c211e.6.azurestaticapps.net)
 
@@ -62,7 +82,8 @@ Date: 6/4/2025 11pm
           DB_URL = <MONGO_URL>
           JWT_SECRET = <SECRET>
       ```
-4. VScode Extensions:
+4. Use [Expo's guide](https://docs.expo.dev/get-started/set-up-your-environment/?platform=android&device=simulated&mode=expo-go) for setting up an Expo development environment.
+5. VScode Extensions:
     - "JavaScript and TypeScript Nightly"
     - "Prettier - Code formatted"
         1. (CMD/ CTRL) + SHIFT + P
